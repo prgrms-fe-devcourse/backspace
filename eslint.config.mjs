@@ -81,10 +81,37 @@ export default [
   ...pluginQuery.configs["flat/recommended"],
   ...prettierConfig,
   {
+    name: "custom/import-resolver",
+    settings: {
+      "import-x/resolver": {
+        typescript: {
+          project: ["./tsconfig.app.json"],
+        },
+        node: true,
+        alias: {
+          map: [["@", "./src"]],
+          extensions: [".ts", ".tsx"],
+        },
+      },
+      "import/resolver": {
+        typescript: {
+          project: ["./tsconfig.app.json"],
+        },
+        node: true,
+        alias: {
+          map: [["@", "./src"]],
+          extensions: [".ts", ".tsx"],
+        },
+      },
+    },
+  },
+  {
     name: "custom/overrides",
     rules: {
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
+      "import-x/extensions": "off",
+      "import-x/prefer-default-export": "off",
     },
   },
 ];
