@@ -93,16 +93,6 @@ export default [
           extensions: [".ts", ".tsx"],
         },
       },
-      "import/resolver": {
-        typescript: {
-          project: ["./tsconfig.app.json"],
-        },
-        node: true,
-        alias: {
-          map: [["@", "./src"]],
-          extensions: [".ts", ".tsx"],
-        },
-      },
     },
   },
   {
