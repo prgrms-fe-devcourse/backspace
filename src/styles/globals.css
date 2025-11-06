@@ -44,13 +44,11 @@
   .bevel-default {
     background: var(--color-surface);
     box-shadow: var(--shadow-bevel-default);
-    padding: 6px;
   }
 
   .bevel-pressed {
     background: var(--color-surface);
     box-shadow: var(--shadow-bevel-pressed);
-    padding: 6px;
   }
 }
 
