@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@import "@/styles/fonts.css";
+
+:root {
+  --font-galmuri: "Galmuri9";
+}
+
+@theme {
+  --color-bevel-top-o: #f9fafb; /* 1 1 */
+  --color-bevel-top-i: #f9f4ff; /* 2 2 */
+  --color-surface: #f0eaff;
+  --color-bevel-btm-i: #a199c5; /* -2 -2 */
+  --color-bevel-btm-o: #6b5f8a; /* -1 -1 */
+
+  --color-text-default: #2d2640;
+
+  --shadow-bevel-default:
+    inset -1.5px -1.5px 0 0 var(--color-bevel-btm-o),
+    inset 1.5px 1.5px 0 0 var(--color-bevel-top-o), inset -3px -3px 0 0 var(--color-bevel-btm-i),
+    inset 3px 3px 0 0 var(--color-bevel-top-i);
+
+  --shadow-bevel-pressed:
+    inset 1.5px 1.5px 0 0 var(--color-bevel-btm-o),
+    inset -1.5px -1.5px 0 0 var(--color-bevel-top-o), inset 3px 3px 0 0 var(--color-bevel-btm-i),
+    inset -3px -3px 0 0 var(--color-bevel-top-i);
+}
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer theme {
+  :root {
+    @variant dark {
+      --color-bevel-top-o: #9ba0d0;
+      --color-bevel-top-i: #53567a;
+      --color-surface: #3a3d5a;
+      --color-bevel-btm-i: #252840;
+      --color-bevel-btm-o: #1a1c2e;
+
+      --color-text-default: #eae9ff;
+    }
+  }
+}
+
+@layer utilities {
+  .bevel-default {
+    background: var(--color-surface);
+    box-shadow: var(--shadow-bevel-default);
+  }
+
+  .bevel-pressed {
+    background: var(--color-surface);
+    box-shadow: var(--shadow-bevel-pressed);
+  }
+}
+
+html,
+body {
+  font-family: var(--font-galmuri);
+  color: var(--color-text-default);
+}
