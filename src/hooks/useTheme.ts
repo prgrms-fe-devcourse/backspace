@@ -6,16 +6,22 @@ export default function useTheme() {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    let userTheme = localStorage.getItem("theme");
+    const storedTheme = localStorage.getItem("theme");
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    if (!userTheme) {
-      userTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    if (storedTheme === "light" || storedTheme === "dark") {
+      setTheme(storedTheme);
+    } else {
+      setTheme(mediaQuery.matches ? "dark" : "light");
     }
 
-    if (userTheme === "light" || userTheme === "dark") {
-      localStorage.setItem("theme", userTheme);
-      setTheme(userTheme);
-    }
+    const handleMediaQueryChange = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+    return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
   }, []);
 
   useEffect(() => {
