@@ -14,7 +14,7 @@ export const taskbar = cva([
 export type TaskbarVariantProps = VariantProps<typeof taskbar>;
 
 // 시작 버튼
-export const taskbarStart = cva(["h-6", "w-14", "shrink-0"]);
+export const taskbarStart = cva(["h-6", "w-17"]);
 
 export type TaskbarStartVariantProps = VariantProps<typeof taskbarStart>;
 
