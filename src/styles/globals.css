@@ -1,11 +1,11 @@
 @import "tailwindcss";
-@import "../styles/fonts.css";
+@import "./fonts.css";
 
-:root {
-  --font-galmuri: "Galmuri9";
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  --font-galmuri: "Galmuri9";
+
   --color-bevel-top-o: #f9fafb; /* 1 1 */
   --color-bevel-top-i: #f9f4ff; /* 2 2 */
   --color-surface: #f0eaff;
@@ -24,8 +24,6 @@
     inset -1.5px -1.5px 0 0 var(--color-bevel-top-o), inset 3px 3px 0 0 var(--color-bevel-btm-i),
     inset -3px -3px 0 0 var(--color-bevel-top-i);
 }
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 @layer theme {
   :root {
