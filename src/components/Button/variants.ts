@@ -6,6 +6,7 @@ export const button = cva(
     "outline-none focus-visible:outline-none",
     "disabled:cursor-not-allowed",
     "transition-all",
+    "focus:outline-1 focus:-outline-offset-4 focus:outline-black focus:outline-dotted",
   ],
   {
     variants: {
@@ -47,22 +48,6 @@ export const button = cva(
         size: "lg",
         composition: "iconOnly",
         className: "h-9 w-9 p-2",
-      },
-      // composition이 iconText일 때만 안에 gap이 다르기 때문에 재정의
-      {
-        size: "sm",
-        composition: "iconText",
-        className: "gap-1",
-      },
-      {
-        size: "md",
-        composition: "iconText",
-        className: "gap-1.5",
-      },
-      {
-        size: "lg",
-        composition: "iconText",
-        className: "gap-2",
       },
     ],
     defaultVariants: {

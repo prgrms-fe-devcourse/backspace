@@ -21,7 +21,7 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button">, ButtonVa
  *
  * @example
  * ```tsx
- * <Button intent="primary" size="md" onClick={() => alert("clicked")}>
+ * <Button size="sm" composition="iconText" onClick={() => alert("clicked")}>
  *   <Plus /> 저장하기
  * </Button>
  * ```
@@ -72,10 +72,6 @@ export default function Button({
       >
         {children}
       </span>
-
-      {state === "focus" && (
-        <div className={twMerge("pointer-events-none absolute inset-1 border border-dashed")} />
-      )}
     </button>
   );
 }
