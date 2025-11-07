@@ -1,5 +1,5 @@
-/* eslint-disable */
-// supabase 자동 생성 types 파일인데 린트에러가 잡히네요 린트 무시 걸어두겠습니다.
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
