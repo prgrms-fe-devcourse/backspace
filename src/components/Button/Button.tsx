@@ -2,6 +2,8 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { button, type ButtonVariantProps } from "./variants";
 
+type ButtonState = "neutral" | "pressed" | "focus" | "inactive";
+
 interface ButtonProps extends React.ComponentPropsWithoutRef<"button">, ButtonVariantProps {}
 
 /**
@@ -38,22 +40,26 @@ export default function Button({
   onClick,
   ...rest
 }: ButtonProps) {
-  const [state, setState] = useState<"neutral" | "pressed" | "focus" | "inactive">(
-    controlledState ?? "neutral"
-  );
+  const [state, setState] = useState<ButtonState>("neutral");
+
+  const currentState = controlledState ?? state;
+
+  const handleMouseDown = () => !controlledState && setState("pressed");
+  const handleMouseUp = () => !controlledState && setState("focus");
+  const handleBlur = () => !controlledState && setState("neutral");
 
   return (
     <button
       type="button"
-      onMouseDown={() => setState("pressed")}
-      onMouseUp={() => setState("focus")}
-      onBlur={() => setState("neutral")}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onBlur={handleBlur}
       onClick={onClick}
       disabled={disabled}
       className={twMerge(
         button({
           size,
-          state,
+          state: currentState,
           composition,
           width,
         }),
