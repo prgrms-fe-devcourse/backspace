@@ -1,10 +1,3 @@
-/**
- * THIS FILE WAS AUTO-GENERATED.
- * PLEASE DO NOT EDIT IT MANUALLY.
- * ===============================
- * IF YOU'RE COPYING THIS INTO AN ESLINT CONFIG, REMOVE THIS COMMENT BLOCK.
- */
-
 import path from "node:path";
 
 import { includeIgnoreFile } from "@eslint/compat";
@@ -100,6 +93,7 @@ export default [
     rules: {
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
+      "react/require-default-props": "off",
       "import-x/extensions": "off",
       "import-x/prefer-default-export": "off",
       "import-x/first": "error",
