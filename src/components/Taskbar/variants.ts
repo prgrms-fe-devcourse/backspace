@@ -7,7 +7,7 @@ export const taskbar = cva([
   "h-8",
   "px-2",
   "gap-3",
-  "text-[11px]",
+  "text-xs",
   "bevel-default",
 ]);
 
@@ -25,9 +25,9 @@ export const taskbarTab = cva(
     "outline-none",
     "transition-all",
     "h-6",
-    "shrink",
+    "flex-1", // 모든 탭이 동일한 너비를 가지도록
     "max-w-43",
-    "min-w-43",
+    "min-w-6",
   ],
   {
     variants: {
@@ -49,7 +49,9 @@ export const taskbarSystemTray = cva([
   "flex items-center justify-center",
   "p-1",
   "h-6",
-  "w-17",
+  "min-w-17",
+  "gap-1",
+  "shrink-0",
   "bevel-pressed",
 ]);
 

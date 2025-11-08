@@ -1,7 +1,9 @@
+import { Folder, FileText, Palette, Mail, Settings, Sliders, FolderOpen } from "lucide-react";
+
 import Taskbar from "@/components/Taskbar/Taskbar";
 import TaskbarStart from "@/components/Taskbar/TaskbarStart";
-import TaskbarTab from "@/components/Taskbar/TaskbarTab";
 import TaskbarSystemTray from "@/components/Taskbar/TaskbarSystemTray";
+import TaskbarTab from "@/components/Taskbar/TaskbarTab";
 
 export default function App() {
   return (
@@ -13,10 +15,10 @@ export default function App() {
         <Taskbar>
           <TaskbarStart />
           <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab isActive>📁 My Computer</TaskbarTab>
-            <TaskbarTab>📄 Document</TaskbarTab>
+            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+            <TaskbarTab icon={<FileText size={14} />} text="Document" />
           </div>
-          <TaskbarSystemTray>🔈 3:45 PM</TaskbarSystemTray>
+          <TaskbarSystemTray />
         </Taskbar>
       </div>
 
@@ -25,11 +27,11 @@ export default function App() {
         <Taskbar>
           <TaskbarStart />
           <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab isActive>📁 My Computer</TaskbarTab>
-            <TaskbarTab>📄 Document</TaskbarTab>
-            <TaskbarTab>🎨 Paint</TaskbarTab>
+            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+            <TaskbarTab icon={<FileText size={14} />} text="Document" />
+            <TaskbarTab icon={<Palette size={14} />} text="Paint" />
           </div>
-          <TaskbarSystemTray>3:45 PM</TaskbarSystemTray>
+          <TaskbarSystemTray />
         </Taskbar>
       </div>
 
@@ -38,15 +40,15 @@ export default function App() {
         <Taskbar>
           <TaskbarStart />
           <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab isActive>📁 My Computer</TaskbarTab>
-            <TaskbarTab>📄 Untitled - Notepad</TaskbarTab>
-            <TaskbarTab>🎨 Paint</TaskbarTab>
-            <TaskbarTab>📧 Email Client</TaskbarTab>
-            <TaskbarTab>⚙️ System Settings</TaskbarTab>
-            <TaskbarTab>🎛️ Control Panel</TaskbarTab>
-            <TaskbarTab>📂 Windows Explorer</TaskbarTab>
+            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+            <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
+            <TaskbarTab icon={<Palette size={14} />} text="Paint" />
+            <TaskbarTab icon={<Mail size={14} />} text="Email Client" />
+            <TaskbarTab icon={<Settings size={14} />} text="System Settings" />
+            <TaskbarTab icon={<Sliders size={14} />} text="Control Panel" />
+            <TaskbarTab icon={<FolderOpen size={14} />} text="Windows Explorer" />
           </div>
-          <TaskbarSystemTray>3:45 PM</TaskbarSystemTray>
+          <TaskbarSystemTray />
         </Taskbar>
       </div>
     </div>

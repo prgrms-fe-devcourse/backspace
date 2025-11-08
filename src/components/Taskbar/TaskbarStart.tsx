@@ -1,6 +1,8 @@
 import { Grid } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
 import Button from "@/components/Button/Button";
+
 import { taskbarStart } from "./variants";
 
 type TaskbarStartProps = React.ComponentPropsWithoutRef<"button">;
@@ -8,7 +10,6 @@ type TaskbarStartProps = React.ComponentPropsWithoutRef<"button">;
 /**
  * Taskbar Start 버튼 컴포넌트
  *
- * Windows 95 스타일의 Start 버튼을 구현한 컴포넌트입니다.
  * Button 컴포넌트를 기반으로 구현되었으며, 내부에 아이콘과 "Start" 텍스트가 포함되어 있습니다.
  *
  * @component

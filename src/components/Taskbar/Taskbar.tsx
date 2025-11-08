@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+
 import { taskbar, type TaskbarVariantProps } from "./variants";
 
 type TaskbarProps = React.ComponentPropsWithoutRef<"div"> & TaskbarVariantProps;
@@ -6,7 +7,6 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"div"> & TaskbarVariantProps;
 /**
  * Taskbar 컴포넌트
  *
- * Windows 95 스타일의 Taskbar를 구현한 컴포넌트입니다.
  * Start 버튼, Tab 버튼들, 시간 표시를 포함합니다.
  *
  * @component
