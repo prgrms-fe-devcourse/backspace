@@ -92,6 +92,7 @@ export default [
     name: "custom/overrides",
     rules: {
       "react/react-in-jsx-scope": "off",
+      "react/require-default-props": "off",
       "react/jsx-uses-react": "off",
       "react/require-default-props": "off",
       "import-x/extensions": "off",
