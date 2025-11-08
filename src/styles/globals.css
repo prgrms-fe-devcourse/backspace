@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@import "./utilities.css";
 
 @theme {
   --font-galmuri: "Galmuri9";
@@ -30,33 +31,6 @@
   --color-bevel-light-inner: #5a5e8a;
   --color-bevel-shadow-inner: #2a2d47;
   --color-bevel-shadow-outer: #141628;
-}
-
-@utility bevel-default {
-  background: var(--color-surface);
-  box-shadow:
-    inset -1.5px -1.5px 0 0 var(--color-bevel-shadow-outer),
-    inset 1.5px 1.5px 0 0 var(--color-bevel-light-outer),
-    inset -3px -3px 0 0 var(--color-bevel-shadow-inner),
-    inset 3px 3px 0 0 var(--color-bevel-light-inner);
-}
-
-@utility bevel-pressed {
-  background: var(--color-surface);
-  box-shadow:
-    inset 1.5px 1.5px 0 0 var(--color-bevel-shadow-outer),
-    inset -1.5px -1.5px 0 0 var(--color-bevel-light-outer),
-    inset 3px 3px 0 0 var(--color-bevel-shadow-inner),
-    inset -3px -3px 0 0 var(--color-bevel-light-inner);
-}
-
-@utility accent-gradient {
-  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-end) 100%);
-}
-
-@utility disabled-base {
-  opacity: var(--opacity-disabled);
-  cursor: not-allowed;
 }
 
 html,
