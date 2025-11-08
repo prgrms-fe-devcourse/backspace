@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
 
+/// <reference types="vitest/config" />
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
