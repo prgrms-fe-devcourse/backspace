@@ -7,6 +7,21 @@ import { titleBar } from "./variants";
 import type { TitleBarVariantProps } from "./variants";
 import Button from "../Button/Button";
 
+const sizeConfig = {
+  small: {
+    buttonSizeProp: "sm",
+    iconClassName: "h-3 w-3",
+    buttonSizeClass: "h-4.5 w-4.5",
+    iconSizeClass: "h-3 w-3",
+  },
+  medium: {
+    buttonSizeProp: "md",
+    iconClassName: "h-4 w-4",
+    buttonSizeClass: "h-6 w-6",
+    iconSizeClass: "h-4 w-4",
+  },
+} as const;
+
 interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
   icon?: React.ReactNode;
   text?: React.ReactNode;
@@ -80,21 +95,6 @@ export default function TitleBar({
   className,
   ...rest
 }: TitleBarProps) {
-  const sizeConfig = {
-    small: {
-      buttonSizeProp: "sm",
-      iconClassName: "h-3 w-3",
-      buttonSizeClass: "h-4.5 w-4.5",
-      iconSizeClass: "h-3 w-3",
-    },
-    medium: {
-      buttonSizeProp: "md",
-      iconClassName: "h-4 w-4",
-      buttonSizeClass: "h-6 w-6",
-      iconSizeClass: "h-4 w-4",
-    },
-  } as const;
-
   const { buttonSizeProp, iconClassName, buttonSizeClass, iconSizeClass } =
     sizeConfig[size ?? "small"];
 
