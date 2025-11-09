@@ -1,3 +1,4 @@
+import React from "react";
 import { twMerge } from "tailwind-merge";
 
 import TaskbarStart from "./TaskbarStart";
@@ -63,7 +64,11 @@ export default function Taskbar({
   return (
     <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
-      <ul className="flex flex-1 items-center gap-1 overflow-hidden">{children}</ul>
+      <ul className="flex flex-1 items-center gap-1 overflow-hidden">
+        {React.Children.map(children, (child) => (
+          <li className="@container flex max-w-43 min-w-0 flex-1">{child}</li>
+        ))}
+      </ul>
       {showSystemTray && <TaskbarSystemTray />}
     </nav>
   );
