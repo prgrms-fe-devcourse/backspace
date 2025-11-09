@@ -5,7 +5,6 @@ export const taskbar =
   "flex items-center justify-between w-full h-8 px-2 gap-1 text-xs bevel-default";
 
 // 시작 버튼
-// variant가 없으므로 단순 문자열로 관리
 export const taskbarStart = "h-6 w-17";
 
 // 탭
