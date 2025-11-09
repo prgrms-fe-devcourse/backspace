@@ -135,7 +135,7 @@ export default function TitleBar({
   };
 
   return (
-    <div
+    <header
       className={twMerge(
         titleBar({
           state,
@@ -147,10 +147,10 @@ export default function TitleBar({
     >
       <div className="flex min-w-0 flex-1 items-center gap-1.5">
         {sizedIcon && <div className="shrink-0">{sizedIcon}</div>}
-        <span className="text-accent-contrast truncate whitespace-nowrap">{text}</span>
+        <h2 className="text-accent-contrast truncate whitespace-nowrap">{text}</h2>
       </div>
 
       {renderButtons()}
-    </div>
+    </header>
   );
 }
