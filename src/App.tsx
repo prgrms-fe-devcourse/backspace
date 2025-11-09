@@ -1,54 +1,51 @@
-import { Folder, FileText, Palette, Mail, Settings, Sliders, FolderOpen } from "lucide-react";
+import { Folder, FileText, Palette } from "lucide-react";
 
 import Taskbar from "@/components/Taskbar/Taskbar";
-import TaskbarStart from "@/components/Taskbar/TaskbarStart";
-import TaskbarSystemTray from "@/components/Taskbar/TaskbarSystemTray";
 import TaskbarTab from "@/components/Taskbar/TaskbarTab";
+import useTheme from "@/hooks/useTheme";
 
 export default function App() {
+  useTheme(); // 앱 전체에 다크모드 적용
+
   return (
     <div className="min-h-screen p-4">
       <h1 className="mb-4 text-2xl font-bold">Taskbar 컴포넌트 테스트</h1>
 
       <div className="mb-8">
-        <h2 className="mb-2 text-lg font-semibold">Basic Taskbar</h2>
-        <Taskbar>
-          <TaskbarStart />
-          <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
-            <TaskbarTab icon={<FileText size={14} />} text="Document" />
-          </div>
-          <TaskbarSystemTray />
+        <h2 className="mb-2 text-lg font-semibold">Default - 모두 표시</h2>
+        <Taskbar config="default">
+          <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+          <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
+          <TaskbarTab icon={<Palette size={14} />} text="Paint" />
         </Taskbar>
       </div>
 
       <div className="mb-8">
-        <h2 className="mb-2 text-lg font-semibold">Multiple Tabs</h2>
-        <Taskbar>
-          <TaskbarStart />
-          <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
-            <TaskbarTab icon={<FileText size={14} />} text="Document" />
-            <TaskbarTab icon={<Palette size={14} />} text="Paint" />
-          </div>
-          <TaskbarSystemTray />
+        <h2 className="mb-2 text-lg font-semibold">NO START BUTTON - 시작 버튼 없음</h2>
+        <Taskbar config="noStartButton">
+          <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+          <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
+          <TaskbarTab icon={<Palette size={14} />} text="Paint" />
         </Taskbar>
       </div>
 
       <div className="mb-8">
-        <h2 className="mb-2 text-lg font-semibold">Many Tabs (Auto Truncate)</h2>
-        <Taskbar>
-          <TaskbarStart />
-          <div className="flex flex-1 items-center gap-1 overflow-hidden">
-            <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
-            <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
-            <TaskbarTab icon={<Palette size={14} />} text="Paint" />
-            <TaskbarTab icon={<Mail size={14} />} text="Email Client" />
-            <TaskbarTab icon={<Settings size={14} />} text="System Settings" />
-            <TaskbarTab icon={<Sliders size={14} />} text="Control Panel" />
-            <TaskbarTab icon={<FolderOpen size={14} />} text="Windows Explorer" />
-          </div>
-          <TaskbarSystemTray />
+        <h2 className="mb-2 text-lg font-semibold">NO SYSTEM TRAY - 시스템 트레이 없음</h2>
+        <Taskbar config="noSystemTray">
+          <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+          <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
+          <TaskbarTab icon={<Palette size={14} />} text="Paint" />
+        </Taskbar>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="mb-2 text-lg font-semibold">
+          MINIMAL - Tasks only (시작 버튼과 시스템 트레이 모두 없음)
+        </h2>
+        <Taskbar config="minimal">
+          <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
+          <TaskbarTab icon={<FileText size={14} />} text="Untitled - Notepad" />
+          <TaskbarTab icon={<Palette size={14} />} text="Paint" />
         </Taskbar>
       </div>
     </div>

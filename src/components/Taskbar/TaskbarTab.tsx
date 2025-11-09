@@ -50,9 +50,9 @@ export default function TaskbarTab({
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      // 탭 너비가 42px 이하이면 텍스트 숨김 (아이콘만 표시)
+      // 탭 너비가 44px 이하이면 텍스트 숨김 (아이콘만 표시)
       const tabWidth = tab.offsetWidth;
-      const minWidthForText = 42;
+      const minWidthForText = 44;
       setShowText(tabWidth > minWidthForText);
     });
 
@@ -60,7 +60,7 @@ export default function TaskbarTab({
 
     // 초기 너비 확인
     const initialWidth = tab.offsetWidth;
-    const minWidthForText = 42;
+    const minWidthForText = 44;
     setShowText(initialWidth > minWidthForText);
 
     return () => {

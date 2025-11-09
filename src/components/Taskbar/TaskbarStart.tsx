@@ -26,7 +26,7 @@ export default function TaskbarStart({ className, onClick, ...rest }: TaskbarSta
   return (
     <Button
       composition="iconText"
-      className={twMerge(taskbarStart(), className)}
+      className={twMerge(taskbarStart, className)}
       onMouseUp={() => {}} // 클릭 시 pressed 상태를 유지하기위해 빈 함수 추가했습니다다
       onClick={onClick}
       {...rest}
