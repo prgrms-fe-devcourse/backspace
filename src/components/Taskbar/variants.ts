@@ -6,7 +6,8 @@ export const taskbar =
 export const taskbarStart = "h-6 w-17";
 
 // 탭
-export const taskbarTab = "flex-1 max-w-43 min-w-6 justify-start [&>span]:min-w-0";
+export const taskbarTab =
+  "flex-1 min-w-6 [&>span]:justify-start [&>span]:min-w-0 [&>span]:flex-1 overflow-hidden";
 
 // 시스템 트레이
 export const taskbarSystemTray =
