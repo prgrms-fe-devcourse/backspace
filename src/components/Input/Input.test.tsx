@@ -68,9 +68,14 @@ describe("Input", () => {
 
   describe("에러 상태", () => {
     test("에러 메시지가 표시된다", () => {
-      render(<Input error="필수 입력 항목입니다" />);
+      render(<Input error="필수 입력 항목입니다" aria-label="입력" />);
 
-      expect(screen.getByRole("alert")).toHaveTextContent("필수 입력 항목입니다");
+      const input = screen.getByLabelText("입력");
+      const errorEl = screen.getByText("필수 입력 항목입니다");
+
+      expect(errorEl).toBeInTheDocument();
+      expect(input).toHaveAttribute("aria-invalid", "true");
+      expect(input).toHaveAttribute("aria-errormessage", errorEl.id);
     });
 
     test("에러 상태일 때 aria-invalid가 true다", () => {
@@ -89,16 +94,17 @@ describe("Input", () => {
 
     test("에러가 없으면 에러 메시지가 표시되지 않는다", () => {
       render(<Input placeholder="입력" />);
+      const input = screen.getByPlaceholderText("입력");
 
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(input).not.toHaveAttribute("aria-errormessage");
     });
 
     test("에러 메시지가 변경되면 화면에 반영된다", () => {
-      const { rerender } = render(<Input error="첫 번째 에러" />);
-      expect(screen.getByRole("alert")).toHaveTextContent("첫 번째 에러");
+      const { rerender } = render(<Input error="첫 번째 에러" aria-label="입력" />);
+      expect(screen.getByText("첫 번째 에러")).toBeInTheDocument();
 
-      rerender(<Input error="두 번째 에러" />);
-      expect(screen.getByRole("alert")).toHaveTextContent("두 번째 에러");
+      rerender(<Input error="두 번째 에러" aria-label="입력" />);
+      expect(screen.getByText("두 번째 에러")).toBeInTheDocument();
     });
   });
 
@@ -166,9 +172,13 @@ describe("Input", () => {
     });
 
     test("비활성화 상태에서도 에러 메시지는 표시된다", () => {
-      render(<Input disabled error="에러 발생" />);
+      render(<Input disabled error="에러 발생" aria-label="입력" />);
 
-      expect(screen.getByRole("alert")).toBeInTheDocument();
+      const input = screen.getByLabelText("입력");
+      const errorEl = screen.getByText("에러 발생");
+
+      expect(errorEl).toBeInTheDocument();
+      expect(input).toHaveAttribute("aria-errormessage", errorEl.id);
     });
   });
 
