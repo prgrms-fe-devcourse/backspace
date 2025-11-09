@@ -1,18 +1,11 @@
-/**
- * THIS FILE WAS AUTO-GENERATED.
- * PLEASE DO NOT EDIT IT MANUALLY.
- * ===============================
- * IF YOU'RE COPYING THIS INTO AN ESLINT CONFIG, REMOVE THIS COMMENT BLOCK.
- */
-
 import path from "node:path";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 import { configs, plugins } from "eslint-config-airbnb-extended";
 import { rules as prettierConfigRules } from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
-import pluginQuery from "@tanstack/eslint-plugin-query";
 
 const gitignorePath = path.resolve(".", ".gitignore");
 
@@ -100,8 +93,27 @@ export default [
     rules: {
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
+      "react/require-default-props": "off",
       "import-x/extensions": "off",
       "import-x/prefer-default-export": "off",
+      "import-x/first": "error",
+      "import-x/no-duplicates": "error",
+      "import-x/newline-after-import": ["error", { count: 1 }],
+
+      "import-x/order": [
+        "error",
+        {
+          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true },
+          pathGroups: [
+            { pattern: "react", group: "external", position: "before" },
+            { pattern: "react-dom", group: "external", position: "before" },
+            { pattern: "@/**", group: "internal", position: "before" },
+          ],
+          warnOnUnassignedImports: true,
+        },
+      ],
     },
   },
 ];
