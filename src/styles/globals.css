@@ -7,7 +7,6 @@
 
   --color-text-default: #2d2640;
   --color-error: #c93636;
-  --opacity-disabled: 0.5;
 
   --color-accent: #b2aaeb;
   --color-accent-end: #aac1f8;
@@ -37,4 +36,20 @@ html,
 body {
   font-family: var(--font-galmuri);
   color: var(--color-text-default);
+}
+
+body {
+  font-size: 13px;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
 }
