@@ -8,7 +8,6 @@ type TaskbarTabProps = React.ComponentPropsWithoutRef<"div"> &
   TaskbarTabVariantProps & {
     icon: ReactNode;
     text: string;
-    // eslint-disable-next-line react/require-default-props
     isActive?: boolean;
   };
 
@@ -17,7 +16,7 @@ type TaskbarTabProps = React.ComponentPropsWithoutRef<"div"> &
  *
  * Tab을 구현한 컴포넌트입니다.
  * active된 윈도우의 상태를 감지하여 pressed/neutral 상태를 표시합니다.
- * 탭 너비가 42px 이하일 때는 아이콘만 표시하고, 그 이상일 때는 텍스트도 표시합니다.
+ * 탭 너비가 44px 이하일 때는 아이콘만 표시하고, 그 이상일 때는 텍스트도 표시합니다.
  *
  * @component
  * @param {ReactNode} icon - Lucide React 아이콘 컴포넌트
@@ -44,15 +43,14 @@ export default function TaskbarTab({
   useEffect(() => {
     const tab = tabRef.current;
     if (!tab) {
-      return () => {
-        // cleanup 함수는 항상 반환되어야 함
-      };
+      return undefined;
     }
+
+    const minWidthForText = 44;
 
     const resizeObserver = new ResizeObserver(() => {
       // 탭 너비가 44px 이하이면 텍스트 숨김 (아이콘만 표시)
       const tabWidth = tab.offsetWidth;
-      const minWidthForText = 44;
       setShowText(tabWidth > minWidthForText);
     });
 
@@ -60,7 +58,6 @@ export default function TaskbarTab({
 
     // 초기 너비 확인
     const initialWidth = tab.offsetWidth;
-    const minWidthForText = 44;
     setShowText(initialWidth > minWidthForText);
 
     return () => {
