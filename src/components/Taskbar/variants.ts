@@ -1,22 +1,12 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 // 태스크바
-export const taskbar = cva([
-  "flex items-center justify-between",
-  "w-full",
-  "h-8",
-  "px-2",
-  "gap-3",
-  "text-xs",
-  "bevel-default",
-]);
-
-export type TaskbarVariantProps = VariantProps<typeof taskbar>;
+export const taskbar =
+  "flex items-center justify-between w-full h-8 px-2 gap-1 text-xs bevel-default";
 
 // 시작 버튼
-export const taskbarStart = cva(["h-6", "w-17"]);
-
-export type TaskbarStartVariantProps = VariantProps<typeof taskbarStart>;
+// variant가 없으므로 단순 문자열로 관리
+export const taskbarStart = "h-6 w-17";
 
 // 탭
 export const taskbarTab = cva(
@@ -45,14 +35,5 @@ export const taskbarTab = cva(
 export type TaskbarTabVariantProps = VariantProps<typeof taskbarTab>;
 
 // 시스템 트레이
-export const taskbarSystemTray = cva([
-  "flex items-center justify-center",
-  "p-1",
-  "h-6",
-  "min-w-17",
-  "gap-1",
-  "shrink-0",
-  "bevel-pressed",
-]);
-
-export type TaskbarSystemTrayVariantProps = VariantProps<typeof taskbarSystemTray>;
+export const taskbarSystemTray =
+  "flex items-center justify-center p-1 h-6 min-w-17 gap-1 shrink-0 bevel-pressed";

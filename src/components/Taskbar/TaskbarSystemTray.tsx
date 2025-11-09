@@ -2,9 +2,9 @@ import { Volume2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { taskbarSystemTray, type TaskbarSystemTrayVariantProps } from "./variants";
+import { taskbarSystemTray } from "./variants";
 
-type TaskbarSystemTrayProps = React.ComponentPropsWithoutRef<"div"> & TaskbarSystemTrayVariantProps;
+type TaskbarSystemTrayProps = React.ComponentPropsWithoutRef<"div">;
 
 /**
  * Taskbar 시스템 트레이 컴포넌트
@@ -41,7 +41,7 @@ export default function TaskbarSystemTray({ className, ...rest }: TaskbarSystemT
   };
 
   return (
-    <div className={twMerge(taskbarSystemTray(), className)} {...rest}>
+    <div className={twMerge(taskbarSystemTray, className)} {...rest}>
       <Volume2 size={14} className="shrink-0" />
       <span className="whitespace-nowrap">{formatTime(currentTime)}</span>
     </div>
