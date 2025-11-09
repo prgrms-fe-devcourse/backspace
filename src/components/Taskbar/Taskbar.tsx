@@ -6,7 +6,7 @@ import { taskbar } from "./variants";
 
 export type TaskbarConfig = "default" | "noStartButton" | "noSystemTray" | "minimal";
 
-type TaskbarProps = React.ComponentPropsWithoutRef<"div"> & {
+type TaskbarProps = React.ComponentPropsWithoutRef<"nav"> & {
   config: TaskbarConfig;
   children: React.ReactNode;
 };
@@ -16,6 +16,7 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"div"> & {
  *
  * Start 버튼, Tab 버튼들, 시스템 트레이를 포함합니다.
  * config prop으로 표시할 요소를 제어할 수 있습니다.
+ * 네비게이션 역할을 하므로 `<nav>` 엘리먼트를 사용합니다.
  *
  * @component
  * @param {TaskbarConfig} [config="default"] - Taskbar 구성 옵션
@@ -25,7 +26,7 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"div"> & {
  *   - "minimal": Start 버튼과 시스템 트레이 모두 없음 (Tab만 표시)
  * @param {string} [className] - 추가 Tailwind 클래스
  * @param {React.ReactNode} children - TaskbarTab 컴포넌트들
- * @returns {JSX.Element} Taskbar 엘리먼트
+ * @returns {JSX.Element} Nav 엘리먼트
  *
  * @example
  * ```tsx
@@ -60,10 +61,10 @@ export default function Taskbar({
   const showSystemTray = config === "default" || config === "noStartButton";
 
   return (
-    <div className={twMerge(taskbar, className)} {...rest}>
+    <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
-      <div className="flex flex-1 items-center gap-1 overflow-hidden">{children}</div>
+      <ul className="flex flex-1 items-center gap-1 overflow-hidden">{children}</ul>
       {showSystemTray && <TaskbarSystemTray />}
-    </div>
+    </nav>
   );
 }
