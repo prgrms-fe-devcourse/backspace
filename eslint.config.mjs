@@ -94,7 +94,6 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/require-default-props": "off",
       "react/jsx-uses-react": "off",
-      "react/require-default-props": "off",
       "import-x/extensions": "off",
       "import-x/prefer-default-export": "off",
       "import-x/first": "error",

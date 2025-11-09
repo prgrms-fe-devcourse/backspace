@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 export const titleBar = cva(
   // Base styles:
-  ["flex w-full cursor-default items-center select-none", "accent-gradient w-full"],
+  ["flex cursor-default items-center select-none", "accent-gradient w-full"],
   {
     variants: {
       // 상태 (Active, Inactive)
