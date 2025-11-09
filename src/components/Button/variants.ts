@@ -6,7 +6,7 @@ export const button = cva(
     "outline-none focus-visible:outline-none",
     "disabled:cursor-not-allowed",
     "transition-all",
-    "focus:outline-1 focus:-outline-offset-4 focus:outline-black focus:outline-dotted",
+    "focus:outline-1 focus:-outline-offset-4 focus:outline-dotted",
   ],
   {
     variants: {
