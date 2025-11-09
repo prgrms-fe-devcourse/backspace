@@ -80,13 +80,23 @@ export default function TitleBar({
   className,
   ...rest
 }: TitleBarProps) {
-  const buttonSizeProp = size === "medium" ? "md" : "sm";
+  const sizeConfig = {
+    small: {
+      buttonSizeProp: "sm",
+      iconClassName: "h-3 w-3",
+      buttonSizeClass: "h-4.5 w-4.5",
+      iconSizeClass: "h-3 w-3",
+    },
+    medium: {
+      buttonSizeProp: "md",
+      iconClassName: "h-4 w-4",
+      buttonSizeClass: "h-6 w-6",
+      iconSizeClass: "h-4 w-4",
+    },
+  } as const;
 
-  const iconClassName = size === "medium" ? "h-4 w-4" : "h-3 w-3";
-
-  const buttonSizeClass = size === "medium" ? "h-6 w-6" : "h-4.5 w-4.5";
-
-  const iconSizeClass = size === "medium" ? "h-4 w-4" : "h-3 w-3";
+  const { buttonSizeProp, iconClassName, buttonSizeClass, iconSizeClass } =
+    sizeConfig[size ?? "small"];
 
   const sizedIcon = React.isValidElement(icon)
     ? React.cloneElement(icon as React.ReactElement<any>, {
@@ -101,7 +111,7 @@ export default function TitleBar({
   const renderButtons = () => {
     if (buttons === "all") {
       return (
-        <div className="flex gap-0.5">
+        <div className="flex shrink-0 gap-0.5">
           <Button size={buttonSizeProp} composition="iconOnly" className={buttonSizeClass}>
             <Minus className={iconClassName} strokeWidth={2} />
           </Button>
