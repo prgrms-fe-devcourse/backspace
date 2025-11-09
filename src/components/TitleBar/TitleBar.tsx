@@ -108,32 +108,6 @@ export default function TitleBar({
       })
     : null;
 
-  const renderButtons = () => {
-    if (buttons === "all") {
-      return (
-        <div className="flex shrink-0 gap-0.5">
-          <Button size={buttonSizeProp} composition="iconOnly" className={buttonSizeClass}>
-            <Minus className={iconClassName} strokeWidth={2} />
-          </Button>
-          <Button size={buttonSizeProp} composition="iconOnly" className={buttonSizeClass}>
-            <AppWindow className={iconClassName} strokeWidth={2} />
-          </Button>
-          <Button size={buttonSizeProp} composition="iconOnly" className={buttonSizeClass}>
-            <X className={iconClassName} strokeWidth={2} />
-          </Button>
-        </div>
-      );
-    }
-    if (buttons === "closeOnly") {
-      return (
-        <Button size={buttonSizeProp} composition="iconOnly" className={buttonSizeClass}>
-          <X className={iconClassName} strokeWidth={2} />
-        </Button>
-      );
-    }
-    return null;
-  };
-
   return (
     <header
       className={twMerge(
@@ -150,7 +124,40 @@ export default function TitleBar({
         <h2 className="text-accent-contrast truncate whitespace-nowrap">{text}</h2>
       </div>
 
-      {renderButtons()}
+      {buttons && (
+        <div className="flex shrink-0 gap-0.5">
+          {buttons === "all" && (
+            <>
+              <Button
+                size={buttonSizeProp}
+                composition="iconOnly"
+                className={buttonSizeClass}
+                aria-label="Minimize window"
+              >
+                <Minus className={iconClassName} strokeWidth={2} />
+              </Button>
+
+              <Button
+                size={buttonSizeProp}
+                composition="iconOnly"
+                className={buttonSizeClass}
+                aria-label="Maximize window"
+              >
+                <AppWindow className={iconClassName} strokeWidth={2} />
+              </Button>
+            </>
+          )}
+
+          <Button
+            size={buttonSizeProp}
+            composition="iconOnly"
+            className={buttonSizeClass}
+            aria-label="Close window"
+          >
+            <X className={iconClassName} strokeWidth={2} />
+          </Button>
+        </div>
+      )}
     </header>
   );
 }
