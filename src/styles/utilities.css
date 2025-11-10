@@ -1,5 +1,6 @@
 @utility bevel-default {
-  background: var(--color-surface);
+  background-color: var(--color-surface);
+  background-clip: padding-box;
   box-shadow:
     inset -1.5px -1.5px 0 0 var(--color-bevel-shadow-outer),
     inset 1.5px 1.5px 0 0 var(--color-bevel-light-outer),
@@ -8,12 +9,21 @@
 }
 
 @utility bevel-pressed {
-  background: var(--color-surface);
+  background-color: var(--color-surface);
+  background-clip: padding-box;
   box-shadow:
     inset 1.5px 1.5px 0 0 var(--color-bevel-shadow-outer),
     inset -1.5px -1.5px 0 0 var(--color-bevel-light-outer),
     inset 3px 3px 0 0 var(--color-bevel-shadow-inner),
     inset -3px -3px 0 0 var(--color-bevel-light-inner);
+}
+
+@utility bevel-error {
+  box-shadow:
+    inset 1.5px 1.5px 0 0 #e74545,
+    inset -1.5px -1.5px 0 0 var(--color-error),
+    inset 3px 3px 0 0 #9e2626,
+    inset -3px -3px 0 0 #8b2424;
 }
 
 @utility accent-gradient {
@@ -23,4 +33,8 @@
 @utility disabled-base {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+}
+
+@utility focus-dotted {
+  outline: 1px dotted var(--color-text-default);
 }

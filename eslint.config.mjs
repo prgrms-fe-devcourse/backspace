@@ -98,6 +98,7 @@ export default [
       "import-x/prefer-default-export": "off",
       "import-x/first": "error",
       "import-x/no-duplicates": "error",
+      "import-x/no-extraneous-dependencies": "off",
       "import-x/newline-after-import": ["error", { count: 1 }],
 
       "import-x/order": [
