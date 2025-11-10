@@ -5,13 +5,6 @@ import { scrollbarThumb, type ScrollbarThumbVariantProps } from "./variants";
 
 type ScrollbarThumbProps = ComponentPropsWithoutRef<"div"> & ScrollbarThumbVariantProps;
 
-// 썸 크기 매핑 (px)
-const THUMB_SIZE_MAP = {
-  sm: 40,
-  md: 66,
-  lg: 100,
-} as const;
-
 /**
  * Scrollbar Thumb 컴포넌트
  *
@@ -34,23 +27,9 @@ export default function ScrollbarThumb({
   size = "md",
   disabled = false,
   className,
-  style,
   ...rest
 }: ScrollbarThumbProps) {
-  const getSizeStyle = () => {
-    const thumbSize = size ?? "md";
-    const pixelSize = THUMB_SIZE_MAP[thumbSize];
-    if (direction === "horizontal") return { width: `${pixelSize}px` };
-    return { height: `${pixelSize}px` };
-  };
-
-  const sizeStyle = getSizeStyle();
-
   return (
-    <div
-      className={twMerge(scrollbarThumb({ direction, size, disabled }), className)}
-      style={{ ...sizeStyle, ...style }}
-      {...rest}
-    />
+    <div className={twMerge(scrollbarThumb({ direction, size, disabled }), className)} {...rest} />
   );
 }

@@ -69,6 +69,40 @@ export const scrollbarThumb = cva(
         false: "",
       },
     },
+    compoundVariants: [
+      // horizontal 방향일 때 size에 따른 width
+      {
+        direction: "horizontal",
+        size: "sm",
+        className: "w-10",
+      },
+      {
+        direction: "horizontal",
+        size: "md",
+        className: "w-[66px]",
+      },
+      {
+        direction: "horizontal",
+        size: "lg",
+        className: "w-25",
+      },
+      // vertical 방향일 때 size에 따른 height
+      {
+        direction: "vertical",
+        size: "sm",
+        className: "h-10",
+      },
+      {
+        direction: "vertical",
+        size: "md",
+        className: "h-[66px]",
+      },
+      {
+        direction: "vertical",
+        size: "lg",
+        className: "h-25",
+      },
+    ],
     defaultVariants: {
       direction: "horizontal",
       size: "md",
