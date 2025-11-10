@@ -5,12 +5,6 @@ import { describe, test, expect } from "vitest";
 
 import CheckBox from "./CheckBox";
 
-//
-// =============================================================
-// Custom CheckBox Component — Detailed Test
-// (Backspace 프로젝트 커스텀 체크박스에 최적화)
-// =============================================================
-//
 describe("Custom CheckBox", () => {
   //
   // ------------------------------------------------------------------
