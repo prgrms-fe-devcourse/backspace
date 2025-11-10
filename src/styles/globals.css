@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./fonts.css";
 @import "./utilities.css";
+@import "./scrollbar.css";
 
 @theme {
   --font-galmuri: "Galmuri9";
@@ -53,70 +54,4 @@ body {
   body {
     font-size: 15px;
   }
-}
-
-/* 스크롤바 기본 설정 */
-body *::-webkit-scrollbar {
-  background: none;
-}
-
-/* 썸 (Thumb): bevel-default 효과 */
-body *::-webkit-scrollbar-thumb {
-  @apply bevel-default;
-  border: none;
-}
-
-body *::-webkit-scrollbar-thumb:active {
-  @apply bevel-pressed;
-}
-
-/* 트랙 (Track): bevel-pressed 효과 */
-body *::-webkit-scrollbar-track {
-  @apply bevel-pressed;
-  border: none;
-}
-
-/* 버튼 (Button): bevel-default 효과 */
-body *::-webkit-scrollbar-button {
-  @apply bevel-default;
-  border: none;
-  background-repeat: no-repeat;
-}
-
-body *::-webkit-scrollbar-button:active {
-  @apply bevel-pressed;
-}
-
-/* 버튼 화살표 아이콘 */
-body *::-webkit-scrollbar-button:single-button:vertical:decrement {
-  background-image: url("../assets/icons/scrollbar-arrow-up.svg");
-}
-
-body *::-webkit-scrollbar-button:single-button:vertical:increment {
-  background-image: url("../assets/icons/scrollbar-arrow-down.svg");
-}
-
-body *::-webkit-scrollbar-button:single-button:horizontal:decrement {
-  background-image: url("../assets/icons/scrollbar-arrow-left.svg");
-}
-
-body *::-webkit-scrollbar-button:single-button:horizontal:increment {
-  background-image: url("../assets/icons/scrollbar-arrow-right.svg");
-}
-
-/* 코너 (Corner) */
-body *::-webkit-scrollbar-corner {
-  background-color: var(--color-surface);
-}
-
-/* Disabled 스크롤바 스타일 */
-.scrollbar-disabled::-webkit-scrollbar-thumb,
-.scrollbar-disabled *::-webkit-scrollbar-thumb {
-  display: none;
-}
-
-.scrollbar-disabled::-webkit-scrollbar-track,
-.scrollbar-disabled *::-webkit-scrollbar-track {
-  box-shadow: none;
-  background-color: var(--color-bevel-light-inner);
 }
