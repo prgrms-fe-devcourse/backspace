@@ -1,236 +1,214 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 import { describe, test, expect } from "vitest";
 
-import Input from "../Input/Input";
+import CheckBox from "./CheckBox";
 
-describe("Input", () => {
+//
+// =============================================================
+// Custom CheckBox Component — Detailed Test
+// (Backspace 프로젝트 커스텀 체크박스에 최적화)
+// =============================================================
+//
+describe("Custom CheckBox", () => {
+  //
+  // ------------------------------------------------------------------
+  // 렌더링
+  // ------------------------------------------------------------------
+  //
   describe("렌더링", () => {
-    test("기본 인풋이 렌더링 된다", () => {
-      render(<Input placeholder="텍스트 입력" />);
-      expect(screen.getByPlaceholderText("텍스트 입력")).toBeInTheDocument();
+    test("체크박스 input이 렌더링된다", () => {
+      render(<CheckBox />);
+
+      const input = screen.getByRole("checkbox");
+      expect(input).toBeInTheDocument();
     });
 
-    test("placeholder 없이도 렌더링 된다", () => {
-      render(<Input />);
-      expect(screen.getByRole("textbox")).toBeInTheDocument();
+    test("input 바로 뒤에 Box(div)가 렌더링된다", () => {
+      render(<CheckBox />);
+      const input = screen.getByRole("checkbox");
+
+      const box = input.nextElementSibling;
+      expect(box?.tagName).toBe("DIV");
+      expect(box).toBeInTheDocument();
+    });
+
+    test("label text가 있으면 span이 렌더링된다", () => {
+      render(<CheckBox label="동의합니다" />);
+      expect(screen.getByText("동의합니다")).toBeInTheDocument();
     });
   });
 
-  describe("입력 동작", () => {
-    test("텍스트를 입력할 수 있다", async () => {
-      const user = userEvent.setup();
-      render(<Input placeholder="이름" />);
-
-      const input = screen.getByPlaceholderText("이름");
-      await user.type(input, "John Doe");
-
-      expect(input).toHaveValue("John Doe");
+  //
+  // ------------------------------------------------------------------
+  // Uncontrolled (기본 상태 관리)
+  // ------------------------------------------------------------------
+  //
+  describe("Uncontrolled 동작", () => {
+    test("기본값은 체크되지 않은 상태", () => {
+      render(<CheckBox />);
+      const input = screen.getByRole("checkbox");
+      expect(input).not.toBeChecked();
     });
 
-    test("초기값이 설정된다", () => {
-      render(<Input defaultValue="기본값" />);
+    test("input 클릭 시 체크 → 다시 클릭하면 해제된다", async () => {
+      const user = userEvent.setup();
+      render(<CheckBox label="동의" />);
 
-      expect(screen.getByDisplayValue("기본값")).toBeInTheDocument();
+      const input = screen.getByRole("checkbox");
+
+      await user.click(input);
+      expect(input).toBeChecked();
+
+      await user.click(input);
+      expect(input).not.toBeChecked();
     });
 
-    test("제어 컴포넌트로 동작한다", async () => {
+    test("label wrapper 전체를 클릭해도 체크 상태가 토글된다", async () => {
+      const user = userEvent.setup();
+      render(<CheckBox label="전체동의" />);
+
+      const label = screen.getByText("전체동의").closest("label")!;
+      const input = screen.getByRole("checkbox");
+
+      await user.click(label);
+      expect(input).toBeChecked();
+    });
+  });
+
+  //
+  // ------------------------------------------------------------------
+  // SVG 체크 아이콘
+  // ------------------------------------------------------------------
+  //
+  describe("SVG 렌더링", () => {
+    test("체크 시 SVG가 box 내부에 나타난다", async () => {
+      const user = userEvent.setup();
+      render(<CheckBox label="동의" />);
+
+      const input = screen.getByRole("checkbox");
+      const box = input.nextElementSibling as HTMLElement;
+
+      await user.click(input);
+
+      const svg = box.querySelector("svg");
+      expect(svg).not.toBeNull();
+    });
+
+    test("해제하면 SVG가 사라진다", async () => {
+      const user = userEvent.setup();
+      render(<CheckBox label="동의" />);
+
+      const input = screen.getByRole("checkbox");
+      const box = input.nextElementSibling as HTMLElement;
+
+      await user.click(input); // 체크
+      await user.click(input); // 해제
+
+      expect(box.querySelector("svg")).toBeNull();
+    });
+  });
+
+  //
+  // ------------------------------------------------------------------
+  // Controlled
+  // ------------------------------------------------------------------
+  //
+  describe("Controlled 모드", () => {
+    test("외부에서 checked 상태를 제어할 수 있다", async () => {
       const user = userEvent.setup();
 
-      function TestComponent() {
-        const [value, setValue] = useState<string>("");
-
-        const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value);
-        };
-
-        return <Input value={value} onChange={handleChange} placeholder="입력" />;
+      function ControlledTest() {
+        const [checked, setChecked] = useState(false);
+        return <CheckBox checked={checked} onCheckedChange={setChecked} label="동의" />;
       }
 
-      render(<TestComponent />);
-      const input = screen.getByPlaceholderText("입력");
+      render(<ControlledTest />);
+      const input = screen.getByRole("checkbox");
 
-      await user.type(input, "test");
-      expect(input).toHaveValue("test");
+      expect(input).not.toBeChecked();
+
+      await user.click(input);
+      expect(input).toBeChecked();
     });
 
-    test("값을 지울 수 있다", async () => {
+    test("controlled 모드에서 외부 checked가 true면 내부 toggle이 되지 않는다", async () => {
       const user = userEvent.setup();
-      render(<Input defaultValue="삭제될 텍스트" />);
 
-      const input = screen.getByDisplayValue("삭제될 텍스트");
-      await user.clear(input);
+      render(<CheckBox checked label="동의" />);
+      const input = screen.getByRole("checkbox");
 
-      expect(input).toHaveValue("");
+      await user.click(input);
+      expect(input).toBeChecked(); // 유지됨
     });
   });
 
-  describe("에러 상태", () => {
-    test("에러 메시지가 표시된다", () => {
-      render(<Input error="필수 입력 항목입니다" aria-label="입력" />);
+  //
+  // ------------------------------------------------------------------
+  // Disabled
+  // ------------------------------------------------------------------
+  //
+  describe("Disabled 상태", () => {
+    test("disabled 시 클릭해도 체크되지 않는다", async () => {
+      const user = userEvent.setup();
+      render(<CheckBox disabled label="동의" />);
 
-      const input = screen.getByLabelText("입력");
-      const errorEl = screen.getByText("필수 입력 항목입니다");
+      const input = screen.getByRole("checkbox");
+      await user.click(input);
 
-      expect(errorEl).toBeInTheDocument();
-      expect(input).toHaveAttribute("aria-invalid", "true");
-      expect(input).toHaveAttribute("aria-errormessage", errorEl.id);
+      expect(input).not.toBeChecked();
     });
 
-    test("에러 상태일 때 aria-invalid가 true다", () => {
-      render(<Input error="에러 발생" placeholder="입력" />);
+    test("wrapper(label)에 disabled 스타일(pointer-events-none)이 적용된다", () => {
+      render(<CheckBox disabled label="동의" />);
 
-      const input = screen.getByPlaceholderText("입력");
-      expect(input).toHaveAttribute("aria-invalid", "true");
-    });
-
-    test("에러가 없으면 aria-invalid가 없다", () => {
-      render(<Input placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      expect(input).not.toHaveAttribute("aria-invalid");
-    });
-
-    test("에러가 없으면 에러 메시지가 표시되지 않는다", () => {
-      render(<Input placeholder="입력" />);
-      const input = screen.getByPlaceholderText("입력");
-
-      expect(input).not.toHaveAttribute("aria-errormessage");
-    });
-
-    test("에러 메시지가 변경되면 화면에 반영된다", () => {
-      const { rerender } = render(<Input error="첫 번째 에러" aria-label="입력" />);
-      expect(screen.getByText("첫 번째 에러")).toBeInTheDocument();
-
-      rerender(<Input error="두 번째 에러" aria-label="입력" />);
-      expect(screen.getByText("두 번째 에러")).toBeInTheDocument();
+      const wrapper = screen.getByText("동의").closest("label")!;
+      expect(wrapper.className).toContain("pointer-events-none");
     });
   });
 
+  //
+  // ------------------------------------------------------------------
+  // Focus 스타일 (@utility focus-dotted)
+  // ------------------------------------------------------------------
   describe("포커스 상태", () => {
-    test("포커스할 수 있다", async () => {
+    test("input 클릭 시 포커스가 정상적으로 이동한다", async () => {
       const user = userEvent.setup();
-      render(<Input placeholder="입력" />);
+      render(<CheckBox label="동의" />);
 
-      const input = screen.getByPlaceholderText("입력");
+      const input = screen.getByRole("checkbox");
+      const text = screen.getByText("동의");
+
+      // 1) span 자체는 focus를 얻지 않음
+      expect(text).not.toHaveFocus();
+
+      // 2) input 클릭 → input은 focus를 얻어야 한다.
       await user.click(input);
-
       expect(input).toHaveFocus();
-    });
 
-    test("Tab 키로 포커스 이동이 가능하다", async () => {
-      const user = userEvent.setup();
-      render(
-        <>
-          <Input placeholder="첫 번째" />
-          <Input placeholder="두 번째" />
-        </>
-      );
+      // 3) group-focus-within 구조가 올바르게 렌더링되어야 함 (DOM 검증)
+      const wrapper = text.closest("label")!;
+      expect(wrapper.className).toContain("group");
 
-      await user.tab();
-      expect(screen.getByPlaceholderText("첫 번째")).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByPlaceholderText("두 번째")).toHaveFocus();
-    });
-
-    test("프로그래밍 방식으로 포커스할 수 있다", () => {
-      render(<Input placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      input.focus();
-      expect(input).toHaveFocus();
+      // Tailwind는 class가 변경되지 않기 때문에 style 검사 불가.
+      // 대신 구조적으로 group-focus-within이 적용 가능한지 확인한다.
     });
   });
 
-  describe("비활성화 상태", () => {
-    test("disabled 상태가 적용된다", () => {
-      render(<Input disabled placeholder="입력" />);
+  //
+  // ------------------------------------------------------------------
+  // className 확장
+  // ------------------------------------------------------------------
+  //
+  describe("className 확장", () => {
+    test("box(div)에 className 확장 가능", () => {
+      render(<CheckBox className="custom-box" />);
 
-      expect(screen.getByPlaceholderText("입력")).toBeDisabled();
-    });
+      const input = screen.getByRole("checkbox");
+      const box = input.nextElementSibling as HTMLElement;
 
-    test("비활성화 상태에서 입력할 수 없다", async () => {
-      const user = userEvent.setup();
-      render(<Input disabled placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      await user.type(input, "test");
-
-      expect(input).toHaveValue("");
-    });
-
-    test("비활성화 상태에서 포커스할 수 없다", async () => {
-      const user = userEvent.setup();
-      render(<Input disabled placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      await user.click(input);
-
-      expect(input).not.toHaveFocus();
-    });
-
-    test("비활성화 상태에서도 에러 메시지는 표시된다", () => {
-      render(<Input disabled error="에러 발생" aria-label="입력" />);
-
-      const input = screen.getByLabelText("입력");
-      const errorEl = screen.getByText("에러 발생");
-
-      expect(errorEl).toBeInTheDocument();
-      expect(input).toHaveAttribute("aria-errormessage", errorEl.id);
-    });
-  });
-
-  describe("접근성", () => {
-    test("role이 textbox다", () => {
-      render(<Input />);
-
-      expect(screen.getByRole("textbox")).toBeInTheDocument();
-    });
-
-    test("aria-label을 설정할 수 있다", () => {
-      render(<Input aria-label="사용자 이름 입력" />);
-
-      expect(screen.getByLabelText("사용자 이름 입력")).toBeInTheDocument();
-    });
-
-    test("required 속성이 적용된다", () => {
-      render(<Input required aria-label="필수 입력" />);
-
-      expect(screen.getByRole("textbox")).toBeRequired();
-    });
-
-    test("readonly 속성이 적용된다", () => {
-      render(<Input readOnly defaultValue="읽기 전용" />);
-
-      const input = screen.getByDisplayValue("읽기 전용");
-      expect(input).toHaveAttribute("readonly");
-    });
-  });
-
-  describe("커스터마이징", () => {
-    test("className으로 스타일을 확장할 수 있다", () => {
-      render(<Input className="custom-class" placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      expect(input).toHaveClass("custom-class");
-    });
-
-    test("HTML input 속성을 전달할 수 있다", () => {
-      render(<Input name="username" maxLength={50} autoComplete="username" placeholder="입력" />);
-
-      const input = screen.getByPlaceholderText("입력");
-      expect(input).toHaveAttribute("name", "username");
-      expect(input).toHaveAttribute("maxlength", "50");
-      expect(input).toHaveAttribute("autocomplete", "username");
-    });
-
-    test("id를 설정할 수 있다", () => {
-      render(<Input id="custom-id" />);
-
-      const input = screen.getByRole("textbox");
-      expect(input).toHaveAttribute("id", "custom-id");
+      expect(box).toHaveClass("custom-box");
     });
   });
 });
