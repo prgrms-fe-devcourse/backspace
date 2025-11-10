@@ -9,13 +9,11 @@ import Button from "../Button/Button";
 
 const sizeConfig = {
   small: {
-    buttonSizeProp: "sm",
     iconClassName: "h-3 w-3",
     buttonSizeClass: "h-4.5 w-4.5",
     iconSizeClass: "h-3 w-3",
   },
   medium: {
-    buttonSizeProp: "md",
     iconClassName: "h-4 w-4",
     buttonSizeClass: "h-6 w-6",
     iconSizeClass: "h-4 w-4",
@@ -24,7 +22,7 @@ const sizeConfig = {
 
 interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
   icon?: React.ReactNode;
-  text?: React.ReactNode;
+  text?: string;
   buttons?: "all" | "closeOnly" | null;
 }
 
@@ -95,8 +93,7 @@ export default function TitleBar({
   className,
   ...rest
 }: TitleBarProps) {
-  const { buttonSizeProp, iconClassName, buttonSizeClass, iconSizeClass } =
-    sizeConfig[size ?? "small"];
+  const { iconClassName, buttonSizeClass, iconSizeClass } = sizeConfig[size ?? "small"];
 
   const sizedIcon = React.isValidElement(icon)
     ? React.cloneElement(icon as React.ReactElement<any>, {
@@ -121,7 +118,7 @@ export default function TitleBar({
     >
       <div className="flex min-w-0 flex-1 items-center gap-1.5">
         {sizedIcon && <div className="shrink-0">{sizedIcon}</div>}
-        <h2 className="text-accent-contrast truncate whitespace-nowrap">{text}</h2>
+        <div className="text-accent-contrast truncate whitespace-nowrap">{text}</div>
       </div>
 
       {buttons && (
@@ -129,7 +126,6 @@ export default function TitleBar({
           {buttons === "all" && (
             <>
               <Button
-                size={buttonSizeProp}
                 composition="iconOnly"
                 className={buttonSizeClass}
                 aria-label="Minimize window"
@@ -138,7 +134,6 @@ export default function TitleBar({
               </Button>
 
               <Button
-                size={buttonSizeProp}
                 composition="iconOnly"
                 className={buttonSizeClass}
                 aria-label="Maximize window"
@@ -148,12 +143,7 @@ export default function TitleBar({
             </>
           )}
 
-          <Button
-            size={buttonSizeProp}
-            composition="iconOnly"
-            className={buttonSizeClass}
-            aria-label="Close window"
-          >
+          <Button composition="iconOnly" className={buttonSizeClass} aria-label="Close window">
             <X className={iconClassName} strokeWidth={2} />
           </Button>
         </div>
