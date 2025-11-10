@@ -8,7 +8,7 @@ type ScrollbarThumbProps = ComponentPropsWithoutRef<"div"> & ScrollbarThumbVaria
 /**
  * Scrollbar Thumb 컴포넌트
  *
- * 스크롤바의 썸(드래그 가능한 부분)입니다.
+ * 스크롤바의 Thumb(잡고 움직이는 부분)입니다.
  *
  * @component
  * @param {"horizontal" | "vertical"} [direction="horizontal"] - 스크롤바 방향

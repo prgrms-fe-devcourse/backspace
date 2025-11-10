@@ -1,10 +1,11 @@
+import type { LucideProps } from "lucide-react";
 import type { ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/Button/Button";
 
 interface ScrollbarButtonProps {
-  icon: ReactElement<{ size?: number }>;
+  icon: ReactElement<LucideProps>;
   disabled?: boolean;
   className?: string;
 }

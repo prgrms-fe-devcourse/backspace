@@ -8,7 +8,6 @@ export const scrollbarButton = cva(
     "cursor-pointer",
     "outline-none",
     "transition-all",
-    "disabled:disabled-base",
   ],
   {
     variants: {
@@ -31,7 +30,7 @@ export const scrollbarButton = cva(
 export type ScrollbarButtonVariantProps = VariantProps<typeof scrollbarButton>;
 
 // 스크롤바 트랙
-export const scrollbarTrack = cva(["flex", "relative"], {
+export const scrollbarTrack = cva(["flex", "relative", "flex-1"], {
   variants: {
     direction: {
       horizontal: "h-4 flex-row",

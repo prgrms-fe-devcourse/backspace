@@ -52,7 +52,7 @@ export default function Scrollbar({
 
       {/* 트랙 (thumb 포함) */}
       <ScrollbarTrack direction={direction} disabled={disabled}>
-        {!disabled && <ScrollbarThumb direction={direction} size={size} disabled={disabled} />}
+        {!disabled && <ScrollbarThumb direction={direction} size={size} />}
       </ScrollbarTrack>
 
       {/* 두 번째 버튼 */}

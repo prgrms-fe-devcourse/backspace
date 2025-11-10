@@ -35,10 +35,7 @@ export default function ScrollbarTrack({
   ...rest
 }: ScrollbarTrackProps) {
   return (
-    <div
-      className={twMerge(scrollbarTrack({ direction, disabled }), "flex-1", className)}
-      {...rest}
-    >
+    <div className={twMerge(scrollbarTrack({ direction, disabled }), className)} {...rest}>
       {children}
     </div>
   );
