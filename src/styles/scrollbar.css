@@ -1,49 +1,44 @@
-.scrollbar {
+@utility scrollbar {
   scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-track {
+    border: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bevel-default;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bevel-pressed;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: var(--color-surface);
+  }
 }
 
-/* WebKit */
-.scrollbar::-webkit-scrollbar {
-  width: var(--scrollbar-size);
-  height: var(--scrollbar-size);
-  background: none;
-}
+@utility scrollbar-disabled {
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 
-/* Reset */
-.scrollbar::-webkit-scrollbar-thumb,
-.scrollbar::-webkit-scrollbar-track {
-  border: none;
-}
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
 
-/* Thumb */
-.scrollbar::-webkit-scrollbar-thumb {
-  @apply bevel-default;
-}
-.scrollbar::-webkit-scrollbar-thumb:active {
-  @apply bevel-pressed;
-}
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: var(--color-bevel-light-inner);
+  }
 
-/* Track */
-.scrollbar::-webkit-scrollbar-track {
-  @apply bevel-pressed;
-}
-
-/* Corner */
-.scrollbar::-webkit-scrollbar-corner {
-  background-color: var(--color-surface);
-}
-
-/* WebKit */
-.scrollbar-disabled.scrollbar::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-.scrollbar-disabled.scrollbar::-webkit-scrollbar-thumb {
-  display: none;
-}
-
-.scrollbar-disabled.scrollbar::-webkit-scrollbar-track {
-  box-shadow: none;
-  background-color: var(--color-bevel-light-inner);
+  overflow: hidden;
 }
