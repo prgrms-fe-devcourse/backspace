@@ -26,6 +26,12 @@ interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarV
   buttons?: "all" | "closeOnly" | null;
 }
 
+function isElementWithClassName(
+  node: React.ReactNode
+): node is React.ReactElement<{ className?: string }> {
+  return React.isValidElement(node);
+}
+
 /**
  * 공통 TitleBar 컴포넌트
  *
@@ -95,13 +101,9 @@ export default function TitleBar({
 }: TitleBarProps) {
   const { iconClassName, buttonSizeClass, iconSizeClass } = sizeConfig[size ?? "small"];
 
-  const sizedIcon = React.isValidElement(icon)
-    ? React.cloneElement(icon as React.ReactElement<any>, {
-        className: twMerge(
-          (icon as React.ReactElement<any>).props.className,
-          iconSizeClass,
-          "text-accent-contrast"
-        ),
+  const sizedIcon = isElementWithClassName(icon)
+    ? React.cloneElement(icon, {
+        className: twMerge(icon.props.className, iconSizeClass, "text-accent-contrast"),
       })
     : null;
 
