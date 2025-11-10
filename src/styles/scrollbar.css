@@ -5,10 +5,10 @@ body *::-webkit-scrollbar {
   background: none;
 }
 
-/* 스크롤바 오버레이 모드 (영역 차지하지 않음) */
-/* scrollbar-gutter: auto는 기본값으로 스크롤바가 영역을 차지하지 않도록 함 */
+/* 스크롤바 gutter 설정 */
+/* stable로 스크롤바 영역을 미리 정의해 두고 both-edges로 왼쪽과 오른쪽 다 차지하도록 합니다. */
 body * {
-  scrollbar-gutter: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 /* 썸 (Thumb): bevel-default 효과 */
