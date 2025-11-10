@@ -8,6 +8,7 @@ interface ScrollbarButtonProps {
   icon: ReactElement<LucideProps>;
   disabled?: boolean;
   className?: string;
+  "aria-label"?: string;
 }
 
 /**
@@ -20,17 +21,19 @@ interface ScrollbarButtonProps {
  * @param {ReactElement} icon - Lucide React 아이콘 컴포넌트
  * @param {boolean} [disabled=false] - 비활성화 상태
  * @param {string} [className] - 추가 Tailwind 클래스
+ * @param {string} [aria-label] - 접근성을 위한 버튼 설명
  * @returns {JSX.Element} 스크롤바 버튼 엘리먼트
  *
  * @example
  * ```tsx
- * <ScrollbarButton icon={<ChevronLeft size={10} />} />
+ * <ScrollbarButton icon={<ChevronLeft size={10} />} aria-label="왼쪽으로 스크롤" />
  * ```
  */
 export default function ScrollbarButton({
   icon,
   disabled = false,
   className,
+  "aria-label": ariaLabel,
   ...rest
 }: ScrollbarButtonProps) {
   return (
@@ -39,6 +42,7 @@ export default function ScrollbarButton({
       composition="iconOnly"
       state="neutral"
       disabled={disabled}
+      aria-label={ariaLabel}
       className={twMerge("h-4 w-4 p-0", className)}
       {...rest}
     >

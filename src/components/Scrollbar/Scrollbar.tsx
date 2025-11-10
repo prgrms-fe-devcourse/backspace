@@ -48,6 +48,7 @@ export default function Scrollbar({
       <ScrollbarButton
         icon={isHorizontal ? <ChevronLeft size={iconSize} /> : <ChevronUp size={iconSize} />}
         disabled={disabled}
+        aria-label={isHorizontal ? "왼쪽으로 스크롤" : "위로 스크롤"}
       />
 
       {/* 트랙 (thumb 포함) */}
@@ -59,6 +60,7 @@ export default function Scrollbar({
       <ScrollbarButton
         icon={isHorizontal ? <ChevronRight size={iconSize} /> : <ChevronDown size={iconSize} />}
         disabled={disabled}
+        aria-label={isHorizontal ? "오른쪽으로 스크롤" : "아래로 스크롤"}
       />
     </div>
   );

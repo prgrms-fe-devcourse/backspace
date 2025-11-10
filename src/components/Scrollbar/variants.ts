@@ -2,13 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 // 스크롤바 버튼
 export const scrollbarButton = cva(
-  [
-    "flex items-center justify-center",
-    "bevel-default",
-    "cursor-pointer",
-    "outline-none",
-    "transition-all",
-  ],
+  ["flex items-center justify-center", "bevel-default", "outline-none", "transition-all"],
   {
     variants: {
       direction: {
@@ -50,65 +44,62 @@ export const scrollbarTrack = cva(["flex", "relative", "flex-1"], {
 export type ScrollbarTrackVariantProps = VariantProps<typeof scrollbarTrack>;
 
 // 스크롤바 썸
-export const scrollbarThumb = cva(
-  ["bevel-default", "cursor-pointer", "transition-all", "relative"],
-  {
-    variants: {
-      direction: {
-        horizontal: "h-full",
-        vertical: "w-full",
-      },
-      size: {
-        sm: "",
-        md: "",
-        lg: "",
-      },
-      disabled: {
-        true: "disabled-base",
-        false: "",
-      },
+export const scrollbarThumb = cva(["bevel-default", "transition-all", "relative"], {
+  variants: {
+    direction: {
+      horizontal: "h-full",
+      vertical: "w-full",
     },
-    compoundVariants: [
-      // horizontal 방향일 때 size에 따른 width
-      {
-        direction: "horizontal",
-        size: "sm",
-        className: "w-10",
-      },
-      {
-        direction: "horizontal",
-        size: "md",
-        className: "w-[66px]",
-      },
-      {
-        direction: "horizontal",
-        size: "lg",
-        className: "w-25",
-      },
-      // vertical 방향일 때 size에 따른 height
-      {
-        direction: "vertical",
-        size: "sm",
-        className: "h-10",
-      },
-      {
-        direction: "vertical",
-        size: "md",
-        className: "h-[66px]",
-      },
-      {
-        direction: "vertical",
-        size: "lg",
-        className: "h-25",
-      },
-    ],
-    defaultVariants: {
+    size: {
+      sm: "",
+      md: "",
+      lg: "",
+    },
+    disabled: {
+      true: "disabled-base",
+      false: "",
+    },
+  },
+  compoundVariants: [
+    // horizontal 방향일 때 size에 따른 width
+    {
+      direction: "horizontal",
+      size: "sm",
+      className: "w-10",
+    },
+    {
       direction: "horizontal",
       size: "md",
-      disabled: false,
+      className: "w-[66px]",
     },
-  }
-);
+    {
+      direction: "horizontal",
+      size: "lg",
+      className: "w-25",
+    },
+    // vertical 방향일 때 size에 따른 height
+    {
+      direction: "vertical",
+      size: "sm",
+      className: "h-10",
+    },
+    {
+      direction: "vertical",
+      size: "md",
+      className: "h-[66px]",
+    },
+    {
+      direction: "vertical",
+      size: "lg",
+      className: "h-25",
+    },
+  ],
+  defaultVariants: {
+    direction: "horizontal",
+    size: "md",
+    disabled: false,
+  },
+});
 
 export type ScrollbarThumbVariantProps = VariantProps<typeof scrollbarThumb>;
 
