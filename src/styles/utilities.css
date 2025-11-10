@@ -18,16 +18,8 @@
     inset -3px -3px 0 0 var(--color-bevel-light-inner);
 }
 
-@utility bevel-error {
-  box-shadow:
-    inset 1.5px 1.5px 0 0 #e74545,
-    inset -1.5px -1.5px 0 0 var(--color-error),
-    inset 3px 3px 0 0 #9e2626,
-    inset -3px -3px 0 0 #8b2424;
-}
-
 @utility accent-gradient {
-  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-end) 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
 @utility disabled-base {
