@@ -31,7 +31,6 @@ export default function CheckBoxWrapper({
     <label
       htmlFor={id}
       className={twMerge(
-        "group",
         checkBoxWrapper({
           hasLabel: Boolean(label),
           isDisabled: disabled,
