@@ -34,15 +34,10 @@ export default function CheckBoxWrapper({
         checkBoxWrapper({
           hasLabel: Boolean(label),
           isDisabled: disabled,
-        }),
-        className
+        })
       )}
       {...rest}
     >
-      <Box isChecked={checked} isDisabled={disabled} />
-
-      {label && <span className="group-focus-within:focus-dotted">{label}</span>}
-
       <input
         id={id}
         type="checkbox"
@@ -51,6 +46,10 @@ export default function CheckBoxWrapper({
         disabled={disabled}
         onChange={(e) => onCheckedChange?.(e.target.checked)}
       />
+
+      <Box isChecked={checked} isDisabled={disabled} className={className} />
+
+      {label && <span className="group-focus-within:focus-dotted">{label}</span>}
     </label>
   );
 }
