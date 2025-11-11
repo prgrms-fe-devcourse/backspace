@@ -3,6 +3,7 @@ import { useId, type ComponentPropsWithoutRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface InputProps extends ComponentPropsWithoutRef<"input"> {
+  id?: string | undefined;
   error?: string | undefined;
 }
 
@@ -10,6 +11,10 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
  * 기본 Input 컴포넌트
  *
  * @component
+ *
+ *  @param {string} [id]
+ *   - input의 id 속성입니다.
+ *   - 외부 `<label htmlFor>`과 연결할 때 사용합니다.
  *
  * @param {string} [error]
  *   - 에러 메시지 문자열입니다. 값이 있으면 input에 에러 스타일이 적용되고 하단에 에러 메시지가 표시됩니다.
@@ -32,13 +37,14 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
  * />
  * ```
  */
-export default function Input({ error, className, ...props }: InputProps) {
+export default function Input({ id, error, className, ...props }: InputProps) {
   const errorId = useId();
 
   return (
     <div className="flex flex-col justify-center gap-1">
       <div className="relative">
         <input
+          id={id}
           className={twMerge(
             "bevel-pressed w-full px-2 py-1.5",
             "border-2 border-transparent outline-none",
@@ -52,6 +58,7 @@ export default function Input({ error, className, ...props }: InputProps) {
         {error && (
           <CircleAlert
             aria-hidden="true"
+            size={16}
             className="text-error pointer-events-none absolute top-1/2 right-2 -translate-y-1/2"
           />
         )}
