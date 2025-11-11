@@ -1,3 +1,9 @@
+import LoginComponent from "./LoginComponent";
+
 export default function LoginPage() {
-  return <h1>LoginPage Component</h1>;
+  return (
+    <div className="flex min-h-screen w-full items-center justify-center">
+      <LoginComponent />
+    </div>
+  );
 }
