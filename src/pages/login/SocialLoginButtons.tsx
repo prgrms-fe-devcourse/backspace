@@ -4,7 +4,7 @@ import Kakao from "@/assets/oauth/kakao.svg?react";
 
 export default function SocialLoginButtons() {
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-8">
       <button type="button" className="cursor-pointer">
         <Google />
       </button>
