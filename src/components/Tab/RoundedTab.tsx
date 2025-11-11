@@ -72,11 +72,9 @@ export default function RoundedTab({ children, className, selected, ...rest }: T
   return (
     <button
       type="button"
-      role="tab"
-      aria-selected={selected}
       className={twMerge(
         "relative inline-flex cursor-pointer items-center justify-center",
-        "min-w-0 shrink px-0 py-1 text-xs whitespace-nowrap",
+        "min-w-0 shrink px-0 py-1 text-xs",
         className
       )}
       {...rest}
@@ -90,7 +88,7 @@ export default function RoundedTab({ children, className, selected, ...rest }: T
         {/* 좌측 하이라이트 - 내부 */}
         <div
           className={twMerge(
-            "bg-bevel-light-outer absolute top-0.5 left-0 w-px",
+            "bg-bevel-light-inner absolute top-0.5 left-0 w-px",
             selected ? "-bottom-0.75" : "bottom-0"
           )}
         />
