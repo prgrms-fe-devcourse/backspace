@@ -41,16 +41,17 @@ export default function RoundedTab({ children, className, ...rest }: TabProps) {
       type="button"
       className={twMerge(
         "relative inline-flex cursor-pointer items-center justify-center",
+        // "pt-px pr-px pb-1.5 pl-px",
         "px-3 py-1.5 text-xs",
         "whitespace-nowrap",
-        "mr-0.5",
         "z-0",
+        // "overflow-hidden",
         className
       )}
       {...rest}
     >
       {/* 레이어 컨테이너 - 모든 레이어를 묶는 기준 컨테이너 */}
-      <div className="absolute inset-0">
+      <div className="absolute top-px right-px bottom-0 left-px">
         {/* 상단 하이라이트 - 내부 */}
         <div className="absolute top-0 right-0.25 left-0.25 h-px bg-[var(--color-bevel-light-inner)]" />
         {/* 상단 하이라이트 - 외부 */}
