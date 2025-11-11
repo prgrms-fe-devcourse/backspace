@@ -1,10 +1,22 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
-import { window } from "./variants";
-import type { WindowVariantProps } from "./variants";
+import { window, windowContents } from "./variants";
+import type { WindowContentsVariantProps, WindowVariantProps } from "./variants";
+import TitleBar from "../TitleBar/TitleBar";
 
-interface WindowProps extends React.ComponentPropsWithoutRef<"div">, WindowVariantProps {}
+interface WindowProps
+  extends React.ComponentPropsWithoutRef<"div">,
+    WindowVariantProps,
+    WindowContentsVariantProps {
+  titleIcon?: React.ReactNode;
+  titleText?: string;
+  titleSize?: "small" | "medium";
+  titleButtons?: "all" | "closeOnly" | null;
+  titleVisible?: boolean;
+  state?: "maximized" | "minimized" | "normal";
+  activeState?: "active" | "inactive";
+}
 
 /**
  * 공통 Window 컴포넌트
@@ -25,24 +37,42 @@ interface WindowProps extends React.ComponentPropsWithoutRef<"div">, WindowVaria
  */
 
 export default function Window({
-  size = "auto",
+  state = "normal",
+  activeState = "active",
   padding = "standard",
+  titleSize = "small",
+  titleIcon = null,
+  titleText = "",
+  titleButtons = "all",
+  titleVisible = true,
   className,
   children,
 }: WindowProps) {
   return (
-    <section>
-      <div
-        className={twMerge(
-          window({
-            size,
-            padding,
-          }),
-          className
-        )}
-      >
-        {children}
-      </div>
-    </section>
+    <div
+      className={twMerge("bevel-default flex flex-col", window({ state, activeState }), className)}
+    >
+      {titleVisible && (
+        <TitleBar
+          state={activeState}
+          size={titleSize}
+          icon={titleIcon}
+          text={titleText}
+          buttons={titleButtons}
+        />
+      )}
+      <section className="size-full">
+        <div
+          className={twMerge(
+            "size-full",
+            windowContents({
+              padding,
+            })
+          )}
+        >
+          {children}
+        </div>
+      </section>
+    </div>
   );
 }
