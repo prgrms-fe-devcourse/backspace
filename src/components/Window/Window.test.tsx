@@ -3,42 +3,61 @@ import Window from "./Window";
 export default function WindowTest() {
   return (
     <>
-      <Window>win</Window>
-      <Window size="maximized">max</Window>
-      <Window size="minimized">min</Window>
-      <Window size="auto">auto</Window>
-      <Window padding="full">full</Window>
-      <Window padding="standard">standard</Window>
-      <Window padding="extra">extra</Window>
+      <Window className="h-70 w-100">
+        <div className="flex size-full flex-col">
+          <button type="button">텍스트</button>
+          <button type="button">텍스트</button>
+          <button type="button">텍스트</button>
+          <button type="button">텍스트</button>
+        </div>
+      </Window>
+      <Window className="h-70 w-100" state="maximized">
+        max
+      </Window>
+      <Window className="h-70 w-100" state="minimized">
+        min
+      </Window>
+      <Window className="h-70 w-100" state="normal">
+        normal
+      </Window>
+      <Window className="h-70 w-100" padding="full">
+        full
+      </Window>
+      <Window className="h-70 w-100" padding="standard">
+        standard
+      </Window>
+      <Window className="h-70 w-100" padding="extra">
+        extra
+      </Window>
 
-      <Window size="maximized" padding="full">
+      <Window className="h-70 w-100" state="maximized" padding="full">
         max full
       </Window>
-      <Window size="maximized" padding="standard">
+      <Window className="h-70 w-100" state="maximized" padding="standard">
         max standard
       </Window>
-      <Window size="maximized" padding="extra">
+      <Window className="h-70 w-100" state="maximized" padding="extra">
         max extra
       </Window>
 
-      <Window size="minimized" padding="full">
+      <Window className="h-70 w-100" state="minimized" padding="full">
         min full
       </Window>
-      <Window size="minimized" padding="standard">
+      <Window className="h-70 w-100" state="minimized" padding="standard">
         min standard
       </Window>
-      <Window size="minimized" padding="full">
+      <Window className="h-70 w-100" state="minimized" padding="full">
         min full
       </Window>
 
-      <Window size="auto" padding="full">
-        auto full
+      <Window className="h-70 w-100" state="normal" padding="full">
+        normal full
       </Window>
-      <Window size="auto" padding="standard">
-        auto standard
+      <Window className="h-70 w-100" state="normal" padding="standard">
+        normal standard
       </Window>
-      <Window size="auto" padding="extra">
-        auto extra
+      <Window className="h-70 w-100" state="normal" padding="extra">
+        normal extra
       </Window>
     </>
   );

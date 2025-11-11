@@ -1,13 +1,25 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
-export const window = cva(["bevel-default flex"], {
+export const window = cva([], {
   variants: {
-    size: {
+    state: {
       maximized: "size-full",
       minimized: "size-0",
-      auto: "size-auto",
-      custom: "",
+      normal: "",
     },
+    activeState: {
+      active: "opacity-100",
+      inactive: "opacity-60",
+    },
+  },
+  defaultVariants: {
+    state: "normal",
+    activeState: "active",
+  },
+});
+
+export const windowContents = cva([], {
+  variants: {
     padding: {
       full: "p-0",
       standard: "p-4",
@@ -16,9 +28,9 @@ export const window = cva(["bevel-default flex"], {
     },
   },
   defaultVariants: {
-    size: "auto",
     padding: "full",
   },
 });
 
 export type WindowVariantProps = VariantProps<typeof window>;
+export type WindowContentsVariantProps = VariantProps<typeof windowContents>;
