@@ -1,0 +1,44 @@
+@utility scrollbar {
+  scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-track {
+    border: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bevel-default;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bevel-pressed;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: var(--color-surface);
+  }
+}
+
+@utility scrollbar-disabled {
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: var(--color-bevel-light-inner);
+  }
+
+  overflow: hidden;
+}

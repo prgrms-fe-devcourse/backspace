@@ -1,42 +1,59 @@
 @import "tailwindcss";
 @import "./fonts.css";
 @import "./utilities.css";
+@import "./scrollbar.css";
 
 @theme {
   --font-galmuri: "Galmuri9";
 
   --color-text-default: #2d2640;
+  --color-text-invert: #fcfcfd;
+
+  --color-surface: #f7f3ff;
+
+  --color-bevel-light-outer: #ffffff;
+  --color-bevel-light-inner: #fbf8ff;
+
+  --color-bevel-shadow-inner: #e5dbf9;
+  --color-bevel-shadow-outer: #c9bdef;
+
+  --color-primary: #b2aaeb;
+  --color-secondary: #aac1f8;
+  --color-accent: #ffb3d9;
+  --color-muted: #8e86c3;
+
   --color-error: #c93636;
+
   --opacity-disabled: 0.5;
 
-  --color-accent: #b2aaeb;
-  --color-accent-end: #aac1f8;
-  --color-accent-contrast: #fcfcfd;
-
-  --color-surface: #e9e6fd;
-
-  --color-bevel-light-outer: #f8f6ff;
-  --color-bevel-light-inner: #f2f1ff;
-  --color-bevel-shadow-inner: #a199c5;
-  --color-bevel-shadow-outer: #6b5f8a;
+  --scrollbar-size: 16px;
 }
 
 .dark {
   --color-text-default: #eae9ff;
-  --opacity-disabled: 0.55;
+  --color-text-invert: #1b1630;
 
   --color-surface: #3a3d5a;
 
-  --color-bevel-light-outer: #8388b5;
+  --color-bevel-light-outer: #6b6f9a;
   --color-bevel-light-inner: #5a5e8a;
+
   --color-bevel-shadow-inner: #2a2d47;
-  --color-bevel-shadow-outer: #141628;
+  --color-bevel-shadow-outer: #1a1d35;
+
+  --color-primary: #9088cc;
+  --color-secondary: #8aa5d9;
+  --color-accent: #e095bf;
+  --color-muted: #716aa3;
+
+  --color-error: #ff6b6b;
 }
 
 html,
 body {
   font-family: var(--font-galmuri);
   color: var(--color-text-default);
+  height: 100%;
 }
 
 body {
