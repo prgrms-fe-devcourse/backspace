@@ -74,7 +74,11 @@ export default [
   ...pluginQuery.configs["flat/recommended"],
   ...prettierConfig,
   {
-    name: "custom/import-resolver",
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
     settings: {
       "import-x/resolver": {
         typescript: {
@@ -87,20 +91,37 @@ export default [
         },
       },
     },
-  },
-  {
-    name: "custom/overrides",
     rules: {
       "react/react-in-jsx-scope": "off",
-      "react/require-default-props": "off",
       "react/jsx-uses-react": "off",
+      "react/require-default-props": "off",
+      "react/jsx-props-no-spreading": "off",
+      "react/function-component-definition": "off",
+      "react/jsx-no-useless-fragment": ["error", { allowExpressions: true }],
+
+      "react/prop-types": "off",
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": "off",
+
+      "no-plusplus": "off",
+      "no-param-reassign": ["error", { props: false }],
+      "consistent-return": "off",
+
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        {
+          assert: "either",
+          controlComponents: ["Input"],
+          depth: 3,
+        },
+      ],
+
       "import-x/extensions": "off",
       "import-x/prefer-default-export": "off",
+      "import-x/no-extraneous-dependencies": "off",
       "import-x/first": "error",
       "import-x/no-duplicates": "error",
-      "import-x/no-extraneous-dependencies": "off",
       "import-x/newline-after-import": ["error", { count: 1 }],
-
       "import-x/order": [
         "error",
         {
