@@ -12,6 +12,15 @@ interface TabProps extends React.ComponentPropsWithoutRef<"button"> {
  * 하단이 잘려있고 상단 모서리가 둥근 Windows 98 스타일 탭을 div 레이어를 쌓아서 구현했습니다.
  * bevel 효과를 위해 여러 개의 div 레이어를 절대 위치로 배치하여 3D 효과를 구현했습니다.
  *
+ * 반응형 동작
+ * - 화면이 줄어들면 탭 너비가 자동으로 축소됩니다 (`min-w-0 shrink`)
+ * - 긴 텍스트는 ellipsis(`...`)로 표시됩니다 (`text-ellipsis`)
+ * - 텍스트는 줄바꿈되지 않습니다 (`whitespace-nowrap`)
+ *
+ * selected 상태:
+ * - 하단에 surface 색의 3px 높이 줄이 추가되어 윈도우와 연결됩니다
+ * - 좌우 하이라이트와 그림자가 3px 아래로 확장됩니다
+ *
  * @component
  * @param {React.ReactNode} children - 탭에 표시할 내용 (텍스트, 아이콘 등)
  * @param {boolean} [selected=false] - 탭의 선택 상태. true일 때 하단에 surface 색 줄이 추가되고, 좌우 하이라이트/그림자가 3px 아래로 확장되어 윈도우와 연결됩니다.
@@ -46,9 +55,16 @@ interface TabProps extends React.ComponentPropsWithoutRef<"button"> {
  *     <RoundedTab selected>Tab 1</RoundedTab>
  *     <RoundedTab>Tab 2</RoundedTab>
  *   </div>
- *   <div className="bevel-default bg-[var(--color-surface)] p-4">
+ *   <div className="bevel-default bg-surface p-4">
  *     컨텐츠 영역입니다.
  *   </div>
+ * </div>
+ *
+ * // 긴 텍스트 탭 (자동으로 ellipsis 처리됨)
+ * <div className="flex items-end gap-0">
+ *   <RoundedTab>Short</RoundedTab>
+ *   <RoundedTab>Medium Tab</RoundedTab>
+ *   <RoundedTab>Super duper longer tab name that will be truncated</RoundedTab>
  * </div>
  * ```
  */
@@ -56,13 +72,11 @@ export default function RoundedTab({ children, className, selected, ...rest }: T
   return (
     <button
       type="button"
+      role="tab"
+      aria-selected={selected}
       className={twMerge(
         "relative inline-flex cursor-pointer items-center justify-center",
-        // "pt-px pr-px pb-1.5 pl-px",
-        "px-3 py-1.5 text-xs",
-        "whitespace-nowrap",
-        "z-0",
-        // "overflow-hidden",
+        "min-w-0 shrink px-0 py-1 text-xs whitespace-nowrap",
         className
       )}
       {...rest}
@@ -70,45 +84,47 @@ export default function RoundedTab({ children, className, selected, ...rest }: T
       {/* 레이어 컨테이너 - 모든 레이어를 묶는 기준 컨테이너 */}
       <div className="absolute top-px right-px bottom-0 left-px">
         {/* 상단 하이라이트 - 내부 */}
-        <div className="absolute top-0 right-0.25 left-0.25 h-px bg-[var(--color-bevel-light-inner)]" />
+        <div className="bg-bevel-light-inner absolute top-0 right-0.25 left-0.25 h-px" />
         {/* 상단 하이라이트 - 외부 */}
-        <div className="absolute top-[-1px] right-0.5 left-0.5 h-px bg-[var(--color-bevel-light-outer)]" />
+        <div className="bg-bevel-light-outer absolute -top-px right-0.5 left-0.5 h-px" />
         {/* 좌측 하이라이트 - 내부 */}
         <div
           className={twMerge(
-            "absolute top-0.5 left-0 w-px bg-[var(--color-bevel-light-outer)]",
-            selected ? "bottom-[-3px]" : "bottom-0"
+            "bg-bevel-light-outer absolute top-0.5 left-0 w-px",
+            selected ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 좌측 하이라이트 - 외부 */}
         <div
           className={twMerge(
-            "absolute top-0.5 -left-px w-px bg-[var(--color-bevel-light-outer)]",
-            selected ? "bottom-[-3px]" : "bottom-0"
+            "bg-bevel-light-outer absolute top-0.5 -left-px w-px",
+            selected ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 우측 그림자 - 내부 */}
         <div
           className={twMerge(
-            "absolute top-0.5 right-0 w-px bg-[var(--color-bevel-shadow-inner)]",
-            selected ? "bottom-[-3px]" : "bottom-0"
+            "bg-bevel-shadow-inner absolute top-0.5 right-0 w-px",
+            selected ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 우측 그림자 - 외부 */}
         <div
           className={twMerge(
-            "absolute top-0.5 -right-px w-px bg-[var(--color-bevel-shadow-outer)]",
-            selected ? "bottom-[-3px]" : "bottom-0"
+            "bg-bevel-shadow-outer absolute top-0.5 -right-px w-px",
+            selected ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 배경 - 메인 바디 */}
-        <div className="absolute top-px right-px bottom-0 left-px z-0 bg-[var(--color-surface)]" />
+        <div className="bg-surface absolute top-px right-px bottom-0 left-px z-0" />
       </div>
       {/* selected일 때 하단 surface 색 줄 - 윈도우와 배경을 잇기 위한 줄 */}
       {selected && (
-        <div className="absolute right-[2px] bottom-[-3px] left-[2px] h-[3px] bg-[var(--color-surface)]" />
+        <div className="bg-surface absolute right-0.5 -bottom-0.75 left-0.5 z-10 h-0.75" />
       )}
-      <span className="relative">{children}</span>
+      <span className="relative z-10 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+        {children}
+      </span>
     </button>
   );
 }
