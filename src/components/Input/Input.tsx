@@ -1,3 +1,4 @@
+import { CircleAlert } from "lucide-react";
 import { useId, type ComponentPropsWithoutRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -36,17 +37,25 @@ export default function Input({ error, className, ...props }: InputProps) {
 
   return (
     <div className="flex flex-col justify-center gap-1">
-      <input
-        className={twMerge(
-          "bevel-pressed px-2 py-1.5",
-          "border-2 border-transparent outline-none",
-          "focus:border-accent/80 disabled:disabled-base",
-          error && "bevel-error",
-          className
+      <div className="relative">
+        <input
+          className={twMerge(
+            "bevel-pressed w-full px-2 py-1.5",
+            "border-2 border-transparent outline-none",
+            "focus:border-primary/80 disabled:disabled-base",
+            error && "error-tint pr-8",
+            className
+          )}
+          {...props}
+          {...(error && { "aria-invalid": true, "aria-errormessage": errorId })}
+        />
+        {error && (
+          <CircleAlert
+            aria-hidden="true"
+            className="text-error pointer-events-none absolute top-1/2 right-2 -translate-y-1/2"
+          />
         )}
-        {...props}
-        {...(error && { "aria-invalid": true, "aria-errormessage": errorId })}
-      />
+      </div>
       {error && (
         <span id={errorId} className="text-error px-1 text-xs">
           {error}

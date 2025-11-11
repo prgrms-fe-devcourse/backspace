@@ -196,13 +196,12 @@ describe("Custom CheckBox", () => {
   // ------------------------------------------------------------------
   //
   describe("className 확장", () => {
-    test("box(div)에 className 확장 가능", () => {
-      render(<CheckBox className="custom-box" />);
+    test("className은 wrapper(label)에 적용된다", () => {
+      render(<CheckBox label="Agree" className="custom-class" />);
 
       const input = screen.getByRole("checkbox");
-      const box = input.nextElementSibling as HTMLElement;
-
-      expect(box).toHaveClass("custom-box");
+      const wrapper = input.closest("label")!;
+      expect(wrapper).toHaveClass("custom-class");
     });
   });
 });
