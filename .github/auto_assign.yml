@@ -1,0 +1,10 @@
+addAssignees: author
+addReviewers: true
+
+reviewers:
+  - RumPumpumpum
+  - sageherb
+  - stupilman
+  - suyeon1104
+
+numberOfReviewers: 0
