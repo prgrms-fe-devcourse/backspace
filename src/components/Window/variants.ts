@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 export const windowVariant = cva([], {
   variants: {
-    state: {
+    windowState: {
       maximized: "size-full",
       minimized: "size-0",
       normal: "",
@@ -13,7 +13,7 @@ export const windowVariant = cva([], {
     },
   },
   defaultVariants: {
-    state: "normal",
+    windowState: "normal",
     activeState: "active",
   },
 });
