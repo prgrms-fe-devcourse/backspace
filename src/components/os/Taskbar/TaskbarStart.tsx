@@ -1,7 +1,7 @@
 import { Grid } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
-import Button from "@/components/Button/Button";
+import Button from "@/components/common/Button/Button";
 
 import { taskbarStart } from "./variants";
 

@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
+import Button from "@/components/common/Button/Button";
+
 import { taskbarTab } from "./variants";
-import Button from "../Button/Button";
 
 interface TaskbarTabProps {
   icon: ReactNode;
