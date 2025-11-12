@@ -20,14 +20,9 @@ export default function LoginComponent() {
 
         <SocialLoginButtons />
 
-        <div className="flex w-full justify-center gap-5">
-          <Button composition="textOnly" type="button" size="lg" className="h-8 w-full">
-            OK
-          </Button>
-          <Button composition="textOnly" type="button" size="lg" className="h-8 w-full">
-            Cancel
-          </Button>
-        </div>
+        <Button composition="textOnly" type="button" size="lg" className="w-60">
+          Login
+        </Button>
         <button type="button" className="cursor-pointer text-xs underline opacity-40">
           Don’t have an account?
         </button>
