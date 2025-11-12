@@ -14,7 +14,7 @@ interface WindowProps
   titleSize?: "small" | "medium";
   titleButtons?: "all" | "closeOnly" | null;
   titleVisible?: boolean;
-  state?: "maximized" | "minimized" | "normal";
+  windowState?: "maximized" | "minimized" | "normal";
   activeState?: "active" | "inactive";
 }
 
@@ -22,11 +22,11 @@ interface WindowProps
  * 공통 Window 컴포넌트
  *
  * Windows 95 스타일의 윈도우를 구현한 컴포넌트입니다.
- * CVA 기반으로 크기(size)와 여백(padding)을 조합하여 다양한 스타일을 제공합니다.
+ * CVA 기반으로 window 상태(state)와 window Contents의 여백(padding)을 조합하여 다양한 스타일을 제공합니다.
  *
  * @component
  *
- * @param {"maximized" | "minimized" | "normal"} [size="normal"]
+ * @param {"maximized" | "minimized" | "normal"} [state="normal"]
  *   - Window 전체 크기를 조절합니다.
  *
  * @param {"full" | "standard" | "extra" | "custom"} [padding="full"]
@@ -37,7 +37,7 @@ interface WindowProps
  */
 
 export default function Window({
-  state = "normal",
+  windowState = "normal",
   activeState = "active",
   padding = "full",
   titleSize = "small",
@@ -52,7 +52,7 @@ export default function Window({
     <div
       className={twMerge(
         "bevel-default flex flex-col",
-        windowVariant({ state, activeState }),
+        windowVariant({ windowState, activeState }),
         className
       )}
     >
