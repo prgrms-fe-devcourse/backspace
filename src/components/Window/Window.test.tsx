@@ -46,8 +46,8 @@ export default function WindowTest() {
       <Window className="h-70 w-100" state="minimized" padding="standard">
         min standard
       </Window>
-      <Window className="h-70 w-100" state="minimized" padding="full">
-        min full
+      <Window className="h-70 w-100" state="minimized" padding="extra">
+        min extra
       </Window>
 
       <Window className="h-70 w-100" state="normal" padding="full">

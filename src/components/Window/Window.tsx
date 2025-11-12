@@ -1,7 +1,7 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
-import { window, windowContents } from "./variants";
+import { windowVariant, windowContents } from "./variants";
 import type { WindowContentsVariantProps, WindowVariantProps } from "./variants";
 import TitleBar from "../TitleBar/TitleBar";
 
@@ -26,10 +26,10 @@ interface WindowProps
  *
  * @component
  *
- * @param {"maximized" | "minimized" | "auto" | "custom"} [size="auto"]
+ * @param {"maximized" | "minimized" | "normal"} [size="normal"]
  *   - Window 전체 크기를 조절합니다.
  *
- * @param {"full" | "standard" | "extra" | "custom"} [padding="standard"]
+ * @param {"full" | "standard" | "extra" | "custom"} [padding="full"]
  *   - padding 크기를 조절합니다.
  *
  * @param {string} [className]
@@ -39,7 +39,7 @@ interface WindowProps
 export default function Window({
   state = "normal",
   activeState = "active",
-  padding = "standard",
+  padding = "full",
   titleSize = "small",
   titleIcon = null,
   titleText = "",
@@ -50,7 +50,11 @@ export default function Window({
 }: WindowProps) {
   return (
     <div
-      className={twMerge("bevel-default flex flex-col", window({ state, activeState }), className)}
+      className={twMerge(
+        "bevel-default flex flex-col",
+        windowVariant({ state, activeState }),
+        className
+      )}
     >
       {titleVisible && (
         <TitleBar

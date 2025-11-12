@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
-export const window = cva([], {
+export const windowVariant = cva([], {
   variants: {
     state: {
       maximized: "size-full",
@@ -32,5 +32,5 @@ export const windowContents = cva([], {
   },
 });
 
-export type WindowVariantProps = VariantProps<typeof window>;
+export type WindowVariantProps = VariantProps<typeof windowVariant>;
 export type WindowContentsVariantProps = VariantProps<typeof windowContents>;
