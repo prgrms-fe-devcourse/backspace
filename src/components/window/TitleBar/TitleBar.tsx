@@ -3,9 +3,10 @@ import { AppWindow, Minus, X } from "lucide-react";
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
+import Button from "@/components/common/Button/Button";
+
 import { titleBar } from "./variants";
 import type { TitleBarVariantProps } from "./variants";
-import Button from "../Button/Button";
 
 const sizeConfig = {
   small: {
