@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import Input from "@/components/Input/Input";
 
 export default function LoginForm() {
