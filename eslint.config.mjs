@@ -92,6 +92,8 @@ export default [
       },
     },
     rules: {
+      "no-console": ["warn", { allow: ["error"] }],
+
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/require-default-props": "off",
