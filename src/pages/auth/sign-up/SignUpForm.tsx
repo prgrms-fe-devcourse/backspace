@@ -1,6 +1,6 @@
 import Input from "@/components/Input/Input";
 
-export default function LoginForm() {
+export default function SignUpForm() {
   return (
     <div className="flex w-full flex-col gap-5">
       <div className="flex flex-col gap-1">

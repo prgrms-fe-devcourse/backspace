@@ -2,10 +2,10 @@ import Icon from "@/assets/logo/logo.svg?react";
 import Button from "@/components/Button/Button";
 import TitleBar from "@/components/TitleBar/TitleBar";
 
-import LoginForm from "./LoginForm";
+import SignInForm from "./SignInForm";
 import SocialLoginButtons from "./SocialLoginButtons";
 
-export default function LoginComponent() {
+export default function SignInComponent() {
   return (
     <div className="bevel-default flex h-full w-full flex-col p-1 md:h-150 md:w-110">
       <TitleBar size="medium" text="Welcome to Windows" className="pl-5" />
@@ -16,7 +16,7 @@ export default function LoginComponent() {
           <p className="text-center select-none">Enter your password to log on</p>
         </div>
 
-        <LoginForm />
+        <SignInForm />
 
         <SocialLoginButtons />
 
