@@ -228,11 +228,48 @@ export type Database = {
           },
         ];
       };
+      homepage_gallery_image_likes: {
+        Row: {
+          created_at: string;
+          id: string;
+          image_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          image_id?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          image_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "homepage_gallery_likes_image_id_fkey";
+            columns: ["image_id"];
+            isOneToOne: false;
+            referencedRelation: "homepage_gallery_images";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "homepage_gallery_likes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["auth_id"];
+          },
+        ];
+      };
       homepage_gallery_images: {
         Row: {
           created_at: string;
           homepage_id: string;
           id: string;
+          like_count: number;
           os_gallery_image_id: string;
           visibility: Database["public"]["Enums"]["visibility"] | null;
         };
@@ -240,6 +277,7 @@ export type Database = {
           created_at?: string;
           homepage_id: string;
           id?: string;
+          like_count?: number;
           os_gallery_image_id?: string;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
@@ -247,6 +285,7 @@ export type Database = {
           created_at?: string;
           homepage_id?: string;
           id?: string;
+          like_count?: number;
           os_gallery_image_id?: string;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
@@ -303,6 +342,45 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "homepage_posts";
             referencedColumns: ["id"];
+          },
+        ];
+      };
+      homepage_post_likes: {
+        Row: {
+          created_at: string;
+          id: string;
+          like_count: number;
+          post_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          like_count?: number;
+          post_id?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          like_count?: number;
+          post_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "homepage_post_likes_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "homepage_posts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "homepage_post_likes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["auth_id"];
           },
         ];
       };
