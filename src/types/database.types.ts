@@ -390,6 +390,7 @@ export type Database = {
           created_at: string;
           homepage_id: string;
           id: string;
+          title: string | null;
           visibility: Database["public"]["Enums"]["visibility"] | null;
         };
         Insert: {
@@ -397,6 +398,7 @@ export type Database = {
           created_at?: string;
           homepage_id: string;
           id?: string;
+          title?: string | null;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Update: {
@@ -404,6 +406,7 @@ export type Database = {
           created_at?: string;
           homepage_id?: string;
           id?: string;
+          title?: string | null;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Relationships: [
