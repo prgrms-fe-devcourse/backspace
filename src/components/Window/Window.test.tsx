@@ -11,13 +11,13 @@ export default function WindowTest() {
           <button type="button">텍스트</button>
         </div>
       </Window>
-      <Window className="h-70 w-100" state="maximized">
+      <Window className="h-70 w-100" windowState="maximized">
         max
       </Window>
-      <Window className="h-70 w-100" state="minimized">
+      <Window className="h-70 w-100" windowState="minimized">
         min
       </Window>
-      <Window className="h-70 w-100" state="normal">
+      <Window className="h-70 w-100" windowState="normal">
         normal
       </Window>
       <Window className="h-70 w-100" padding="full">
@@ -30,33 +30,33 @@ export default function WindowTest() {
         extra
       </Window>
 
-      <Window className="h-70 w-100" state="maximized" padding="full">
+      <Window className="h-70 w-100" windowState="maximized" padding="full">
         max full
       </Window>
-      <Window className="h-70 w-100" state="maximized" padding="standard">
+      <Window className="h-70 w-100" windowState="maximized" padding="standard">
         max standard
       </Window>
-      <Window className="h-70 w-100" state="maximized" padding="extra">
+      <Window className="h-70 w-100" windowState="maximized" padding="extra">
         max extra
       </Window>
 
-      <Window className="h-70 w-100" state="minimized" padding="full">
+      <Window className="h-70 w-100" windowState="minimized" padding="full">
         min full
       </Window>
-      <Window className="h-70 w-100" state="minimized" padding="standard">
+      <Window className="h-70 w-100" windowState="minimized" padding="standard">
         min standard
       </Window>
-      <Window className="h-70 w-100" state="minimized" padding="extra">
+      <Window className="h-70 w-100" windowState="minimized" padding="extra">
         min extra
       </Window>
 
-      <Window className="h-70 w-100" state="normal" padding="full">
+      <Window className="h-70 w-100" windowState="normal" padding="full">
         normal full
       </Window>
-      <Window className="h-70 w-100" state="normal" padding="standard">
+      <Window className="h-70 w-100" windowState="normal" padding="standard">
         normal standard
       </Window>
-      <Window className="h-70 w-100" state="normal" padding="extra">
+      <Window className="h-70 w-100" windowState="normal" padding="extra">
         normal extra
       </Window>
     </>
