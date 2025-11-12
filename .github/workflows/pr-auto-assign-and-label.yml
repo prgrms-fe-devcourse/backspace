@@ -1,7 +1,8 @@
 name: 🤖 Auto-assign & label PR
+
 on:
   pull_request:
-    types: [opened, edited, ready_for_review, reopened, synchronize]
+    types: [opened]
 
 permissions:
   pull-requests: write
@@ -11,62 +12,35 @@ jobs:
   auto:
     runs-on: ubuntu-latest
     steps:
-      - uses: kentaro-m/auto-assign-action@v1.2.5
+      - name: Auto assign author & reviewers
+        uses: kentaro-m/auto-assign-action@v1.2.5
         with:
           configuration-path: .github/auto_assign.yml
 
-      - name: Add "feature" label when title contains 'feat'
-        if: contains(github.event.pull_request.title, 'feat')
-        uses: actions-ecosystem/action-add-labels@v1
+      - name: Label by title keywords
+        uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            feature
-
-      - name: Add "fix" label when title contains 'fix'
-        if: contains(github.event.pull_request.title, 'fix')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            fix
-
-      - name: Add "chore" label when title contains 'chore'
-        if: contains(github.event.pull_request.title, 'chore')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            chore
-
-      - name: Add "refactor" label when title contains 'refactor'
-        if: contains(github.event.pull_request.title, 'refactor')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            refactor
-
-      - name: Add "docs" label when title contains 'docs'
-        if: contains(github.event.pull_request.title, 'refactor')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            docs
-
-      - name: Add "style" label when title contains 'style'
-        if: contains(github.event.pull_request.title, 'refactor')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            style
-
-      - name: Add "test" label when title contains 'test'
-        if: contains(github.event.pull_request.title, 'refactor')
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            test
+          script: |
+            const title = context.payload.pull_request.title.toLowerCase();
+            const rules = [
+              { re: /\bfeat|feature\b/,  label: 'feature'  },
+              { re: /\bfix\b/,           label: 'fix'      },
+              { re: /\bbug\b/,           label: 'bug'      },
+              { re: /\bstyle\b/,         label: 'style'    },
+              { re: /\brefactor\b/,      label: 'refactor' },
+              { re: /\bchore\b/,         label: 'chore'    },
+              { re: /\bdocs?\b/,         label: 'docs'     },
+              { re: /\btest(s)?\b/,      label: 'test'     },
+            ];
+            const matched = rules.filter(r => r.re.test(title)).map(r => r.label);
+            if (matched.length) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: matched
+              });
+              core.info(`Added labels: ${matched.join(', ')}`);
+            } else {
+              core.info('No matching labels from title.');
+            }
