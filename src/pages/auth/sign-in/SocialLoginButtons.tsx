@@ -10,10 +10,12 @@ export default function SocialLoginButtons() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
+
         options: {
           redirectTo: `${import.meta.env.VITE_URL}/`, // 로그인 후 리디렉션할 URL
         },
       });
+
       if (error) throw error;
     } catch (error) {
       console.error(error);
@@ -21,7 +23,7 @@ export default function SocialLoginButtons() {
   };
 
   return (
-    <div className="flex gap-8">
+    <div className="flex justify-center gap-8">
       <button
         type="button"
         className="cursor-pointer"
@@ -30,6 +32,7 @@ export default function SocialLoginButtons() {
       >
         <Google />
       </button>
+
       <button
         type="button"
         className="cursor-pointer"
@@ -38,6 +41,7 @@ export default function SocialLoginButtons() {
       >
         <Kakao />
       </button>
+
       <button
         type="button"
         className="cursor-pointer"
