@@ -8,8 +8,8 @@ import SignUpPage from "./pages/auth/sign-up/SignUpPage";
 export default function App() {
   return (
     <Routes>
-      <Route path="/signIn" element={<SignInPage />} />
-      <Route path="/signUp" element={<SignUpPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       {/* TODO: Auth 유저만 / 진입할 수 있도록 Auth Gate 구현 */}
       <Route path="/" element={<MockMainPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
