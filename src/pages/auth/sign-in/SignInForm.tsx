@@ -1,12 +1,60 @@
-import Button from "@/components/Button/Button";
-import Input from "@/components/Input/Input";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { z } from "zod";
+
+import Button from "@/components/common/Button/Button";
+import Input from "@/components/common/Input/Input";
+import supabase from "@/utils/supabase";
 
 import SocialLoginButtons from "./SocialLoginButtons";
 
+const SignInSchema = z.object({
+  email: z.email("올바른 이메일 형식을 입력해주세요."),
+  password: z.string().min(6, "비밀번호를 6자 이상 입력해주세요."),
+});
+
 export default function SignInForm() {
-  const handleSubmit = (event: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // handle form submission here
+    setError(null);
+
+    const result = SignInSchema.safeParse({ email, password });
+
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
+    const { error: signError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signError) {
+      const msg = signError.message;
+
+      if (msg.includes("Invalid login")) {
+        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      } else if (msg.includes("rate")) {
+        setError("너무 많은 시도가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        setError("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+
+      return;
+    }
+
+    navigate("/");
+  };
+
+  const handleGoToSignUp = () => {
+    navigate("/signUp");
   };
 
   return (
@@ -16,7 +64,7 @@ export default function SignInForm() {
           Email:
         </label>
 
-        <Input id="email" />
+        <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
 
       <div className="flex w-full flex-col gap-1">
@@ -24,8 +72,15 @@ export default function SignInForm() {
           Password:
         </label>
 
-        <Input id="password" type="password" />
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
+
+      <div className="text-accent h-5 w-full text-center text-sm">{error && <p>{error}</p>}</div>
 
       <SocialLoginButtons />
 
@@ -33,7 +88,11 @@ export default function SignInForm() {
         Login
       </Button>
 
-      <button type="button" className="cursor-pointer text-xs underline opacity-40">
+      <button
+        type="button"
+        className="cursor-pointer text-xs underline opacity-40"
+        onClick={handleGoToSignUp}
+      >
         Don’t have an account?
       </button>
     </form>
