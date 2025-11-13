@@ -2,7 +2,8 @@ import { twMerge } from "tailwind-merge";
 
 interface TabProps extends React.ComponentPropsWithoutRef<"button"> {
   children: React.ReactNode;
-  selected?: boolean;
+  isActive?: boolean;
+  onClick?: () => void;
 }
 
 /**
@@ -68,7 +69,7 @@ interface TabProps extends React.ComponentPropsWithoutRef<"button"> {
  * </div>
  * ```
  */
-export default function RoundedTab({ children, className, selected, ...rest }: TabProps) {
+export default function RoundedTab({ children, onClick, className, isActive, ...rest }: TabProps) {
   return (
     <button
       type="button"
@@ -82,45 +83,45 @@ export default function RoundedTab({ children, className, selected, ...rest }: T
       {/* 레이어 컨테이너 - 모든 레이어를 묶는 기준 컨테이너 */}
       <div className="absolute top-px right-px bottom-0 left-px">
         {/* 상단 하이라이트 - 내부 */}
-        <div className="bg-bevel-light-inner absolute top-0 right-0.25 left-0.25 h-px" />
+        <div className="bg-bevel-light-inner absolute top-0 right-px left-px h-px" />
         {/* 상단 하이라이트 - 외부 */}
         <div className="bg-bevel-light-outer absolute -top-px right-0.5 left-0.5 h-px" />
         {/* 좌측 하이라이트 - 내부 */}
         <div
           className={twMerge(
             "bg-bevel-light-inner absolute top-0.5 left-0 w-px",
-            selected ? "-bottom-0.75" : "bottom-0"
+            isActive ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 좌측 하이라이트 - 외부 */}
         <div
           className={twMerge(
             "bg-bevel-light-outer absolute top-0.5 -left-px w-px",
-            selected ? "-bottom-0.75" : "bottom-0"
+            isActive ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 우측 그림자 - 내부 */}
         <div
           className={twMerge(
             "bg-bevel-shadow-inner absolute top-0.5 right-0 w-px",
-            selected ? "-bottom-0.75" : "bottom-0"
+            isActive ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 우측 그림자 - 외부 */}
         <div
           className={twMerge(
             "bg-bevel-shadow-outer absolute top-0.5 -right-px w-px",
-            selected ? "-bottom-0.75" : "bottom-0"
+            isActive ? "-bottom-0.75" : "bottom-0"
           )}
         />
         {/* 배경 - 메인 바디 */}
         <div className="bg-surface absolute top-px right-px bottom-0 left-px z-0" />
       </div>
-      {/* selected일 때 하단 surface 색 줄 - 윈도우와 배경을 잇기 위한 줄 */}
-      {selected && (
+      {/* isActive일 때 하단 surface 색 줄 - 윈도우와 배경을 잇기 위한 줄 */}
+      {isActive && (
         <div className="bg-surface absolute right-0.5 -bottom-0.75 left-0.5 z-10 h-0.75" />
       )}
-      <span className="relative z-10 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+      <span className="relative min-w-0 overflow-hidden px-2 text-ellipsis whitespace-nowrap">
         {children}
       </span>
     </button>

@@ -1,9 +1,8 @@
 import { Routes, Route, Navigate } from "react-router";
 
+import SignInPage from "@/pages/auth/sign-in/SignInPage";
+import SignUpPage from "@/pages/auth/sign-up/SignUpPage";
 import MockMainPage from "@/pages/MockMainPage";
-
-import SignInPage from "./pages/auth/sign-in/SignInPage";
-import SignUpPage from "./pages/auth/sign-up/SignUpPage";
 
 export default function App() {
   return (
