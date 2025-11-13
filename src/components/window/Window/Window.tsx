@@ -1,82 +1,44 @@
-import React from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import type { RefObject } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { windowVariant, windowContents } from "./variants";
-import type { WindowContentsVariantProps, WindowVariantProps } from "./variants";
-import TitleBar from "../TitleBar/TitleBar";
+import TitleBar, { type TitleBarProps } from "../TitleBar/TitleBar";
 
-interface WindowProps
-  extends React.ComponentPropsWithoutRef<"div">,
-    WindowVariantProps,
-    WindowContentsVariantProps {
-  titleIcon?: React.ReactNode;
-  titleText?: string;
-  titleSize?: "small" | "medium";
-  titleButtons?: "all" | "closeOnly" | null;
-  titleVisible?: boolean;
-  windowState?: "maximized" | "minimized" | "normal";
-  activeState?: "active" | "inactive";
+interface WindowProps extends Dialog.DialogProps, TitleBarProps {
+  ref: RefObject<HTMLElement | null>;
+  description?: string | undefined;
 }
 
-/**
- * 공통 Window 컴포넌트
- *
- * Windows 95 스타일의 윈도우를 구현한 컴포넌트입니다.
- * CVA 기반으로 window 상태(state)와 window Contents의 여백(padding)을 조합하여 다양한 스타일을 제공합니다.
- *
- * @component
- *
- * @param {"maximized" | "minimized" | "normal"} [state="normal"]
- *   - Window 전체 크기를 조절합니다.
- *
- * @param {"full" | "standard" | "extra" | "custom"} [padding="full"]
- *   - padding 크기를 조절합니다.
- *
- * @param {string} [className]
- *   - 추가 Tailwind 클래스를 전달하여 Window의 스타일을 오버라이드할 수 있습니다.
- */
-
 export default function Window({
-  windowState = "normal",
-  activeState = "active",
-  padding = "full",
-  titleSize = "small",
-  titleIcon = null,
-  titleText = "",
-  titleButtons = "all",
-  titleVisible = true,
-  className,
+  open,
+  buttons,
+  onClose,
+  title,
+  description,
   children,
+  ref,
 }: WindowProps) {
   return (
-    <div
-      className={twMerge(
-        "bevel-default flex flex-col",
-        windowVariant({ windowState, activeState }),
-        className
-      )}
-    >
-      {titleVisible && (
-        <TitleBar
-          state={activeState}
-          size={titleSize}
-          icon={titleIcon}
-          text={titleText}
-          buttons={titleButtons}
-        />
-      )}
-      <section className="size-full">
-        <div
-          className={twMerge(
-            "size-full",
-            windowContents({
-              padding,
-            })
-          )}
-        >
-          {children}
-        </div>
-      </section>
-    </div>
+    <Dialog.Root defaultOpen open={open} modal={false}>
+      <Dialog.Portal container={ref.current}>
+        <Dialog.Content onInteractOutside={(e) => e.preventDefault()} asChild>
+          <section
+            role="application"
+            className={twMerge(
+              "bevel-default absolute inline-flex h-fit w-fit flex-col p-[3px] focus:outline-none",
+              // TODO: 가변 사이즈 변경
+              "h-[500px] w-[600px]",
+              // TODO: 드래그 시 변경
+              "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            )}
+          >
+            <Dialog.Title className="sr-only">{title}</Dialog.Title>
+            <Dialog.Description className="sr-only">{description}</Dialog.Description>
+            <TitleBar buttons={buttons} onClose={onClose} />
+            {children}
+          </section>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
