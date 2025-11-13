@@ -117,6 +117,7 @@ export default [
         },
       ],
 
+      "import-x/no-unresolved": "off",
       "import-x/extensions": "off",
       "import-x/prefer-default-export": "off",
       "import-x/no-extraneous-dependencies": "off",
