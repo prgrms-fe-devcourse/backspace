@@ -90,14 +90,14 @@ export default function SignUpForm() {
   };
 
   const handleCancel = () => {
-    navigate("/signIn");
+    navigate("/signin");
   };
 
   return (
     <form onSubmit={handleSignUp} className="flex w-full flex-col items-center gap-5">
       <div className="flex w-full flex-col gap-1">
         <label htmlFor="username" className="select-none">
-          UserName:
+          User Name:
         </label>
 
         <Input
