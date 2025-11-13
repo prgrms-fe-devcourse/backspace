@@ -23,7 +23,6 @@ export default function Window({
       <Dialog.Portal container={ref.current}>
         <Dialog.Content onInteractOutside={(e) => e.preventDefault()} asChild>
           <section
-            role="application"
             className={twMerge(
               "bevel-default absolute inline-flex h-fit w-fit flex-col p-[3px] focus:outline-none",
               // TODO: 가변 사이즈 변경
