@@ -33,8 +33,8 @@ export default function TaskbarSystemTray({ className, ...rest }: TaskbarSystemT
     };
   }, []);
 
-  const formattedTime = currentTime.format("HH:mm");
-  const isoTime = currentTime.format("YYYY-MM-DDTHH:mm:ssZ");
+  const formattedTime = currentTime.format("h:mm A");
+  const isoTime = currentTime.toISOString();
 
   return (
     <div className={twMerge(taskbarSystemTray, className)} {...rest}>
