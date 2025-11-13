@@ -7,19 +7,15 @@ type AuthProvider = "google" | "github" | "kakao";
 
 export default function SocialLoginButtons() {
   const handleOAuthLogin = async (provider: AuthProvider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
 
-        options: {
-          redirectTo: `${import.meta.env.VITE_URL}/`, // 로그인 후 리디렉션할 URL
-        },
-      });
+      options: {
+        redirectTo: `${import.meta.env.VITE_URL}/`, // 로그인 후 리디렉션할 URL
+      },
+    });
 
-      if (error) throw error;
-    } catch (error) {
-      console.error(error);
-    }
+    if (error) throw error;
   };
 
   return (
