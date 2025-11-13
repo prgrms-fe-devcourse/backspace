@@ -11,7 +11,7 @@ interface WindowInfo {
   id: string;
   /** Taskbar에 표시되는 제목 */
   title: string;
-  /** !선택적입니다! 제목 옆에 표시되는 아이콘 (ReactNode) */
+  /** 제목 옆에 선택적으로 표시되는 아이콘 (ReactNode) */
   icon?: ReactNode;
 }
 
@@ -33,7 +33,7 @@ interface WindowStore {
   removeWindow: (id: string) => void;
 
   /**
-   * focus중인 Window를 설정합니다. Window ID가 존재하지 않으면 동작하지 않습니다
+   * focus 중인 Window를 설정합니다. Window ID가 존재하지 않으면 동작하지 않습니다
    * @param id - Focus할 Window의 ID
    */
   focusWindow: (id: string) => void;
@@ -57,7 +57,11 @@ export const useWindowStore = create<WindowStore>()(
     // Window 제거 (Taskbar에서 탭 제거)
     removeWindow: (id) =>
       set((state) => {
-        state.windows = state.windows.filter((w) => w.id !== id);
+        const index = state.windows.findIndex((w) => w.id === id);
+        if (index !== -1) {
+          state.windows.splice(index, 1);
+        }
+
         // 제거된 window가 active였으면 activeWindowId를 undefined로 설정
         if (state.activeWindowId === id) {
           state.activeWindowId = undefined;
