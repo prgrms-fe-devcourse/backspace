@@ -17,64 +17,65 @@ interface WindowInfo {
 
 interface WindowStore {
   windows: WindowInfo[];
-  activeWindowId: string | undefined;
+  focusedWindowId: string | null;
 
   /**
    * Store에 새로운 Window를 추가하고 focus 상태를 설정합니다
    * @param window - 추가할 Window 정보
    */
-  addWindow: (window: WindowInfo) => void;
+  runWindow: (window: WindowInfo) => void;
 
   /**
-   * Store에서 Window를 제거합니다. 제거된 Window가 active였을 경우,
-   * activeWindowId를 undefined로 설정합니다
+   * Store에서 Window를 제거합니다. 제거된 Window가 focus였을 경우,
+   * focusedWindowId를 undefined로 설정합니다.
+   * 다른 Window로 자동 focus를 옮기지 않습니다 (사용자가 직접 선택하도록).
    * @param id - 제거할 Window의 ID
    */
-  removeWindow: (id: string) => void;
+  closeWindow: (id: string) => void;
 
   /**
    * focus 중인 Window를 설정합니다. Window ID가 존재하지 않으면 동작하지 않습니다
    * @param id - Focus할 Window의 ID
    */
-  focusWindow: (id: string) => void;
+  setFocusWindow: (id: string) => void;
 }
 
 export const useWindowStore = create<WindowStore>()(
   immer((set) => ({
     windows: [],
-    activeWindowId: undefined,
+    focusedWindowId: null,
 
     // Window 등록 (Taskbar 맨 뒤에 탭 추가)
-    addWindow: (window) =>
+    runWindow: (window) =>
       set((state) => {
         const exists = state.windows.some((w) => w.id === window.id);
         if (!exists) {
           state.windows.push(window);
-          state.activeWindowId = window.id; // 새로 생성된 window를 자동으로 focus
+          state.focusedWindowId = window.id; // 새로 생성된 window를 자동으로 focus
         }
       }),
 
     // Window 제거 (Taskbar에서 탭 제거)
-    removeWindow: (id) =>
+    closeWindow: (id) =>
       set((state) => {
         const index = state.windows.findIndex((w) => w.id === id);
         if (index !== -1) {
           state.windows.splice(index, 1);
-        }
-
-        // 제거된 window가 active였으면 activeWindowId를 undefined로 설정
-        if (state.activeWindowId === id) {
-          state.activeWindowId = undefined;
+          // 제거된 window가 focused였으면 focusedWindowId를 undefined로 설정
+          // 다른 window로 자동 focus를 옮기지 않음 (사용자가 직접 선택하도록)
+          if (state.focusedWindowId === id) {
+            state.focusedWindowId = null;
+          }
         }
       }),
 
     // Window Focus (Taskbar 탭도 focus)
-    focusWindow: (id) =>
+    setFocusWindow: (id) =>
       set((state) => {
         // window가 존재하는지 확인
         const window = state.windows.find((w) => w.id === id);
         if (window) {
-          state.activeWindowId = id;
+          state.focusedWindowId = id;
         }
       }),
   }))
