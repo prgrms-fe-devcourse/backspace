@@ -21,10 +21,11 @@ const sizeConfig = {
   },
 } as const;
 
-interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
+export interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
   icon?: React.ReactNode;
   text?: string;
   buttons?: "all" | "closeOnly" | null;
+  onClose?: () => void;
 }
 
 function isElementWithClassName(
@@ -97,6 +98,7 @@ export default function TitleBar({
   icon,
   text,
   buttons = null,
+  onClose,
   className,
   ...rest
 }: TitleBarProps) {
@@ -146,7 +148,12 @@ export default function TitleBar({
             </>
           )}
 
-          <Button composition="iconOnly" className={buttonSizeClass} aria-label="Close window">
+          <Button
+            onClick={onClose}
+            composition="iconOnly"
+            className={buttonSizeClass}
+            aria-label="Close window"
+          >
             <X className={iconClassName} strokeWidth={2} />
           </Button>
         </div>
