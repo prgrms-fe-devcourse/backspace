@@ -1,5 +1,7 @@
 import { MessageCircle } from "lucide-react";
 
+import Button from "../Button/Button";
+
 export default function MainPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
@@ -22,12 +24,13 @@ export default function MainPage() {
           </div>
 
           {/* 친구 신청 버튼 */}
-          <button
+          <Button
             type="button"
+            size="lg"
             className="mt-6 w-[180px] rounded-md border border-[#bfaee9] bg-[#f3edff] py-2 text-[#3f3570] shadow-[3px_3px_0_#b9a8e3] transition hover:bg-[#e9e0ff]"
           >
             ☆ 친구 신청
-          </button>
+          </Button>
         </div>
 
         {/* 오른쪽 콘텐츠 */}
@@ -36,12 +39,12 @@ export default function MainPage() {
           <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
             <div className="mb-3 flex items-center justify-between">
               <p className="font-semibold text-[#3d3462]">사진첩</p>
-              <button
+              <Button
                 type="button"
                 className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
               >
                 더보기
-              </button>
+              </Button>
             </div>
 
             {/* 2행 4열 사진칸 */}
@@ -72,12 +75,12 @@ export default function MainPage() {
           <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
             <div className="mb-2 flex items-center justify-between">
               <p className="font-semibold text-[#3d3462]">최근 게시물</p>
-              <button
+              <Button
                 type="button"
                 className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
               >
                 더보기
-              </button>
+              </Button>
             </div>
 
             <ul className="text-sm text-[#3d3462]">
@@ -88,7 +91,7 @@ export default function MainPage() {
               ].map((post) => (
                 <li
                   key={post.id}
-                  className="flex items-center justify-between border-b border-[#d7ccef] py-2 last:border-0"
+                  className="flex items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
                 >
                   <span>{post.text}</span>
                   <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
