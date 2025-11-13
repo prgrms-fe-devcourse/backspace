@@ -9,7 +9,13 @@ import supabase from "@/utils/supabase";
 const User = z.object({
   username: z.string().min(2, "유저명은 최소 2자 이상 입력해주세요."),
   email: z.email("올바른 이메일 형식을 입력해주세요."),
-  password: z.string().min(6, "비밀번호는 최소 6자 이상이어야 합니다."),
+  password: z
+    .string()
+    .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
+    .regex(/[A-Z]/, "대문자가 최소 1개 포함되어야 합니다.")
+    .regex(/[a-z]/, "소문자가 최소 1개 포함되어야 합니다.")
+    .regex(/[0-9]/, "숫자가 최소 1개 포함되어야 합니다.")
+    .regex(/[^A-Za-z0-9]/, "특수문자가 최소 1개 포함되어야 합니다."),
 });
 
 export default function SignUpForm() {
@@ -22,15 +28,26 @@ export default function SignUpForm() {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{
+    username?: string;
+    email?: string;
+    password?: string;
+  }>({});
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    setFieldErrors({});
 
     const result = User.safeParse(formData);
 
     if (!result.success) {
-      setErrorMessage(result.error.issues[0].message);
+      const errors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const key = issue.path[0];
+        if (typeof key === "string") errors[key] = issue.message;
+      });
+      setFieldErrors(errors);
       return;
     }
 
@@ -45,18 +62,20 @@ export default function SignUpForm() {
     });
 
     if (error) {
-      const msg = error.message;
+      console.error("Supabase SignUp Error:", error);
 
-      if (msg.includes("registered")) {
-        setErrorMessage("이미 가입된 이메일입니다.");
-      } else if (msg.includes("Password")) {
-        setErrorMessage("비밀번호는 최소 6자 이상이어야 합니다.");
-      } else if (msg.includes("rate")) {
-        setErrorMessage("잠시 후 다시 시도해주세요.");
-      } else if (msg.includes("validate")) {
-        setErrorMessage("올바른 이메일 주소를 입력해주세요.");
-      } else {
-        setErrorMessage("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+      switch (error.code) {
+        case "user_already_exists":
+          setErrorMessage("이미 가입된 이메일입니다.");
+          break;
+
+        case "over_request_rate_limit":
+        case "over_email_send_rate_limit":
+          setErrorMessage("요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+          break;
+
+        default:
+          setErrorMessage("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
 
       return;
@@ -69,6 +88,7 @@ export default function SignUpForm() {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
+
   const handleCancel = () => {
     navigate("/signIn");
   };
@@ -80,7 +100,12 @@ export default function SignUpForm() {
           UserName:
         </label>
 
-        <Input id="username" value={formData.username} onChange={handleChange} />
+        <Input
+          id="username"
+          value={formData.username}
+          onChange={handleChange}
+          error={fieldErrors.username}
+        />
       </div>
 
       <div className="flex w-full flex-col gap-1">
@@ -88,7 +113,12 @@ export default function SignUpForm() {
           Email:
         </label>
 
-        <Input type="email" id="email" value={formData.email} onChange={handleChange} />
+        <Input
+          id="email"
+          value={formData.email}
+          onChange={handleChange}
+          error={fieldErrors.email}
+        />
       </div>
 
       <div className="flex w-full flex-col gap-1">
@@ -96,12 +126,16 @@ export default function SignUpForm() {
           Password:
         </label>
 
-        <Input id="password" type="password" value={formData.password} onChange={handleChange} />
+        <Input
+          id="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          error={fieldErrors.password}
+        />
       </div>
 
-      <div className="text-accent h-5 w-full text-center text-sm">
-        {errorMessage && <p>{errorMessage}</p>}
-      </div>
+      {errorMessage && <p className="text-accent">{errorMessage}</p>}
 
       <div className="flex w-full justify-center gap-5">
         <Button composition="textOnly" type="submit" size="lg" className="h-8 w-full">

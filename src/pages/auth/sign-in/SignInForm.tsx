@@ -10,7 +10,7 @@ import SocialLoginButtons from "./SocialLoginButtons";
 
 const SignInSchema = z.object({
   email: z.email("올바른 이메일 형식을 입력해주세요."),
-  password: z.string().min(6, "비밀번호를 6자 이상 입력해주세요."),
+  password: z.string().min(8, "비밀번호를 8자 이상 입력해주세요."),
 });
 
 export default function SignInForm() {
@@ -19,6 +19,7 @@ export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -26,8 +27,19 @@ export default function SignInForm() {
 
     const result = SignInSchema.safeParse({ email, password });
 
+    setFieldErrors({ email: "", password: "" });
+
     if (!result.success) {
-      setError(result.error.issues[0].message);
+      const zodErrors = { email: "", password: "" };
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0];
+        if (field === "email" || field === "password") {
+          zodErrors[field] = issue.message;
+        }
+      });
+
+      setFieldErrors(zodErrors);
       return;
     }
 
@@ -37,14 +49,19 @@ export default function SignInForm() {
     });
 
     if (signError) {
-      const msg = signError.message;
+      console.error("Supabase SignIn Error:", signError);
 
-      if (msg.includes("Invalid login")) {
-        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
-      } else if (msg.includes("rate")) {
-        setError("너무 많은 시도가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      } else {
-        setError("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+      switch (signError.code) {
+        case "invalid_credentials":
+          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+          break;
+
+        case "over_request_rate_limit":
+          setError("너무 많은 시도가 발생했습니다. 잠시 후 다시 시도해주세요.");
+          break;
+
+        default:
+          setError("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
 
       return;
@@ -64,7 +81,12 @@ export default function SignInForm() {
           Email:
         </label>
 
-        <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={fieldErrors.email}
+        />
       </div>
 
       <div className="flex w-full flex-col gap-1">
@@ -77,10 +99,11 @@ export default function SignInForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={fieldErrors.password}
         />
       </div>
 
-      <div className="text-accent h-5 w-full text-center text-sm">{error && <p>{error}</p>}</div>
+      {error && <p className="text-accent">{error}</p>}
 
       <SocialLoginButtons />
 
