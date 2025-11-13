@@ -24,12 +24,29 @@ export default function TaskbarSystemTray({ className, ...rest }: TaskbarSystemT
   const [currentTime, setCurrentTime] = useState(dayjs());
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const updateTime = () => {
       setCurrentTime(dayjs());
-    }, 1000);
+    };
+
+    // 즉시 한 번 업데이트
+    updateTime();
+
+    // 다음 분 경계에 맞춰서 1분 간격으로 갱신
+    const now = dayjs();
+    const msUntilNextMinute = (60 - now.second()) * 1000 - now.millisecond();
+
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
+    const timeoutId = setTimeout(() => {
+      updateTime();
+      intervalId = setInterval(updateTime, 60000);
+    }, msUntilNextMinute);
 
     return () => {
-      clearInterval(timer);
+      clearTimeout(timeoutId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
   }, []);
 
