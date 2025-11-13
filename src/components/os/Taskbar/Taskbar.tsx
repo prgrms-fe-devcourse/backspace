@@ -1,20 +1,23 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
+import { useWindowStore } from "@/stores/useWindowStore";
+
 import TaskbarStart from "./TaskbarStart";
 import TaskbarSystemTray from "./TaskbarSystemTray";
+import TaskbarTab from "./TaskbarTab";
 import { taskbar } from "./variants";
 
 export type TaskbarConfig = "default" | "noStartButton" | "noSystemTray" | "minimal";
 
 type TaskbarProps = React.ComponentPropsWithoutRef<"nav"> & {
-  config: TaskbarConfig;
-  children: React.ReactNode;
+  config?: TaskbarConfig;
 };
 
 /**
  * Taskbar 컴포넌트
  *
+ * Zustand와 연동되어 Window Store의 windows를 구독하여 자동으로 탭을 생성합니다.
  * Start 버튼, Tab 버튼들, 시스템 트레이를 포함합니다.
  * config prop으로 표시할 요소를 제어할 수 있습니다.
  * 네비게이션 역할을 하므로 `<nav>` 엘리먼트를 사용합니다.
@@ -26,47 +29,52 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"nav"> & {
  *   - "noSystemTray": 시스템 트레이 없음
  *   - "minimal": Start 버튼과 시스템 트레이 모두 없음 (Tab만 표시)
  * @param {string} [className] - 추가 Tailwind 클래스
- * @param {React.ReactNode} children - TaskbarTab 컴포넌트들
  * @returns {JSX.Element} Nav 엘리먼트
  *
  * @example
  * ```tsx
  * // 기본 구성 (모두 표시)
- * <Taskbar>
- *   <TaskbarTab icon={<Folder size={14} />} text="My Computer" isActive />
- * </Taskbar>
+ * <Taskbar />
  *
  * // Start 버튼 없음
- * <Taskbar config="noStartButton">
- *   <TaskbarTab icon={<Folder size={14} />} text="My Computer" />
- * </Taskbar>
+ * <Taskbar config="noStartButton" />
  *
  * // 시스템 트레이 없음
- * <Taskbar config="noSystemTray">
- *   <TaskbarTab icon={<Folder size={14} />} text="My Computer" />
- * </Taskbar>
+ * <Taskbar config="noSystemTray" />
  *
  * // 최소 구성 (Tab만 표시)
- * <Taskbar config="minimal">
- *   <TaskbarTab icon={<Folder size={14} />} text="My Computer" />
- * </Taskbar>
+ * <Taskbar config="minimal" />
  * ```
  */
-export default function Taskbar({
-  className,
-  config = "default",
-  children,
-  ...rest
-}: TaskbarProps) {
+export default function Taskbar({ className, config = "default", ...rest }: TaskbarProps) {
+  // Taskbar 탭으로 노출할 전체 창 목록
+  const windows = useWindowStore((state) => state.windows);
+  // 현재 포커스된 창의 카테고리
+  const focusedWindowCategory = useWindowStore((state) => state.focusedWindowCategory);
+  // 특정 창으로 포커스를 이동시키는 액션
+  const setFocusWindow = useWindowStore((state) => state.setFocusWindow);
+
   const showStart = config === "default" || config === "noSystemTray";
   const showSystemTray = config === "default" || config === "noStartButton";
+
+  const handleTabClick = (category: string) => {
+    // Taskbar 탭 클릭 시 해당 window로 focus
+    setFocusWindow(category);
+  };
 
   return (
     <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
-        {React.Children.map(children, (child) => (
-          <li className="@container flex max-w-43 min-w-0 flex-1">{child}</li>
+        {windows.map((window) => (
+          <li key={window.category} className="@container flex max-w-43 min-w-0 flex-1">
+            <TaskbarTab
+              icon={window.icon}
+              title={window.title}
+              isFocused={window.category === focusedWindowCategory}
+              onClick={() => handleTabClick(window.category)}
+            />
+          </li>
         ))}
       </ul>
       {showSystemTray && <TaskbarSystemTray />}
