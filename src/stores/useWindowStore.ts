@@ -27,7 +27,7 @@ interface WindowStore {
 
   /**
    * Store에서 Window를 제거합니다. 제거된 Window가 focus였을 경우,
-   * focusedWindowCategory를 undefined로 설정합니다.
+   * focusedWindowCategory를 null으로 설정합니다.
    * 다른 Window로 자동 focus를 옮기지 않습니다 (사용자가 직접 선택하도록).
    * @param category - 제거할 Window의 카테고리
    */
@@ -61,7 +61,7 @@ export const useWindowStore = create<WindowStore>()(
         const index = state.windows.findIndex((w) => w.category === category);
         if (index !== -1) {
           state.windows.splice(index, 1);
-          // 제거된 window가 focused였으면 focusedWindowCategory를 undefined로 설정
+          // 제거된 window가 focused였으면 focusedWindowCategory를 null으로 설정
           // 다른 window로 자동 focus를 옮기지 않음 (사용자가 직접 선택하도록)
           if (state.focusedWindowCategory === category) {
             state.focusedWindowCategory = null;
