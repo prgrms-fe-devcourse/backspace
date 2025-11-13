@@ -24,7 +24,7 @@ interface TaskbarTabProps {
  *
  * @component
  * @param {ReactNode} icon - 아이콘을 나타내는 React 노드
- * @param {string} text - 탭에 표시할 텍스트
+ * @param {string} title - 탭에 표시할 윈도우 제목
  * @param {boolean} [isFocused=false] - focus 상태 (true면 pressed, false면 neutral)
  * @param {string} [className] - 추가 Tailwind 클래스
  * @param {React.MouseEventHandler<HTMLButtonElement>} [onClick] - 클릭 이벤트 핸들러
@@ -32,7 +32,7 @@ interface TaskbarTabProps {
  *
  * @example
  * ```tsx
- * <TaskbarTab icon={<Folder size={14} />} text="My Computer" isFocused />
+ * <TaskbarTab icon={<Folder size={14} />} title="My Computer" isFocused />
  * ```
  */
 export default function TaskbarTab({
