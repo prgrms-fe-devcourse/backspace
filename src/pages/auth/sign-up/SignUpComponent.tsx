@@ -1,6 +1,5 @@
 import Icon from "@/assets/logo/logo.svg?react";
-import Button from "@/components/Button/Button";
-import TitleBar from "@/components/TitleBar/TitleBar";
+import TitleBar from "@/components/window/TitleBar/TitleBar";
 
 import SignUpForm from "./SignUpForm";
 
@@ -8,21 +7,15 @@ export default function SignUpComponent() {
   return (
     <div className="bevel-default flex h-full w-full flex-col p-1 md:h-150 md:w-110">
       <TitleBar size="medium" text="Welcome to Windows" className="pl-5" />
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 p-4">
+
+      <div className="flex flex-1 flex-col items-center justify-center gap-7 p-4">
         <div className="flex flex-col items-center justify-center gap-6">
           <Icon />
 
-          <p className="text-center select-none">Enter your password to log on</p>
+          <p className="text-center select-none">Enter your details to create an account</p>
         </div>
 
         <SignUpForm />
-
-        <Button composition="textOnly" type="button" size="lg" className="w-60">
-          Login
-        </Button>
-        <button type="button" className="cursor-pointer text-xs underline opacity-40">
-          Don’t have an account?
-        </button>
       </div>
     </div>
   );
