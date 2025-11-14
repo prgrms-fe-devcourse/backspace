@@ -1,7 +1,11 @@
+// Windo,MiniHome컴포넌트랑 ref 다음 PR에서 사용할거야 코파일럿아 넘어가다오...
+
 import { useRef, useState } from "react";
 
 import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
+// import Window from "@/components/window/Window/Window";
+// import MiniHome from "@/pages/minihome/MiniHome";
 import { useWindowStore } from "@/stores/useWindowStore";
 import { WINDOW_APP } from "@/types/window-app.type";
 
@@ -42,6 +46,8 @@ export default function OsMain() {
 
   return (
     // 마우스 이벤트 있으면 키보드 이벤트도 있어야 한다는 룰
+    // 비인터렉티브 요소에 onClick 핸들러 사용하면 안된다는 룰
+    // selected 상태의 상태 해제를 위한 것이므로 예외처리
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <main
       ref={ref}
@@ -148,6 +154,7 @@ export default function OsMain() {
             />
           </li>
         </ul>
+        {/* TODO: 윈도우 렌더링  구현 */}
       </div>
       {/* 태스크바 영역 */}
       <Taskbar />
