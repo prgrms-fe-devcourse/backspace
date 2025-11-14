@@ -19,12 +19,14 @@ export const useAuthStore = create<AuthStore>()(
   devtools(
     persist(
       immer((set) => ({
-        isLoading: true,
+        isLoading: false,
         user: null,
         profile: null,
 
         hydrateFromAuth: async () => {
-          set({ isLoading: true });
+          set((state: AuthStore) => {
+            state.isLoading = true;
+          });
 
           const {
             data: { session },
@@ -32,7 +34,11 @@ export const useAuthStore = create<AuthStore>()(
           } = await supabase.auth.getSession();
 
           if (error || !session) {
-            set({ user: null, profile: null, isLoading: false });
+            set((state: AuthStore) => {
+              state.user = null;
+              state.profile = null;
+              state.isLoading = false;
+            });
             return;
           }
 
@@ -52,11 +58,18 @@ export const useAuthStore = create<AuthStore>()(
               "프로필 조회 실패: DB에서 사용자 프로필을 가져오는 중 오류가 발생했습니다.",
               profileError
             );
-            set({ user: null, profile: null, isLoading: false });
+            set((state: AuthStore) => {
+              state.user = null;
+              state.profile = null;
+              state.isLoading = false;
+            });
             return;
           }
 
-          set({ profile, isLoading: false });
+          set((state: AuthStore) => {
+            state.profile = profile;
+            state.isLoading = false;
+          });
         },
 
         clearAuth: () =>
