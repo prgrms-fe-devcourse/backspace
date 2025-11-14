@@ -1,8 +1,37 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import type { Database } from "@/types/database.types";
 
 import Button from "../Button/Button";
 
-export default function MainPage() {
+export default function HomePage() {
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [bio, setBio] = useState<string | null>(null);
+
+  const [homepageId, setHomepageId] = useState<string | null>(null);
+  const [visibility, setVisibility] = useState<Database["public"]["Enums"]["visibility"] | null>(
+    null
+  );
+  const [osGalleryImageId, setOsGalleryImageId] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchHomePage = async () => {
+      try {
+        console.log("fetchHomePage()");
+      } catch (e) {
+        console.error("메인 페이지 데이터 로드 중 오류", e);
+      } finally {
+        console.log("finally");
+      }
+    };
+    fetchHomePage();
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
