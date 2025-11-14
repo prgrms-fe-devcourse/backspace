@@ -23,15 +23,15 @@ export default function OsMain() {
   const [selectedShortcutCategory, setSelectedShortcutCategory] = useState<string | null>(null);
   const [focusedShortcutCategory, setFocusedShortcutCategory] = useState<string | null>(null);
 
+  const handleShortcutFocus = (category: string) => {
+    // 포커스가 들어올 때 -> isSelected와 isFocused 모두 true
+    setSelectedShortcutCategory(category);
+    setFocusedShortcutCategory(category);
+  };
+
   const handleShortcutBlur = () => {
     // 포커스가 다른 곳으로 이동할 때 selected 해제
     setSelectedShortcutCategory(null);
-  };
-
-  const handleShortcutClick = (category: string) => {
-    // 아이콘 클릭 시 -> isSelected와 isFocused 모두 true
-    setSelectedShortcutCategory(category);
-    setFocusedShortcutCategory(category);
   };
 
   const handleShortcutDoubleClick = (
@@ -63,8 +63,8 @@ export default function OsMain() {
                 caption={config.caption}
                 isSelected={selectedShortcutCategory === category}
                 isFocused={focusedShortcutCategory === category}
+                onFocus={() => handleShortcutFocus(category)}
                 onBlur={handleShortcutBlur}
-                onClick={() => handleShortcutClick(category)}
                 onDoubleClick={() =>
                   handleShortcutDoubleClick(category, config.caption, config.icon)
                 }
