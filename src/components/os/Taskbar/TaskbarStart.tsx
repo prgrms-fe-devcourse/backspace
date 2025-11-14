@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import BackspaceLogo from "@/assets/icons/backspace_logo.svg?react";
+import BackspaceLogo from "@/assets/logo/logo.svg?react";
 import Button from "@/components/common/Button/Button";
 
 import { taskbarStart } from "./variants";
