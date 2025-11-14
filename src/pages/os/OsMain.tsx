@@ -74,7 +74,7 @@ export default function OsMain() {
         </ul>
         {/* 윈도우 렌더링 */}
         {windows.map((window) => {
-          // category별로 다른 컴포넌트 렌더링
+          // 카테고리별로 다른 컴포넌트 렌더링
           const renderWindowContent = () => {
             switch (window.category) {
               case "home":
