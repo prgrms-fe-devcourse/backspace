@@ -1,38 +1,10 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type Database = {
+export interface Database {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.5";
-  };
-  graphql_public: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json;
-          operationName?: string;
-          query?: string;
-          variables?: Json;
-        };
-        Returns: Json;
-      };
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
   };
   public: {
     Tables: {
@@ -269,24 +241,24 @@ export type Database = {
           created_at: string;
           homepage_id: string;
           id: string;
+          image_url: string | null;
           like_count: number;
-          os_gallery_image_id: string;
           visibility: Database["public"]["Enums"]["visibility"] | null;
         };
         Insert: {
           created_at?: string;
           homepage_id: string;
           id?: string;
+          image_url?: string | null;
           like_count?: number;
-          os_gallery_image_id?: string;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Update: {
           created_at?: string;
           homepage_id?: string;
           id?: string;
+          image_url?: string | null;
           like_count?: number;
-          os_gallery_image_id?: string;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Relationships: [
@@ -295,13 +267,6 @@ export type Database = {
             columns: ["homepage_id"];
             isOneToOne: false;
             referencedRelation: "homepages";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "homepage_gallery_images_os_gallery_image_id_fkey";
-            columns: ["os_gallery_image_id"];
-            isOneToOne: false;
-            referencedRelation: "os_gallery_images";
             referencedColumns: ["id"];
           },
         ];
@@ -546,9 +511,7 @@ export type Database = {
         Relationships: [];
       };
     };
-    Views: {
-      [_ in never]: never;
-    };
+    Views: Record<never, never>;
     Functions: {
       check_email_exists: { Args: { target_email: string }; Returns: boolean };
       check_nickname_exists: {
@@ -568,11 +531,9 @@ export type Database = {
     Enums: {
       visibility: "public" | "friend" | "private";
     };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    CompositeTypes: Record<never, never>;
   };
-};
+}
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
@@ -690,9 +651,6 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       visibility: ["public", "friend", "private"],
