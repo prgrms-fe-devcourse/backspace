@@ -1,14 +1,13 @@
+import type { ComponentPropsWithRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 import type { WindowApp } from "@/types/window-app.type.ts";
 
-interface ShortcutProps {
+interface ShortcutProps extends ComponentPropsWithRef<"button"> {
   Icon: WindowApp["icon"];
   caption: WindowApp["caption"];
   isSelected?: boolean;
   isFocused?: boolean;
-  onClick?: () => void;
-  onDoubleClick?: () => void;
 }
 
 /**
@@ -31,20 +30,18 @@ export default function Shortcut({
   caption,
   isSelected = false,
   isFocused = false,
-  onClick,
-  onDoubleClick,
+  ...props
 }: ShortcutProps) {
   return (
     <button
       type="button"
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
       className={twMerge(
         "group",
         "inline-flex min-h-16 min-w-16 flex-col items-center justify-center",
         "gap-1 px-2 py-2",
         "text-center"
       )}
+      {...props}
     >
       <Icon
         className={twMerge(
