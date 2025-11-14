@@ -10,6 +10,7 @@ interface AuthStore {
   isLoading: boolean;
   user: User | null;
   profile: Profile | null;
+  setUser: (user: User | null) => void;
   hydrateFromAuth: () => Promise<void>;
   clearAuth: () => void;
   signOut: () => Promise<void>;
@@ -19,9 +20,15 @@ export const useAuthStore = create<AuthStore>()(
   devtools(
     persist(
       immer((set) => ({
-        isLoading: false,
+        // 초기 isLoading을 true로 해놔야 처음 접속했을 때 hydrateFromAuth하기 때문에 isLoading이 false -> true -> false로 돼서 flicker가 발생하는 것을 방지할 수 있음
+        isLoading: true,
         user: null,
         profile: null,
+
+        setUser: (user) =>
+          set((state: AuthStore) => {
+            state.user = user;
+          }),
 
         hydrateFromAuth: async () => {
           set((state: AuthStore) => {
@@ -59,6 +66,7 @@ export const useAuthStore = create<AuthStore>()(
               profileError
             );
             set((state: AuthStore) => {
+              // 여기에 state.user = null 을 넣으면 강제 로그아웃을 시키는데 어떻게 하는게 좋을지
               state.profile = null;
               state.isLoading = false;
             });
