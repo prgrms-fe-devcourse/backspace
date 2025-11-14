@@ -11,6 +11,10 @@ interface ThemeContextValue {
 export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [hasStoredTheme, setHasStoredTheme] = useState(
+    () => localStorage.getItem("theme") !== null
+  );
+
   const [theme, setTheme] = useState<Theme>(() => {
     const storedTheme = localStorage.getItem("theme");
 
@@ -23,6 +27,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
+    if (hasStoredTheme) return;
+
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const handleMediaQueryChange = (e: MediaQueryListEvent) => {
@@ -32,19 +38,29 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     mediaQuery.addEventListener("change", handleMediaQueryChange);
 
     return () => mediaQuery.removeEventListener("change", handleMediaQueryChange);
-  }, []);
+  }, [hasStoredTheme]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+
+    if (hasStoredTheme) {
+      // TODO: 테마 토글 구현 후 주석 해제
+      // localStorage.setItem("theme", theme);
+    }
+  }, [theme, hasStoredTheme]);
+
+  const handleSetTheme = (newTheme: Theme) => {
+    setHasStoredTheme(true);
+    setTheme(newTheme);
+  };
 
   const toggleTheme = () => {
+    setHasStoredTheme(true);
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
