@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthStore>()(
               "프로필 조회 실패: DB에서 사용자 프로필을 가져오는 중 오류가 발생했습니다.",
               profileError
             );
-            set({ profile: null, isLoading: false });
+            set({ user: null, profile: null, isLoading: false });
             return;
           }
 
