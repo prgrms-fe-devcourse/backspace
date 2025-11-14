@@ -1,6 +1,6 @@
-import { Grid } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
+import BackspaceLogo from "@/assets/icons/backspace_logo.svg?react";
 import Button from "@/components/common/Button/Button";
 
 import { taskbarStart } from "./variants";
@@ -30,7 +30,7 @@ export default function TaskbarStart({ className, onClick, ...rest }: TaskbarSta
       onClick={onClick}
       {...rest}
     >
-      <Grid size={16} />
+      <BackspaceLogo className="size-4" />
       Start
     </Button>
   );
