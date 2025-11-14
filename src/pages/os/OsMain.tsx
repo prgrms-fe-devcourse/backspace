@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 
 import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
-// import Window from "@/components/window/Window/Window";
-// import MiniHome from "@/pages/minihome/MiniHome";
+import Window from "@/components/window/Window/Window";
+import MiniHome from "@/pages/minihome/MiniHome";
 import { useWindowStore } from "@/stores/useWindowStore";
 import { WINDOW_APP } from "@/types/window-app.type";
 
@@ -19,7 +19,7 @@ const DESKTOP_SHORTCUTS = [
 
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
-  const { runWindow } = useWindowStore();
+  const { windows, runWindow, closeWindow } = useWindowStore();
   const [selectedShortcutCategory, setSelectedShortcutCategory] = useState<string | null>(null);
   const [focusedShortcutCategory, setFocusedShortcutCategory] = useState<string | null>(null);
 
@@ -72,7 +72,42 @@ export default function OsMain() {
             </li>
           ))}
         </ul>
-        {/* TODO: 윈도우 렌더링 구현 */}
+        {/* 윈도우 렌더링 */}
+        {windows.map((window) => {
+          // category별로 다른 컴포넌트 렌더링
+          const renderWindowContent = () => {
+            switch (window.category) {
+              case "home":
+                return <MiniHome />;
+              case "gallery":
+                return <div>Gallery (구현 예정)</div>;
+              case "memo":
+                return <div>Memo (구현 예정)</div>;
+              case "guestbook":
+                return <div>Guest Book (구현 예정)</div>;
+              case "friends":
+                return <div>Friends (구현 예정)</div>;
+              case "settings":
+                return <div>Settings (구현 예정)</div>;
+              default:
+                return null;
+            }
+          };
+
+          return (
+            <Window
+              key={window.category}
+              ref={ref}
+              open
+              buttons="all"
+              onClose={() => closeWindow(window.category)}
+              title={window.title}
+              icon={window.icon}
+            >
+              {renderWindowContent()}
+            </Window>
+          );
+        })}
       </div>
       {/* 태스크바 영역 */}
       <Taskbar />
