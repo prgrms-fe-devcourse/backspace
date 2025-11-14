@@ -93,20 +93,21 @@ export default [
     },
     rules: {
       "no-console": ["warn", { allow: ["error"] }],
+      "no-use-before-define": "off",
+      "no-plusplus": "off",
+      "no-param-reassign": ["error", { props: false }],
+      "consistent-return": "off",
+
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/require-default-props": "off",
       "react/jsx-props-no-spreading": "off",
       "react/function-component-definition": "off",
       "react/jsx-no-useless-fragment": ["error", { allowExpressions: true }],
-
       "react/prop-types": "off",
-      "no-use-before-define": "off",
-      "@typescript-eslint/no-use-before-define": "off",
+      "react/jsx-no-constructed-context-values": "off",
 
-      "no-plusplus": "off",
-      "no-param-reassign": ["error", { props: false }],
-      "consistent-return": "off",
+      "@typescript-eslint/no-use-before-define": "off",
 
       "jsx-a11y/label-has-associated-control": [
         "error",
