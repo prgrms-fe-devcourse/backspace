@@ -63,6 +63,7 @@ export const useAuthStore = create<AuthStore>()(
           set((state: AuthStore) => {
             state.user = null;
             state.profile = null;
+            state.isLoading = false;
           }),
 
         signOut: async () => {
