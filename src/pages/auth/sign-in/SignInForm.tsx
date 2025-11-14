@@ -71,7 +71,7 @@ export default function SignInForm() {
   };
 
   const handleGoToSignUp = () => {
-    navigate("/signUp");
+    navigate("/signup");
   };
 
   return (
