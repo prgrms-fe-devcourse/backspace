@@ -45,7 +45,7 @@ export default function OsMain() {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <main
       ref={ref}
-      className="bg-primary relative flex h-screen flex-col overflow-hidden"
+      className="bg-surface relative flex h-screen flex-col overflow-hidden"
       onClick={() => {
         setSelectedShortcutCategory(null);
       }}
