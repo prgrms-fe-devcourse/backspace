@@ -1,5 +1,3 @@
-// Windo,MiniHome컴포넌트랑 ref 다음 PR에서 사용할거야 코파일럿아 넘어가다오...
-
 import { useRef, useState } from "react";
 
 import Shortcut from "@/components/os/Shortcut/Shortcut";
@@ -63,98 +61,31 @@ export default function OsMain() {
         <ul
           className="flex w-16 flex-col gap-4"
           onClick={handleShortcutContainerClick}
-          aria-label="바탕화면 바로가기"
+          aria-label="바로가기"
         >
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.HOME.icon}
-              caption={WINDOW_APP.HOME.caption}
-              isSelected={selectedShortcutCategory === "home"}
-              isFocused={focusedShortcutCategory === "home"}
-              onClick={() => handleShortcutClick("home")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick("home", WINDOW_APP.HOME.caption, <WINDOW_APP.HOME.icon />)
-              }
-            />
-          </li>
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.GALLERY.icon}
-              caption={WINDOW_APP.GALLERY.caption}
-              isSelected={selectedShortcutCategory === "gallery"}
-              isFocused={focusedShortcutCategory === "gallery"}
-              onClick={() => handleShortcutClick("gallery")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick(
-                  "gallery",
-                  WINDOW_APP.GALLERY.caption,
-                  <WINDOW_APP.GALLERY.icon />
-                )
-              }
-            />
-          </li>
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.MEMO.icon}
-              caption={WINDOW_APP.MEMO.caption}
-              isSelected={selectedShortcutCategory === "memo"}
-              isFocused={focusedShortcutCategory === "memo"}
-              onClick={() => handleShortcutClick("memo")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick("memo", WINDOW_APP.MEMO.caption, <WINDOW_APP.MEMO.icon />)
-              }
-            />
-          </li>
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.GUESTBOOK.icon}
-              caption={WINDOW_APP.GUESTBOOK.caption}
-              isSelected={selectedShortcutCategory === "guestbook"}
-              isFocused={focusedShortcutCategory === "guestbook"}
-              onClick={() => handleShortcutClick("guestbook")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick(
-                  "guestbook",
-                  WINDOW_APP.GUESTBOOK.caption,
-                  <WINDOW_APP.GUESTBOOK.icon />
-                )
-              }
-            />
-          </li>
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.FRIENDS.icon}
-              caption={WINDOW_APP.FRIENDS.caption}
-              isSelected={selectedShortcutCategory === "friends"}
-              isFocused={focusedShortcutCategory === "friends"}
-              onClick={() => handleShortcutClick("friends")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick(
-                  "friends",
-                  WINDOW_APP.FRIENDS.caption,
-                  <WINDOW_APP.FRIENDS.icon />
-                )
-              }
-            />
-          </li>
-          <li>
-            <Shortcut
-              Icon={WINDOW_APP.SETTINGS.icon}
-              caption={WINDOW_APP.SETTINGS.caption}
-              isSelected={selectedShortcutCategory === "settings"}
-              isFocused={focusedShortcutCategory === "settings"}
-              onClick={() => handleShortcutClick("settings")}
-              onDoubleClick={() =>
-                handleShortcutDoubleClick(
-                  "settings",
-                  WINDOW_APP.SETTINGS.caption,
-                  <WINDOW_APP.SETTINGS.icon />
-                )
-              }
-            />
-          </li>
+          {[
+            { category: "home", config: WINDOW_APP.HOME },
+            { category: "gallery", config: WINDOW_APP.GALLERY },
+            { category: "memo", config: WINDOW_APP.MEMO },
+            { category: "guestbook", config: WINDOW_APP.GUESTBOOK },
+            { category: "friends", config: WINDOW_APP.FRIENDS },
+            { category: "settings", config: WINDOW_APP.SETTINGS },
+          ].map(({ category, config }) => (
+            <li key={category}>
+              <Shortcut
+                Icon={config.icon}
+                caption={config.caption}
+                isSelected={selectedShortcutCategory === category}
+                isFocused={focusedShortcutCategory === category}
+                onClick={() => handleShortcutClick(category)}
+                onDoubleClick={() =>
+                  handleShortcutDoubleClick(category, config.caption, <config.icon />)
+                }
+              />
+            </li>
+          ))}
         </ul>
-        {/* TODO: 윈도우 렌더링  구현 */}
+        {/* TODO: 윈도우 렌더링 구현 */}
       </div>
       {/* 태스크바 영역 */}
       <Taskbar />
