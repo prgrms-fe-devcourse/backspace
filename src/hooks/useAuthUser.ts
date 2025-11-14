@@ -1,3 +1,5 @@
+import { useShallow } from "zustand/shallow";
+
 import { useAuthStore } from "@/stores/useAuthStore";
 
 /**
@@ -6,12 +8,14 @@ import { useAuthStore } from "@/stores/useAuthStore";
  */
 
 export function useAuthUser() {
-  const { user, profile, isLoading, signOut } = useAuthStore((state) => ({
-    user: state.user,
-    profile: state.profile,
-    isLoading: state.isLoading,
-    signOut: state.signOut,
-  }));
+  const { user, profile, isLoading, signOut } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      profile: state.profile,
+      isLoading: state.isLoading,
+      signOut: state.signOut,
+    }))
+  );
 
   return {
     user,

@@ -59,7 +59,6 @@ export const useAuthStore = create<AuthStore>()(
               profileError
             );
             set((state: AuthStore) => {
-              state.user = null;
               state.profile = null;
               state.isLoading = false;
             });
