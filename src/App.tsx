@@ -5,16 +5,22 @@ import SignUpPage from "@/pages/auth/sign-up/SignUpPage";
 import OsMain from "@/pages/os/OsMain";
 
 import AuthInitializer from "./components/auth/AuthListener";
+import ProtectedRoute from "./router/ProtectedRoute";
+import PublicRoute from "./router/PublicRoute";
 
 export default function App() {
   return (
     <>
       <AuthInitializer />
       <Routes>
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        {/* TODO: Auth 유저만 / 진입할 수 있도록 Auth Gate 구현 */}
-        <Route path="/" element={<OsMain />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<OsMain />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
