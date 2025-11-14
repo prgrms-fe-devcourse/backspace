@@ -7,6 +7,19 @@ import Taskbar from "@/components/os/Taskbar/Taskbar";
 import { useWindowStore } from "@/stores/useWindowStore";
 import { WINDOW_APP } from "@/types/window-app.type";
 
+/**
+ * 바탕화면에 표시될 바로가기 목록
+ * category와 WINDOW_APP config를 매핑합니다.
+ */
+const DESKTOP_SHORTCUTS = [
+  { category: "home", config: WINDOW_APP.HOME },
+  { category: "gallery", config: WINDOW_APP.GALLERY },
+  { category: "memo", config: WINDOW_APP.MEMO },
+  { category: "guestbook", config: WINDOW_APP.GUESTBOOK },
+  { category: "friends", config: WINDOW_APP.FRIENDS },
+  { category: "settings", config: WINDOW_APP.SETTINGS },
+] as const;
+
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
   const { runWindow } = useWindowStore();
@@ -19,11 +32,15 @@ export default function OsMain() {
     setFocusedShortcutCategory(category);
   };
 
-  const handleShortcutDoubleClick = (category: string, title: string, icon: React.ReactNode) => {
+  const handleShortcutDoubleClick = (
+    category: string,
+    title: string,
+    IconComponent: React.ComponentType
+  ) => {
     runWindow({
       category,
       title,
-      icon,
+      icon: <IconComponent />,
     });
   };
 
@@ -63,14 +80,7 @@ export default function OsMain() {
           onClick={handleShortcutContainerClick}
           aria-label="바로가기"
         >
-          {[
-            { category: "home", config: WINDOW_APP.HOME },
-            { category: "gallery", config: WINDOW_APP.GALLERY },
-            { category: "memo", config: WINDOW_APP.MEMO },
-            { category: "guestbook", config: WINDOW_APP.GUESTBOOK },
-            { category: "friends", config: WINDOW_APP.FRIENDS },
-            { category: "settings", config: WINDOW_APP.SETTINGS },
-          ].map(({ category, config }) => (
+          {DESKTOP_SHORTCUTS.map(({ category, config }) => (
             <li key={category}>
               <Shortcut
                 Icon={config.icon}
@@ -79,7 +89,7 @@ export default function OsMain() {
                 isFocused={focusedShortcutCategory === category}
                 onClick={() => handleShortcutClick(category)}
                 onDoubleClick={() =>
-                  handleShortcutDoubleClick(category, config.caption, <config.icon />)
+                  handleShortcutDoubleClick(category, config.caption, config.icon)
                 }
               />
             </li>
