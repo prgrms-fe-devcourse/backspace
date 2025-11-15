@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { ComponentType } from "react";
 
 import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
@@ -16,6 +17,19 @@ const DESKTOP_SHORTCUTS = [
   { category: "friends", config: WINDOW_APP.FRIENDS },
   { category: "settings", config: WINDOW_APP.SETTINGS },
 ] as const;
+
+function createPlannedComponent() {
+  return () => <div>(구현 예정)</div>;
+}
+
+const WINDOW_COMPONENT_MAP: Record<string, ComponentType> = {
+  home: MiniHome,
+  gallery: createPlannedComponent(),
+  memo: createPlannedComponent(),
+  guestbook: createPlannedComponent(),
+  friends: createPlannedComponent(),
+  settings: createPlannedComponent(),
+};
 
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
@@ -74,26 +88,9 @@ export default function OsMain() {
         </div>
         {/* 윈도우 렌더링 */}
         {windows.map((window) => {
-          // 카테고리별로 다른 컴포넌트 렌더링
-          const renderWindowContent = () => {
-            switch (window.category) {
-              case "home":
-                return <MiniHome />;
-              case "gallery":
-                return <div>Gallery (구현 예정)</div>;
-              case "memo":
-                return <div>Memo (구현 예정)</div>;
-              case "guestbook":
-                return <div>Guest Book (구현 예정)</div>;
-              case "friends":
-                return <div>Friends (구현 예정)</div>;
-              case "settings":
-                return <div>Settings (구현 예정)</div>;
-              default:
-                return null;
-            }
-          };
-
+          // 카테고리에 맞는 컴포넌트를 맵에서 찾아 해당 창에 렌더링
+          const WindowContent = WINDOW_COMPONENT_MAP[window.category];
+          if (!WindowContent) return null;
           return (
             <Window
               key={window.category}
@@ -104,7 +101,7 @@ export default function OsMain() {
               title={window.title}
               icon={window.icon}
             >
-              {renderWindowContent()}
+              <WindowContent />
             </Window>
           );
         })}
