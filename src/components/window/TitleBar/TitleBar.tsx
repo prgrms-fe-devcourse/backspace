@@ -96,7 +96,7 @@ export default function TitleBar({
   state = "active",
   size = "small",
   icon,
-  text,
+  title,
   buttons = null,
   onClose,
   className,
@@ -123,7 +123,7 @@ export default function TitleBar({
     >
       <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1.5">
         {sizedIcon && <div className="shrink-0">{sizedIcon}</div>}
-        <div className="text-accent-contrast truncate whitespace-nowrap">{text}</div>
+        <div className="text-accent-contrast truncate whitespace-nowrap">{title}</div>
       </div>
 
       {buttons && (

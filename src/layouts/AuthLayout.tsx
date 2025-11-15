@@ -1,6 +1,9 @@
 import { Outlet } from "react-router";
 import { twMerge } from "tailwind-merge";
 
+import Logo from "@/assets/logo/logo.svg?react";
+import TitleBar from "@/components/window/TitleBar/TitleBar";
+
 export default function AuthLayout() {
   return (
     <main
@@ -17,6 +20,7 @@ export default function AuthLayout() {
           "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
         )}
       >
+        <TitleBar icon={<Logo />} title="Welcome to BackSpace" />
         <Outlet />
       </section>
     </main>
