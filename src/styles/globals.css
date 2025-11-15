@@ -9,13 +9,11 @@
   --color-text-default: #2d2640;
   --color-text-invert: #fcfcfd;
 
-  --color-surface: #f7f3ff;
-
-  --color-bevel-light-outer: #ffffff;
-  --color-bevel-light-inner: #fbf8ff;
-
-  --color-bevel-shadow-inner: #e5dbf9;
-  --color-bevel-shadow-outer: #c9bdef;
+  --color-base-1: #ffffff;
+  --color-base-2: #fbf8ff;
+  --color-base-3: #f7f3ff;
+  --color-base-4: #e5dbf9;
+  --color-base-5: #c9bdef;
 
   --color-primary: #b2aaeb;
   --color-secondary: #aac1f8;
@@ -33,13 +31,11 @@
   --color-text-default: #eae9ff;
   --color-text-invert: #1b1630;
 
-  --color-surface: #3a3d5a;
-
-  --color-bevel-light-outer: #6b6f9a;
-  --color-bevel-light-inner: #5a5e8a;
-
-  --color-bevel-shadow-inner: #2a2d47;
-  --color-bevel-shadow-outer: #1a1d35;
+  --color-base-1: #6b6f9a;
+  --color-base-2: #5a5e8a;
+  --color-base-3: #3a3d5a;
+  --color-base-4: #2a2d47;
+  --color-base-5: #1a1d35;
 
   --color-primary: #9088cc;
   --color-secondary: #8aa5d9;
