@@ -71,7 +71,7 @@ export default function SignInForm() {
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-2">
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="email" className="pl-1 select-none">
+        <label htmlFor="email" className="px-1 select-none">
           Email:
         </label>
 
@@ -83,7 +83,7 @@ export default function SignInForm() {
         />
         <div className="min-h-5">
           {fieldErrors.email && (
-            <span id="password" className="text-error px-1 text-xs">
+            <span id="email-error" className="text-error px-1 text-xs">
               {fieldErrors.email}
             </span>
           )}
@@ -91,7 +91,7 @@ export default function SignInForm() {
       </div>
 
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="password" className="pl-1 select-none">
+        <label htmlFor="password" className="px-1 select-none">
           Password:
         </label>
 
@@ -104,7 +104,7 @@ export default function SignInForm() {
         />
         <div className="min-h-5">
           {fieldErrors.password && (
-            <span id="password" className="text-error px-1 text-xs">
+            <span id="password-error" className="text-error px-1 text-xs">
               {fieldErrors.password}
             </span>
           )}

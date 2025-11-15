@@ -5,9 +5,9 @@ import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
 import Window from "@/components/window/Window/Window";
 import { useWindowStore } from "@/stores/useWindowStore";
-import { WINDOW_APP, type WindowApp } from "@/types/window-app.type";
+import { WINDOW_APPS, type WindowApp } from "@/types/window-app.type";
 
-const WINDOW_CONFIGS: WindowApp[] = Object.values(WINDOW_APP);
+const WINDOW_CONFIGS: WindowApp[] = Object.values(WINDOW_APPS);
 
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);

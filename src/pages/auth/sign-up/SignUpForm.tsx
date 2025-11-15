@@ -94,9 +94,9 @@ export default function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSignUp} className="flex w-full flex-col items-center gap-5">
+    <form onSubmit={handleSignUp} className="flex w-full flex-col items-center gap-2">
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="username" className="select-none">
+        <label htmlFor="username" className="px-1 select-none">
           User Name:
         </label>
 
@@ -106,10 +106,17 @@ export default function SignUpForm() {
           onChange={handleChange}
           error={fieldErrors.username}
         />
+        <div className="min-h-5">
+          {fieldErrors.username && (
+            <span id="username-error" className="text-error px-1 text-xs">
+              {fieldErrors.username}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="email" className="select-none">
+        <label htmlFor="email" className="px-1 select-none">
           Email:
         </label>
 
@@ -119,10 +126,17 @@ export default function SignUpForm() {
           onChange={handleChange}
           error={fieldErrors.email}
         />
+        <div className="min-h-5">
+          {fieldErrors.email && (
+            <span id="email-error" className="text-error px-1 text-xs">
+              {fieldErrors.email}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="password" className="select-none">
+        <label htmlFor="password" className="px-1 select-none">
           Password:
         </label>
 
@@ -133,11 +147,18 @@ export default function SignUpForm() {
           onChange={handleChange}
           error={fieldErrors.password}
         />
+        <div className="min-h-5">
+          {fieldErrors.password && (
+            <span id="password-error" className="text-error px-1 text-xs">
+              {fieldErrors.password}
+            </span>
+          )}
+        </div>
       </div>
 
-      {errorMessage && <p className="text-accent">{errorMessage}</p>}
+      {errorMessage && <p className="text-error">{errorMessage}</p>}
 
-      <div className="flex w-full justify-center gap-5">
+      <div className="flex w-full justify-center gap-2">
         <Button composition="textOnly" type="submit" size="lg" className="h-8 w-full">
           OK
         </Button>
