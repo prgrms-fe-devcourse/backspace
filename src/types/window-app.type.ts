@@ -10,7 +10,7 @@ import MiniHome from "@/pages/minihome/MiniHome";
 
 const todoComponent = () => createElement("div", null, "(구현 예정)");
 
-export const WINDOW_APP = {
+export const WINDOW_APPS = {
   HOME: {
     category: "home",
     caption: "Home",
@@ -49,4 +49,4 @@ export const WINDOW_APP = {
   },
 } as const;
 
-export type WindowApp = (typeof WINDOW_APP)[keyof typeof WINDOW_APP];
+export type WindowApp = (typeof WINDOW_APPS)[keyof typeof WINDOW_APPS];
