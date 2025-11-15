@@ -51,27 +51,27 @@ export default function OsMain() {
   };
 
   return (
-    <main ref={ref} className="bg-surface relative flex h-screen flex-col overflow-hidden">
+    <main ref={ref} className="bg-surface flex h-screen flex-col">
       {/* 바탕화면 영역 */}
       <div className="flex-1 p-4">
-        {/* 숏컷 영역 */}
-        <ul className="flex w-16 flex-col gap-4" aria-label="바로가기">
+        {/* 바로가기 그리드 영역 */}
+        <div
+          className="grid h-full w-full auto-cols-[80px] grid-flow-col grid-rows-[repeat(auto-fill,100px)] content-start gap-4"
+          aria-label="바로가기"
+        >
           {DESKTOP_SHORTCUTS.map(({ category, config }) => (
-            <li key={category}>
-              <Shortcut
-                Icon={config.icon}
-                caption={config.caption}
-                isSelected={selectedShortcutCategory === category}
-                isFocused={focusedShortcutCategory === category}
-                onFocus={() => handleShortcutFocus(category)}
-                onBlur={handleShortcutBlur}
-                onDoubleClick={() =>
-                  handleShortcutDoubleClick(category, config.caption, config.icon)
-                }
-              />
-            </li>
+            <Shortcut
+              key={category}
+              Icon={config.icon}
+              caption={config.caption}
+              isSelected={selectedShortcutCategory === category}
+              isFocused={focusedShortcutCategory === category}
+              onFocus={() => handleShortcutFocus(category)}
+              onBlur={handleShortcutBlur}
+              onDoubleClick={() => handleShortcutDoubleClick(category, config.caption, config.icon)}
+            />
           ))}
-        </ul>
+        </div>
         {/* 윈도우 렌더링 */}
         {windows.map((window) => {
           // 카테고리별로 다른 컴포넌트 렌더링
