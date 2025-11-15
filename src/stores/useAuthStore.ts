@@ -66,7 +66,6 @@ export const useAuthStore = create<AuthStore>()(
               profileError
             );
             set((state: AuthStore) => {
-              // 여기에 state.user = null 을 넣으면 강제 로그아웃을 시키는데 어떻게 하는게 좋을지
               state.profile = null;
               state.isLoading = false;
             });

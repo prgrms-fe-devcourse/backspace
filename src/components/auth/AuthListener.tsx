@@ -4,7 +4,9 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import supabase from "@/utils/supabase";
 
 export default function AuthInitializer() {
-  const { hydrateFromAuth, clearAuth, setUser } = useAuthStore.getState();
+  const hydrateFromAuth = useAuthStore((state) => state.hydrateFromAuth);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const setUser = useAuthStore((state) => state.setUser);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
