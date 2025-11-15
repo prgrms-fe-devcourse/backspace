@@ -57,17 +57,17 @@ body {
 }
 
 body {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 @media (min-width: 768px) {
   body {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
 @media (min-width: 1024px) {
   body {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
