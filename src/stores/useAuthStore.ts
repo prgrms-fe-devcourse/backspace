@@ -11,6 +11,7 @@ interface AuthStore {
   user: User | null;
   profile: Profile | null;
   setUser: (user: User | null) => void;
+  setProfile: (profile: Profile) => void;
   hydrateFromAuth: () => Promise<void>;
   clearAuth: () => void;
   signOut: () => Promise<void>;
@@ -29,7 +30,11 @@ export const useAuthStore = create<AuthStore>()(
           set((state: AuthStore) => {
             state.user = user;
           }),
-
+        setProfile: (profile) => {
+          set((state: AuthStore) => {
+            state.profile = profile;
+          });
+        },
         hydrateFromAuth: async () => {
           set((state: AuthStore) => {
             state.isLoading = true;
