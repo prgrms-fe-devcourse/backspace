@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 
 import AuthInitializer from "@/components/auth/AuthListener";
+import AuthLayout from "@/layout/AuthLayout";
 import SignInPage from "@/pages/auth/sign-in/SignInPage";
 import SignUpPage from "@/pages/auth/sign-up/SignUpPage";
 import OsMain from "@/pages/os/OsMain";
@@ -13,8 +14,10 @@ export default function App() {
       <AuthInitializer />
       <Routes>
         <Route element={<PublicRoute />}>
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route element={<AuthLayout />}>
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+          </Route>
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<OsMain />} />
