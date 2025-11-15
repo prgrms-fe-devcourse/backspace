@@ -1,21 +1,21 @@
 @utility bevel-default {
-  background-color: var(--color-surface);
+  background-color: var(--color-base-3);
   background-clip: padding-box;
   box-shadow:
-    inset -1.5px -1.5px 0 0 var(--color-bevel-shadow-outer),
-    inset 1.5px 1.5px 0 0 var(--color-bevel-light-outer),
-    inset -3px -3px 0 0 var(--color-bevel-shadow-inner),
-    inset 3px 3px 0 0 var(--color-bevel-light-inner);
+    inset 1.5px 1.5px 0 0 var(--color-base-1),
+    inset 3px 3px 0 0 var(--color-base-2),
+    inset -3px -3px 0 0 var(--color-base-4),
+    inset -1.5px -1.5px 0 0 var(--color-base-5);
 }
 
 @utility bevel-pressed {
-  background-color: var(--color-surface);
+  background-color: var(--color-base-3);
   background-clip: padding-box;
   box-shadow:
-    inset 1.5px 1.5px 0 0 var(--color-bevel-shadow-outer),
-    inset -1.5px -1.5px 0 0 var(--color-bevel-light-outer),
-    inset 3px 3px 0 0 var(--color-bevel-shadow-inner),
-    inset -3px -3px 0 0 var(--color-bevel-light-inner);
+    inset 1.5px 1.5px 0 0 var(--color-base-5),
+    inset 3px 3px 0 0 var(--color-base-4),
+    inset -3px -3px 0 0 var(--color-base-2),
+    inset -1.5px -1.5px 0 0 var(--color-base-1);
 }
 
 @utility accent-gradient {
@@ -32,9 +32,9 @@
 }
 
 @utility error-tint {
-  background-color: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+  background-color: color-mix(in srgb, var(--color-error) 10%, var(--color-base-3));
 
   &:focus {
-    background-color: color-mix(in srgb, var(--color-error) 20%, var(--color-surface));
+    background-color: color-mix(in srgb, var(--color-error) 20%, var(--color-base-3));
   }
 }
