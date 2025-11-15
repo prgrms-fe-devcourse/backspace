@@ -6,8 +6,6 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import supabase from "@/utils/supabase";
 
-import SocialLoginButtons from "./SocialLoginButtons";
-
 const SignInSchema = z.object({
   email: z.email("올바른 이메일 형식을 입력해주세요."),
   password: z.string().min(8, "비밀번호를 8자 이상 입력해주세요."),
@@ -70,14 +68,10 @@ export default function SignInForm() {
     navigate("/");
   };
 
-  const handleGoToSignUp = () => {
-    navigate("/signup");
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-6">
+    <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-2">
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="email" className="select-none">
+        <label htmlFor="email" className="pl-1 select-none">
           Email:
         </label>
 
@@ -87,10 +81,17 @@ export default function SignInForm() {
           onChange={(e) => setEmail(e.target.value)}
           error={fieldErrors.email}
         />
+        <div className="min-h-5">
+          {fieldErrors.email && (
+            <span id="password" className="text-error px-1 text-xs">
+              {fieldErrors.email}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex w-full flex-col gap-1">
-        <label htmlFor="password" className="select-none">
+        <label htmlFor="password" className="pl-1 select-none">
           Password:
         </label>
 
@@ -101,23 +102,20 @@ export default function SignInForm() {
           onChange={(e) => setPassword(e.target.value)}
           error={fieldErrors.password}
         />
+        <div className="min-h-5">
+          {fieldErrors.password && (
+            <span id="password" className="text-error px-1 text-xs">
+              {fieldErrors.password}
+            </span>
+          )}
+        </div>
       </div>
 
-      {error && <p className="text-accent">{error}</p>}
+      {error && <p className="text-error">{error}</p>}
 
-      <SocialLoginButtons />
-
-      <Button composition="textOnly" type="submit" size="lg" className="w-60">
+      <Button composition="textOnly" type="submit" size="lg" className="w-full">
         Login
       </Button>
-
-      <button
-        type="button"
-        className="cursor-pointer text-xs underline opacity-40"
-        onClick={handleGoToSignUp}
-      >
-        Don’t have an account?
-      </button>
     </form>
   );
 }

@@ -21,7 +21,7 @@
   }
 
   &::-webkit-scrollbar-corner {
-    background-color: var(--color-surface);
+    background-color: var(--color-base-3);
   }
 }
 
@@ -37,7 +37,7 @@
 
   &::-webkit-scrollbar-track {
     box-shadow: none;
-    background-color: var(--color-bevel-light-inner);
+    background-color: var(--color-base-2);
   }
 
   overflow: hidden;

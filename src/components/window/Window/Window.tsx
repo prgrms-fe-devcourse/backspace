@@ -33,7 +33,7 @@ export default function Window({
           >
             <Dialog.Title className="sr-only">{title}</Dialog.Title>
             <Dialog.Description className="sr-only">{description}</Dialog.Description>
-            <TitleBar buttons={buttons} onClose={onClose} />
+            <TitleBar text={title} buttons={buttons} onClose={onClose} />
             {children}
           </section>
         </Dialog.Content>
