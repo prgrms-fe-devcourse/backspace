@@ -1,12 +1,11 @@
 import { Routes, Route, Navigate } from "react-router";
 
+import AuthInitializer from "@/components/auth/AuthListener";
 import SignInPage from "@/pages/auth/sign-in/SignInPage";
 import SignUpPage from "@/pages/auth/sign-up/SignUpPage";
 import OsMain from "@/pages/os/OsMain";
-
-import AuthInitializer from "./components/auth/AuthListener";
-import ProtectedRoute from "./router/ProtectedRoute";
-import PublicRoute from "./router/PublicRoute";
+import ProtectedRoute from "@/router/ProtectedRoute";
+import PublicRoute from "@/router/PublicRoute";
 
 export default function App() {
   return (

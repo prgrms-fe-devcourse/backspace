@@ -92,11 +92,12 @@ export default [
       },
     },
     rules: {
+      "consistent-return": "off",
+
       "no-console": ["warn", { allow: ["error"] }],
       "no-use-before-define": "off",
       "no-plusplus": "off",
       "no-param-reassign": ["error", { props: false }],
-      "consistent-return": "off",
 
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
@@ -105,7 +106,6 @@ export default [
       "react/function-component-definition": "off",
       "react/jsx-no-useless-fragment": ["error", { allowExpressions: true }],
       "react/prop-types": "off",
-      "react/jsx-no-constructed-context-values": "off",
 
       "@typescript-eslint/no-use-before-define": "off",
 
