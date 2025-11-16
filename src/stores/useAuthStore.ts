@@ -10,6 +10,7 @@ interface AuthStore {
   isLoading: boolean;
   user: User | null;
   profile: Profile | null;
+  homepageId: string | null;
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile) => void;
   hydrateFromAuth: () => Promise<void>;
@@ -21,20 +22,22 @@ export const useAuthStore = create<AuthStore>()(
   devtools(
     persist(
       immer((set) => ({
-        // 초기 isLoading을 true로 해놔야 처음 접속했을 때 hydrateFromAuth하기 때문에 isLoading이 false -> true -> false로 돼서 flicker가 발생하는 것을 방지할 수 있음
         isLoading: true,
         user: null,
         profile: null,
+        homepageId: null,
 
         setUser: (user) =>
           set((state: AuthStore) => {
             state.user = user;
           }),
+
         setProfile: (profile) => {
           set((state: AuthStore) => {
             state.profile = profile;
           });
         },
+
         hydrateFromAuth: async () => {
           set((state: AuthStore) => {
             state.isLoading = true;
@@ -49,36 +52,37 @@ export const useAuthStore = create<AuthStore>()(
             set((state: AuthStore) => {
               state.user = null;
               state.profile = null;
+              state.homepageId = null;
               state.isLoading = false;
             });
             return;
           }
 
           const { user } = session;
-          set((state: AuthStore) => {
-            state.user = user;
-          });
 
-          const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("auth_id", user.id)
-            .single();
+          const [profileRes, homepageRes] = await Promise.all([
+            supabase.from("profiles").select("*").eq("auth_id", user.id).single(),
+            supabase.from("homepages").select("id").eq("owner_id", user.id).single(),
+          ]);
 
-          if (profileError) {
+          if (profileRes.error || homepageRes.error) {
             console.error(
-              "프로필 조회 실패: DB에서 사용자 프로필을 가져오는 중 오류가 발생했습니다.",
-              profileError
+              "프로필 또는 홈페이지 ID 조회 실패 (로그인은 유지):",
+              profileRes.error || homepageRes.error
             );
             set((state: AuthStore) => {
-              state.profile = null;
+              state.user = user;
+              state.profile = profileRes.data || null;
+              state.homepageId = homepageRes.data?.id || null;
               state.isLoading = false;
             });
             return;
           }
 
           set((state: AuthStore) => {
-            state.profile = profile;
+            state.user = user;
+            state.profile = profileRes.data;
+            state.homepageId = homepageRes.data.id;
             state.isLoading = false;
           });
         },
@@ -87,6 +91,7 @@ export const useAuthStore = create<AuthStore>()(
           set((state: AuthStore) => {
             state.user = null;
             state.profile = null;
+            state.homepageId = null;
             state.isLoading = false;
           }),
 
@@ -99,6 +104,7 @@ export const useAuthStore = create<AuthStore>()(
         partialize: (state: AuthStore) => ({
           user: state.user,
           profile: state.profile,
+          homepageId: state.homepageId,
         }),
       }
     )
