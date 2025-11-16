@@ -168,115 +168,113 @@ export default function HomePage() {
   }, [userId]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
-        {/* 왼쪽 프로필 영역 */}
-        <div className="flex w-1/3 flex-col items-center">
-          {/* 프로필 이미지 */}
-          <div className="relative">
-            {avatarUrl ? (
-              <div className="h-32 w-32 overflow-hidden rounded-full">
-                <img className="h-full w-full object-cover" src={avatarUrl} alt="" />
-              </div>
-            ) : (
-              <div className="flex h-32 w-32 items-center justify-center rounded-full bg-[#e0d4f7] shadow-[4px_4px_0_#b9a8e3]" />
+    <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
+      {/* 왼쪽 프로필 영역 */}
+      <div className="flex w-1/3 flex-col items-center">
+        {/* 프로필 이미지 */}
+        <div className="relative">
+          {avatarUrl ? (
+            <div className="h-32 w-32 overflow-hidden rounded-full">
+              <img className="h-full w-full object-cover" src={avatarUrl} alt="" />
+            </div>
+          ) : (
+            <div className="flex h-32 w-32 items-center justify-center rounded-full bg-[#e0d4f7] shadow-[4px_4px_0_#b9a8e3]" />
+          )}
+        </div>
+
+        {/* 이름 */}
+        <p className="mt-4 text-lg font-bold text-[#342b4e]">{nickname}</p>
+
+        {/* 소개글 */}
+        <div className="relative mt-4 flex h-[100px] w-[200px] items-center justify-center rounded-md border border-[#c8bce9] bg-white text-center text-sm leading-relaxed text-[#3d3462] shadow-[3px_3px_0_#b9a8e3]">
+          <p>{bio}</p>
+        </div>
+
+        {/* 친구 신청 버튼 */}
+        <Button
+          type="button"
+          size="lg"
+          className="mt-6 w-[180px] rounded-md border border-[#bfaee9] bg-[#f3edff] py-2 text-[#3f3570] shadow-[3px_3px_0_#b9a8e3] transition hover:bg-[#e9e0ff]"
+        >
+          ☆ 친구 신청
+        </Button>
+      </div>
+
+      {/* 오른쪽 콘텐츠 */}
+      <div className="ml-8 flex w-2/3 flex-col gap-6">
+        {/* 사진첩 */}
+        <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="font-semibold text-[#3d3462]">사진첩</p>
+            {hasMoreImages && (
+              <Button
+                type="button"
+                className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
+              >
+                더보기
+              </Button>
             )}
           </div>
 
-          {/* 이름 */}
-          <p className="mt-4 text-lg font-bold text-[#342b4e]">{nickname}</p>
-
-          {/* 소개글 */}
-          <div className="relative mt-4 flex h-[100px] w-[200px] items-center justify-center rounded-md border border-[#c8bce9] bg-white text-center text-sm leading-relaxed text-[#3d3462] shadow-[3px_3px_0_#b9a8e3]">
-            <p>{bio}</p>
+          {/* 2행 4열 사진칸 */}
+          <div className="grid grid-cols-4 gap-3">
+            {images.map((img) => (
+              <div
+                key={img.id}
+                className="flex aspect-square w-full items-center justify-center rounded-md border border-[#c8bce9] bg-[#eae3fa] text-[#a18ed7] shadow-[3px_3px_0_#b9a8e3]"
+              >
+                {img.url ? (
+                  <img src={img.url} alt="" className="h-full w-full rounded-md object-cover" />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    className="h-6 w-6"
+                  >
+                    <path d="M3 5h18v14H3z" />
+                    <circle cx="8" cy="9" r="2" />
+                    <path d="M21 15l-5-5L5 19" />
+                  </svg>
+                )}
+              </div>
+            ))}
           </div>
-
-          {/* 친구 신청 버튼 */}
-          <Button
-            type="button"
-            size="lg"
-            className="mt-6 w-[180px] rounded-md border border-[#bfaee9] bg-[#f3edff] py-2 text-[#3f3570] shadow-[3px_3px_0_#b9a8e3] transition hover:bg-[#e9e0ff]"
-          >
-            ☆ 친구 신청
-          </Button>
         </div>
 
-        {/* 오른쪽 콘텐츠 */}
-        <div className="ml-8 flex w-2/3 flex-col gap-4">
-          {/* 사진첩 */}
-          <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="font-semibold text-[#3d3462]">사진첩</p>
-              {hasMoreImages && (
-                <Button
-                  type="button"
-                  className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
-                >
-                  더보기
-                </Button>
-              )}
-            </div>
-
-            {/* 2행 4열 사진칸 */}
-            <div className="grid grid-cols-4 gap-3">
-              {images.map((img) => (
-                <div
-                  key={img.id}
-                  className="flex aspect-square w-full items-center justify-center rounded-md border border-[#c8bce9] bg-[#eae3fa] text-[#a18ed7] shadow-[3px_3px_0_#b9a8e3]"
-                >
-                  {img.url ? (
-                    <img src={img.url} alt="" className="h-full w-full rounded-md object-cover" />
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="h-6 w-6"
-                    >
-                      <path d="M3 5h18v14H3z" />
-                      <circle cx="8" cy="9" r="2" />
-                      <path d="M21 15l-5-5L5 19" />
-                    </svg>
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* 최근 게시물 */}
+        <div className="flex h-[170px] flex-col rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="font-semibold text-[#3d3462]">최근 게시물</p>
+            {hasMorePosts && (
+              <Button
+                type="button"
+                className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
+              >
+                더보기
+              </Button>
+            )}
           </div>
 
-          {/* 최근 게시물 */}
-          <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="font-semibold text-[#3d3462]">최근 게시물</p>
-              {hasMorePosts && (
-                <Button
-                  type="button"
-                  className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
-                >
-                  더보기
-                </Button>
-              )}
-            </div>
-
-            <ul className="text-sm text-[#3d3462]">
-              {posts.map((post) => (
-                <li
-                  key={post.id}
-                  className="flex items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
-                >
-                  <span>{post.title}</span>
-                  <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
-                    <span>{dayjs(post.created_at).format("MM/DD")}</span>
-                    <div className="flex items-center gap-1">
-                      <MessageCircle size={14} />
-                      <span>{post.commentCount}</span>
-                    </div>
+          <ul className="flex flex-1 flex-col text-sm text-[#3d3462]">
+            {posts.map((post) => (
+              <li
+                key={post.id}
+                className="flex flex-1 items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
+              >
+                <span className="pl-3">{post.title}</span>
+                <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
+                  <span>{dayjs(post.created_at).format("MM/DD")}</span>
+                  <div className="flex items-center gap-1">
+                    <MessageCircle size={14} />
+                    <span>{post.commentCount}</span>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
