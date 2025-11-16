@@ -1,3 +1,18 @@
+import { useState } from "react";
+
+import PostListComponent from "./list/PostListComponent";
+import PostWrite from "./write/PostWrite";
+
 export default function PostTab() {
-  return <h1>PostTab Component</h1>;
+  const [isWriting, setIsWriting] = useState(false);
+
+  return (
+    <div>
+      {isWriting ? (
+        <PostWrite onClose={() => setIsWriting(false)} />
+      ) : (
+        <PostListComponent onWrite={() => setIsWriting(true)} />
+      )}
+    </div>
+  );
 }
