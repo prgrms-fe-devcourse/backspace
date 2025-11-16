@@ -1,8 +1,10 @@
 export const MINIHOME_TABS = {
-  HOME: "Home",
-  GALLERY: "Gallery",
-  MEMO: "Memo",
-  GUESTBOOK: "Guest Book",
+  home: "Home",
+  gallery: "Gallery",
+  memo: "Memo",
+  guestbook: "Guest Book",
 } as const;
 
 export type MiniHomeTabs = (typeof MINIHOME_TABS)[keyof typeof MINIHOME_TABS];
+
+export type MiniHomeTabId = keyof typeof MINIHOME_TABS;

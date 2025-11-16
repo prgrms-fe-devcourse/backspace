@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { WINDOW_APPS } from "@/config/window";
+import { MINIHOME_TABS } from "@/types/minihome.types";
 import type { WindowApp, WindowAppId } from "@/types/window.types";
 
 interface WindowStore {
@@ -12,6 +13,8 @@ interface WindowStore {
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
 }
+
+const isMiniHomeTab = (id: WindowAppId) => id in MINIHOME_TABS;
 
 export const useWindowStore = create<WindowStore>()(
   devtools(
@@ -24,15 +27,28 @@ export const useWindowStore = create<WindowStore>()(
           const appConfig = WINDOW_APPS[id];
           if (!appConfig) return;
 
-          if (!state.windows[id]) {
-            state.windows[id] = appConfig;
+          if (isMiniHomeTab(id)) {
+            Object.keys(MINIHOME_TABS).forEach((key) => {
+              delete state.windows[key as WindowAppId];
+            });
           }
+
+          state.windows[id] = appConfig;
           state.activeWindowId = id;
         }),
 
       closeWindow: (id) =>
         set((state) => {
-          delete state.windows[id];
+          if (isMiniHomeTab(id)) {
+            Object.keys(state.windows).forEach((key) => {
+              if (isMiniHomeTab(key as WindowAppId)) {
+                delete state.windows[key as WindowAppId];
+              }
+            });
+          } else {
+            delete state.windows[id];
+          }
+
           if (state.activeWindowId === id) {
             state.activeWindowId = null;
           }

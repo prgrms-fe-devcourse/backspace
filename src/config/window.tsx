@@ -19,19 +19,19 @@ export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
     id: "gallery",
     caption: "Gallery",
     icon: Gallery,
-    component: () => <MiniHome tab={MINIHOME_TABS.GALLERY} />,
+    component: () => <MiniHome tab={MINIHOME_TABS.gallery} />,
   },
   memo: {
     id: "memo",
     caption: "Memo",
     icon: Memo,
-    component: () => <MiniHome tab={MINIHOME_TABS.MEMO} />,
+    component: () => <MiniHome tab={MINIHOME_TABS.memo} />,
   },
   guestbook: {
     id: "guestbook",
     caption: "Guest Book",
     icon: Guestbook,
-    component: () => <MiniHome tab={MINIHOME_TABS.GUESTBOOK} />,
+    component: () => <MiniHome tab={MINIHOME_TABS.guestbook} />,
   },
   friends: {
     id: "friends",
