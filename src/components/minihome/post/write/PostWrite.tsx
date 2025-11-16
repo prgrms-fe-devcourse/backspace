@@ -11,6 +11,8 @@ interface PostWriteProps {
   onClose: () => void;
 }
 
+// TODO: zod를 활용해 유효성 검사 추후 추가
+
 export default function PostWrite({ onClose }: PostWriteProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
