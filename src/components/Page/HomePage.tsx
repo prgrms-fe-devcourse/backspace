@@ -28,8 +28,8 @@ interface GalleryPost {
 }
 
 export default function HomePage() {
-  // 가짜 userId로 초기화 -> 추후 로그인된 사용자의 id 값으로 수정해야 함.
-  const [userId, setUserId] = useState<string>("f4d4a5aa-34b5-4f4c-aaee-5768d0fd78e4");
+  // 가짜 ownerId로 초기화 -> 추후 홈페이지 주인(owner)의 id 값으로 수정해야 함.
+  const [ownerId, setOwnerId] = useState<string>("f4d4a5aa-34b5-4f4c-aaee-5768d0fd78e4");
 
   const [nickname, setNickname] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -49,11 +49,11 @@ export default function HomePage() {
       try {
         console.log("fetchHomePage()");
 
-        // 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
+        // 홈페이지의 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("auth_id, nickname, avatar_url, bio")
-          .eq("auth_id", userId)
+          .eq("auth_id", ownerId)
           .single();
 
         if (profileError) throw profileError;
@@ -165,7 +165,7 @@ export default function HomePage() {
     };
 
     fetchHomePage();
-  }, [userId]);
+  }, [ownerId]);
 
   return (
     <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
