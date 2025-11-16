@@ -8,36 +8,53 @@ import supabase from "@/utils/supabase";
 
 import Button from "../common/Button/Button";
 
-export default function HomePage() {
-  interface GalleryImage {
-    id: string;
-    url: string | null;
-  }
+type Visibility = Database["public"]["Enums"]["visibility"];
 
+type HomepageGalleryRow = Database["public"]["Tables"]["homepage_gallery_images"]["Row"];
+type HomepagePostRow = Database["public"]["Tables"]["homepage_posts"]["Row"];
+
+interface GalleryImage {
+  id: HomepageGalleryRow["id"];
+  url: HomepageGalleryRow["image_url"]; // 보통 string | null
+}
+
+interface GalleryPost {
+  id: HomepagePostRow["id"];
+  title: HomepagePostRow["title"];
+  created_at: HomepagePostRow["created_at"];
+  visibility: HomepagePostRow["visibility"];
+  commentCount: number;
+}
+
+export default function HomePage() {
+  // 가짜 userId로 초기화 -> 추후 로그인된 사용자의 id 값으로 수정해야 함.
   const [userId, setUserId] = useState<string>("f4d4a5aa-34b5-4f4c-aaee-5768d0fd78e4");
 
   const [nickname, setNickname] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
 
-  const [homepageId, setHomepageId] = useState<string>("gall");
-  const [visibility, setVisibility] = useState<Database["public"]["Enums"]["visibility"] | null>(
-    null
-  );
-  // const [imageUrl, setImageUrl] = useState<(string | null)[]>([]);
+  const [homepageId, setHomepageId] = useState<string>("");
+  const [visibility, setVisibility] = useState<Visibility | null>(null);
+
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [hasMoreImages, setHasMoreImages] = useState<boolean>(false);
+
+  const [posts, setPosts] = useState<GalleryPost[]>([]);
+  const [hasMorePosts, setHasMorePosts] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchHomePage = async () => {
       try {
         console.log("fetchHomePage()");
+
         // 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("auth_id, nickname, avatar_url, bio")
           .eq("auth_id", userId)
           .single();
+
         if (profileError) throw profileError;
 
         setNickname(profile.nickname);
@@ -50,6 +67,7 @@ export default function HomePage() {
           .select("id")
           .eq("owner_id", profile.auth_id)
           .single();
+
         if (homepageError) {
           console.log("homepage Error!!");
           throw homepageError;
@@ -61,7 +79,7 @@ export default function HomePage() {
         // 사진첩 정보 가져오기 (최근 8개)
         const {
           data: imageRows,
-          count,
+          count: imageCount,
           error: imageError,
         } = await supabase
           .from("homepage_gallery_images")
@@ -69,34 +87,82 @@ export default function HomePage() {
           .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
           .limit(8);
+
         if (imageError) {
           throw imageError;
-        } else if (imageRows) {
+        }
+
+        if (imageRows) {
           console.log("imageRows down 성공!");
           console.log("imageRows length", imageRows.length);
 
-          const mapped = imageRows.map((row) => ({
+          const mappedImages: GalleryImage[] = imageRows.map((row) => ({
             id: row.id,
             url: row.image_url,
           }));
-          setImages(mapped);
-          const isMore = (count ?? 0) > 8;
-          setHasMoreImages(isMore);
+
+          setImages(mappedImages);
+
+          const isMoreImages = (imageCount ?? 0) > 8;
+          setHasMoreImages(isMoreImages);
         }
 
-        // 게시글 정보 가져오기
-        // const { data: post, error: postError } = await supabase
-        //   .from("homepage_posts")
-        //   .select("homepage_id, , bio")
-        //   .eq("auth_id", userId)
-        //   .single();
-        // if (postError) throw postError;
+        // 게시물 정보 가져오기 (최근 3개)
+        const {
+          data: postRows,
+          count: postCount,
+          error: postError,
+        } = await supabase
+          .from("homepage_posts")
+          .select("id, title, created_at, visibility", { count: "exact" })
+          .eq("homepage_id", homepage.id)
+          .order("created_at", { ascending: false })
+          .limit(3);
+
+        if (postError) {
+          throw postError;
+        }
+
+        if (postRows && postRows.length > 0) {
+          const commentCountByPostId: Record<string, number> = {};
+
+          // 각 포스트별 댓글 개수 정보 가져오기
+          await Promise.all(
+            postRows.map(async (row) => {
+              const { count, error } = await supabase
+                .from("homepage_post_comments") // ✅ 실제 댓글 테이블 이름에 맞게 수정
+                .select("*", { head: true, count: "exact" })
+                .eq("post_id", row.id); // ✅ 실제 FK 컬럼 이름에 맞게 수정
+
+              if (error) {
+                console.error("댓글 개수 조회 오류", error);
+                commentCountByPostId[String(row.id)] = 0;
+              } else {
+                commentCountByPostId[String(row.id)] = count ?? 0;
+              }
+            })
+          );
+
+          const mappedPosts: GalleryPost[] = postRows.map((row) => ({
+            id: row.id,
+            title: row.title,
+            created_at: row.created_at,
+            visibility: row.visibility,
+            commentCount: commentCountByPostId[String(row.id)] ?? 0,
+          }));
+
+          setPosts(mappedPosts);
+
+          const isMorePosts = (postCount ?? 0) > 3;
+          setHasMorePosts(isMorePosts);
+        }
       } catch (e) {
         console.error("홈 페이지 데이터 로드 중 오류", e);
       } finally {
         console.log("finally");
       }
     };
+
     fetchHomePage();
   }, [userId]);
 
@@ -182,30 +248,28 @@ export default function HomePage() {
           <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
             <div className="mb-2 flex items-center justify-between">
               <p className="font-semibold text-[#3d3462]">최근 게시물</p>
-              <Button
-                type="button"
-                className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
-              >
-                더보기
-              </Button>
+              {hasMorePosts && (
+                <Button
+                  type="button"
+                  className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
+                >
+                  더보기
+                </Button>
+              )}
             </div>
 
             <ul className="text-sm text-[#3d3462]">
-              {[
-                { id: 1, text: "오늘 날씨 너무 좋다~", date: "11/10", comment: 5 },
-                { id: 2, text: "친구들이랑 놀러갔어요", date: "11/09", comment: 12 },
-                { id: 3, text: "새로운 음악 추천받아요!", date: "11/08", comment: 8 },
-              ].map((post) => (
+              {posts.map((post) => (
                 <li
                   key={post.id}
                   className="flex items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
                 >
-                  <span>{post.text}</span>
+                  <span>{post.title}</span>
                   <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
-                    <span>{post.date}</span>
+                    <span>{post.created_at}</span>
                     <div className="flex items-center gap-1">
                       <MessageCircle size={14} />
-                      <span>{post.comment}</span>
+                      <span>{post.commentCount}</span>
                     </div>
                   </div>
                 </li>
