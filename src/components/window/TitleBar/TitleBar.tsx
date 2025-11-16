@@ -1,6 +1,5 @@
-// TitleBar.tsx
 import { AppWindow, Minus, X } from "lucide-react";
-import React from "react";
+import React, { type ComponentType, type SVGProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
@@ -22,16 +21,10 @@ const sizeConfig = {
 } as const;
 
 export interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
-  icon?: React.ReactNode;
-  text?: string;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>; // FunctionComponent → ComponentType
+  title?: string; // text → title (prop 이름 통일)
   buttons?: "all" | "closeOnly" | null;
   onClose?: () => void;
-}
-
-function isElementWithClassName(
-  node: React.ReactNode
-): node is React.ReactElement<{ className?: string }> {
-  return React.isValidElement(node);
 }
 
 /**
@@ -49,12 +42,12 @@ function isElementWithClassName(
  * @param {"small" | "medium"} [size="small"]
  *   - TitleBar 전체 높이 및 내부 요소(Button, Icon)의 크기를 조절합니다.
  *
- * @param {React.ReactNode} [icon]
- *   - TitleBar 좌측에 표시되는 아이콘 요소입니다.
- *     ReactElement로 전달되며, TitleBar 크기에 맞춰 자동으로 리사이징됩니다.
+ * @param {ComponentType<SVGProps<SVGSVGElement>>} [icon]
+ *   - TitleBar 좌측에 표시되는 아이콘 컴포넌트입니다.
+ *     TitleBar 크기에 맞춰 자동으로 리사이징됩니다.
  *
- * @param {React.ReactNode} [text]
- *   - 제목 문자열 또는 JSX로 전달할 수 있는 TitleBar의 중앙 텍스트입니다.
+ * @param {string} [title]
+ *   - 제목 문자열로 TitleBar의 중앙에 표시됩니다.
  *
  * @param {"all" | "closeOnly" | null} [buttons=null]
  *   - 우측 컨트롤 버튼 표시 옵션입니다.
@@ -75,8 +68,8 @@ function isElementWithClassName(
  * <TitleBar
  *   size="small"
  *   state="active"
- *   icon={<Folder />}
- *   text="My Computer"
+ *   icon={Folder}
+ *   title="My Computer"
  *   buttons="all"
  * />
  * ```
@@ -85,8 +78,8 @@ function isElementWithClassName(
  * ```tsx
  * <TitleBar
  *   size="medium"
- *   icon={<Image />}
- *   text="Photos Viewer"
+ *   icon={Image}
+ *   title="Photos Viewer"
  *   buttons="closeOnly"
  * />
  * ```
@@ -95,7 +88,7 @@ function isElementWithClassName(
 export default function TitleBar({
   state = "active",
   size = "small",
-  icon,
+  icon: Icon,
   title,
   buttons = null,
   onClose,
@@ -103,12 +96,6 @@ export default function TitleBar({
   ...rest
 }: TitleBarProps) {
   const { iconClassName, buttonSizeClass, iconSizeClass } = sizeConfig[size ?? "small"];
-
-  const sizedIcon = isElementWithClassName(icon)
-    ? React.cloneElement(icon, {
-        className: twMerge(icon.props.className, iconSizeClass, "text-accent-contrast"),
-      })
-    : null;
 
   return (
     <header
@@ -122,7 +109,11 @@ export default function TitleBar({
       {...rest}
     >
       <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1.5">
-        {sizedIcon && <div className="shrink-0">{sizedIcon}</div>}
+        {Icon && (
+          <div className="shrink-0">
+            <Icon className={twMerge(iconSizeClass, "text-accent-contrast")} />
+          </div>
+        )}
         <div className="text-accent-contrast truncate whitespace-nowrap">{title}</div>
       </div>
 

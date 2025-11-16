@@ -1,5 +1,3 @@
-import { createElement } from "react";
-
 import Friends from "@/assets/icons/friends.svg?react";
 import Gallery from "@/assets/icons/gallery.svg?react";
 import Guestbook from "@/assets/icons/guestbook.svg?react";
@@ -7,45 +5,43 @@ import Home from "@/assets/icons/home.svg?react";
 import Memo from "@/assets/icons/memo.svg?react";
 import Settings from "@/assets/icons/settings.svg?react";
 import MiniHome from "@/pages/minihome/MiniHome";
+import { MINIHOME_TABS } from "@/types/minihome.types";
+import type { WindowApp, WindowAppId } from "@/types/window.types";
 
-const todoComponent = () => createElement("div", null, "(구현 예정)");
-
-export const WINDOW_APPS = {
-  HOME: {
-    category: "home",
+export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
+  home: {
+    id: "home",
     caption: "Home",
     icon: Home,
     component: MiniHome,
   },
-  GALLERY: {
-    category: "gallery",
+  gallery: {
+    id: "gallery",
     caption: "Gallery",
     icon: Gallery,
-    component: todoComponent,
+    component: () => <MiniHome tab={MINIHOME_TABS.GALLERY} />,
   },
-  MEMO: {
-    category: "memo",
+  memo: {
+    id: "memo",
     caption: "Memo",
     icon: Memo,
-    component: todoComponent,
+    component: () => <MiniHome tab={MINIHOME_TABS.MEMO} />,
   },
-  GUESTBOOK: {
-    category: "guestbook",
+  guestbook: {
+    id: "guestbook",
     caption: "Guest Book",
     icon: Guestbook,
-    component: todoComponent,
+    component: () => <MiniHome tab={MINIHOME_TABS.GUESTBOOK} />,
   },
-  FRIENDS: {
-    category: "friends",
+  friends: {
+    id: "friends",
     caption: "Friends",
     icon: Friends,
-    component: todoComponent,
   },
-  SETTINGS: {
-    category: "settings",
+  settings: {
+    id: "settings",
     caption: "Settings",
     icon: Settings,
-    component: todoComponent,
   },
 } as const;
 
