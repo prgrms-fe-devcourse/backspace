@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import Button from "@/components/common/Button/Button";
@@ -12,7 +11,8 @@ const SignInSchema = z.object({
 });
 
 export default function SignInForm() {
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +22,9 @@ export default function SignInForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
+    setFieldErrors({ email: "", password: "" });
+    setIsSuccess(false);
+    setIsSubmitting(true);
 
     const result = SignInSchema.safeParse({ email, password });
 
@@ -38,6 +41,7 @@ export default function SignInForm() {
       });
 
       setFieldErrors(zodErrors);
+      setIsSubmitting(false);
       return;
     }
 
@@ -45,6 +49,8 @@ export default function SignInForm() {
       email,
       password,
     });
+
+    setIsSubmitting(false);
 
     if (signError) {
       console.error("Supabase SignIn Error:", signError);
@@ -65,14 +71,14 @@ export default function SignInForm() {
       return;
     }
 
-    navigate("/");
+    setIsSuccess(true);
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-2">
       <div className="flex w-full flex-col gap-1">
         <label htmlFor="email" className="px-1 select-none">
-          Email:
+          이메일:
         </label>
 
         <Input
@@ -80,6 +86,7 @@ export default function SignInForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           error={fieldErrors.email}
+          disabled={isSubmitting}
         />
         <div className="min-h-5">
           {fieldErrors.email && (
@@ -92,7 +99,7 @@ export default function SignInForm() {
 
       <div className="flex w-full flex-col gap-1">
         <label htmlFor="password" className="px-1 select-none">
-          Password:
+          패스워드:
         </label>
 
         <Input
@@ -101,6 +108,7 @@ export default function SignInForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={fieldErrors.password}
+          disabled={isSubmitting}
         />
         <div className="min-h-5">
           {fieldErrors.password && (
@@ -113,8 +121,14 @@ export default function SignInForm() {
 
       {error && <p className="text-error">{error}</p>}
 
-      <Button composition="textOnly" type="submit" size="lg" className="w-full">
-        Login
+      <Button
+        composition="textOnly"
+        type="submit"
+        size="lg"
+        className="w-full"
+        disabled={isSubmitting || isSuccess}
+      >
+        {isSubmitting ? "로그인중..." : "로그인"}
       </Button>
     </form>
   );

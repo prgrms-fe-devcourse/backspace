@@ -27,6 +27,9 @@ export default function SignUpForm() {
     password: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{
     username?: string;
@@ -38,6 +41,8 @@ export default function SignUpForm() {
     e.preventDefault();
     setErrorMessage("");
     setFieldErrors({});
+    setIsSuccess(false);
+    setIsSubmitting(true);
 
     const result = User.safeParse(formData);
 
@@ -48,6 +53,7 @@ export default function SignUpForm() {
         if (typeof key === "string") errors[key] = issue.message;
       });
       setFieldErrors(errors);
+      setIsSubmitting(false);
       return;
     }
 
@@ -60,6 +66,8 @@ export default function SignUpForm() {
         },
       },
     });
+
+    setIsSubmitting(false);
 
     if (error) {
       console.error("Supabase SignUp Error:", error);
@@ -81,7 +89,7 @@ export default function SignUpForm() {
       return;
     }
 
-    navigate("/");
+    setIsSuccess(true);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,83 +103,102 @@ export default function SignUpForm() {
 
   return (
     <form onSubmit={handleSignUp} className="flex w-full flex-col items-center gap-2">
-      <div className="flex w-full flex-col gap-1">
-        <label htmlFor="username" className="px-1 select-none">
-          User Name:
-        </label>
-
-        <Input
-          id="username"
-          value={formData.username}
-          onChange={handleChange}
-          error={fieldErrors.username}
-        />
-        <div className="min-h-5">
-          {fieldErrors.username && (
-            <span id="username-error" className="text-error px-1 text-xs">
-              {fieldErrors.username}
-            </span>
-          )}
+      {isSuccess ? (
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h3 className="text-lg font-semibold">회원가입 성공!</h3>
+          <p>로그인되었습니다. 메인 페이지로 이동합니다...</p>
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="flex w-full flex-col gap-1">
+            <label htmlFor="username" className="px-1 select-none">
+              유저 이름:
+            </label>
 
-      <div className="flex w-full flex-col gap-1">
-        <label htmlFor="email" className="px-1 select-none">
-          Email:
-        </label>
+            <Input
+              id="username"
+              value={formData.username}
+              onChange={handleChange}
+              error={fieldErrors.username}
+              disabled={isSubmitting}
+            />
+            <div className="min-h-5">
+              {fieldErrors.username && (
+                <span id="username-error" className="text-error px-1 text-xs">
+                  {fieldErrors.username}
+                </span>
+              )}
+            </div>
+          </div>
 
-        <Input
-          id="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={fieldErrors.email}
-        />
-        <div className="min-h-5">
-          {fieldErrors.email && (
-            <span id="email-error" className="text-error px-1 text-xs">
-              {fieldErrors.email}
-            </span>
-          )}
-        </div>
-      </div>
+          <div className="flex w-full flex-col gap-1">
+            <label htmlFor="email" className="px-1 select-none">
+              이메일:
+            </label>
 
-      <div className="flex w-full flex-col gap-1">
-        <label htmlFor="password" className="px-1 select-none">
-          Password:
-        </label>
+            <Input
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={fieldErrors.email}
+              disabled={isSubmitting}
+            />
+            <div className="min-h-5">
+              {fieldErrors.email && (
+                <span id="email-error" className="text-error px-1 text-xs">
+                  {fieldErrors.email}
+                </span>
+              )}
+            </div>
+          </div>
 
-        <Input
-          id="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          error={fieldErrors.password}
-        />
-        <div className="min-h-5">
-          {fieldErrors.password && (
-            <span id="password-error" className="text-error px-1 text-xs">
-              {fieldErrors.password}
-            </span>
-          )}
-        </div>
-      </div>
+          <div className="flex w-full flex-col gap-1">
+            <label htmlFor="password" className="px-1 select-none">
+              Password:
+            </label>
 
-      {errorMessage && <p className="text-error">{errorMessage}</p>}
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={fieldErrors.password}
+              disabled={isSubmitting}
+            />
+            <div className="min-h-5">
+              {fieldErrors.password && (
+                <span id="password-error" className="text-error px-1 text-xs">
+                  {fieldErrors.password}
+                </span>
+              )}
+            </div>
+          </div>
 
-      <div className="flex w-full justify-center gap-2">
-        <Button composition="textOnly" type="submit" size="lg" className="h-8 w-full">
-          OK
-        </Button>
-        <Button
-          composition="textOnly"
-          type="button"
-          size="lg"
-          className="h-8 w-full"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-      </div>
+          {errorMessage && <p className="text-error">{errorMessage}</p>}
+
+          <div className="flex w-full justify-center gap-2">
+            <Button
+              composition="textOnly"
+              type="submit"
+              size="lg"
+              className="h-8 w-full"
+              disabled={isSubmitting || isSuccess}
+            >
+              {isSubmitting ? "가입 중..." : "확인"}
+            </Button>
+            <Button
+              composition="textOnly"
+              type="button"
+              size="lg"
+              className="h-8 w-full"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            >
+              취소
+            </Button>
+          </div>
+        </>
+      )}
     </form>
   );
 }
