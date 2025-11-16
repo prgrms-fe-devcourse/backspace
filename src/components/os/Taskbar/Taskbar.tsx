@@ -2,6 +2,7 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 import { useWindowStore } from "@/stores/useWindowStore";
+import type { WindowAppId } from "@/types/window.types";
 
 import TaskbarStart from "./TaskbarStart";
 import TaskbarSystemTray from "./TaskbarSystemTray";
@@ -57,9 +58,9 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
   const showStart = config === "default" || config === "noSystemTray";
   const showSystemTray = config === "default" || config === "noStartButton";
 
-  const handleTabClick = (id: string) => {
+  const handleTabClick = (id: WindowAppId) => {
     // Taskbar 탭 클릭 시 해당 window로 focus
-    setActiveWindow(id as any); // WindowAppId로 타입 캐스팅
+    setActiveWindow(id);
   };
 
   return (

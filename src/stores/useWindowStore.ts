@@ -16,6 +16,12 @@ interface WindowStore {
 
 const isMiniHomeTab = (id: WindowAppId) => id in MINIHOME_TABS;
 
+const clearMiniHomeTabs = (windows: Partial<Record<WindowAppId, WindowApp>>) => {
+  Object.keys(MINIHOME_TABS).forEach((key) => {
+    delete windows[key as WindowAppId];
+  });
+};
+
 export const useWindowStore = create<WindowStore>()(
   devtools(
     immer((set) => ({
@@ -28,9 +34,7 @@ export const useWindowStore = create<WindowStore>()(
           if (!appConfig) return;
 
           if (isMiniHomeTab(id)) {
-            Object.keys(MINIHOME_TABS).forEach((key) => {
-              delete state.windows[key as WindowAppId];
-            });
+            clearMiniHomeTabs(state.windows);
           }
 
           state.windows[id] = appConfig;
@@ -39,15 +43,7 @@ export const useWindowStore = create<WindowStore>()(
 
       closeWindow: (id) =>
         set((state) => {
-          if (isMiniHomeTab(id)) {
-            Object.keys(state.windows).forEach((key) => {
-              if (isMiniHomeTab(key as WindowAppId)) {
-                delete state.windows[key as WindowAppId];
-              }
-            });
-          } else {
-            delete state.windows[id];
-          }
+          delete state.windows[id];
 
           if (state.activeWindowId === id) {
             state.activeWindowId = null;

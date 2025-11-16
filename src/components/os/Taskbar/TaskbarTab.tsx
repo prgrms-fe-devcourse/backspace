@@ -1,4 +1,4 @@
-import type { ComponentType, SVGProps } from "react";
+import type { FunctionComponent, SVGProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
@@ -6,7 +6,7 @@ import Button from "@/components/common/Button/Button";
 import { taskbarTab } from "./variants";
 
 interface TaskbarTabProps {
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: FunctionComponent<SVGProps<SVGSVGElement>>;
   title: string;
   isFocused?: boolean;
   className?: string;
