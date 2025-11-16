@@ -49,32 +49,24 @@ export default function OsMain() {
           ))}
         </div>
 
-        {Object.values(windows)
-          .filter((windowState, index, arr) => {
-            const minihomeIds = ["home", "gallery", "memo", "guestbook"];
-            if (minihomeIds.includes(windowState.id)) {
-              return arr.findIndex((w) => minihomeIds.includes(w.id)) === index;
-            }
-            return true;
-          })
-          .map((windowState) => {
-            const Component = windowState.component;
-            if (!Component) return null;
+        {Object.values(windows).map((windowState) => {
+          const Component = windowState.component;
+          if (!Component) return null;
 
-            return (
-              <Window
-                key={windowState.id}
-                ref={ref}
-                open
-                buttons="all"
-                onClose={() => closeWindow(windowState.id)}
-                title={windowState.caption}
-                icon={windowState.icon}
-              >
-                <Component />
-              </Window>
-            );
-          })}
+          return (
+            <Window
+              key={windowState.id}
+              ref={ref}
+              open
+              buttons="all"
+              onClose={() => closeWindow(windowState.id)}
+              title={windowState.caption}
+              icon={windowState.icon}
+            >
+              <Component />
+            </Window>
+          );
+        })}
       </div>
       <Taskbar />
     </main>

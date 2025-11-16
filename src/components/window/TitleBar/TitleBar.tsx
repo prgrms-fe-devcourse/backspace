@@ -1,5 +1,5 @@
 import { AppWindow, Minus, X } from "lucide-react";
-import React, { type ComponentType, type SVGProps } from "react";
+import React, { type FunctionComponent, type SVGProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
@@ -21,7 +21,7 @@ const sizeConfig = {
 } as const;
 
 export interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
-  icon?: ComponentType<SVGProps<SVGSVGElement>>; // FunctionComponent → ComponentType
+  icon?: FunctionComponent<SVGProps<SVGSVGElement>>; // FunctionComponent → ComponentType
   title?: string; // text → title (prop 이름 통일)
   buttons?: "all" | "closeOnly" | null;
   onClose?: () => void;

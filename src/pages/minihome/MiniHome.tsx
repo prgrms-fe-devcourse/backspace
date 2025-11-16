@@ -1,7 +1,6 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { Activity, useEffect, useState } from "react";
 
-import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
 
@@ -23,7 +22,8 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
   useEffect(() => {
     galleryDetail.exitDetail();
     memoDetail.exitDetail();
-  }, [activeTab, galleryDetail, memoDetail]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   return (
     <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value as MiniHomeTabs)}>
@@ -59,9 +59,7 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook}>
-        <Activity>
-          <GuestBook />
-        </Activity>
+        <Activity>방명록{/* <GuestBook /> */}</Activity>
       </Tabs.Content>
     </Tabs.Root>
   );
