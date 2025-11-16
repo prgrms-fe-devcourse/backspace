@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import dayjs from "dayjs";
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -266,7 +267,7 @@ export default function HomePage() {
                 >
                   <span>{post.title}</span>
                   <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
-                    <span>{post.created_at}</span>
+                    <span>{dayjs(post.created_at).format("MM/DD")}</span>
                     <div className="flex items-center gap-1">
                       <MessageCircle size={14} />
                       <span>{post.commentCount}</span>
