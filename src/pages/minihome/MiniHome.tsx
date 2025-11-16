@@ -1,11 +1,28 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import { Activity, useState } from "react";
+import { Activity, useEffect, useState } from "react";
 
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
 
-export default function MiniHome({ tab = "Home" }: { tab?: MiniHomeTabs }) {
+function useDetailState<TabId>() {
+  const [selectedId, setSelectedId] = useState<TabId | null>(null);
+
+  const enterDetail = (id: TabId) => setSelectedId(id);
+  const exitDetail = () => setSelectedId(null);
+
+  return { selectedId, enterDetail, exitDetail };
+}
+
+export default function MiniHome({ tab = MINIHOME_TABS.HOME }: { tab?: MiniHomeTabs }) {
   const [activeTab, setActiveTab] = useState<MiniHomeTabs>(tab);
+
+  const galleryDetail = useDetailState<string>();
+  const memoDetail = useDetailState<string>();
+
+  useEffect(() => {
+    galleryDetail.exitDetail();
+    memoDetail.exitDetail();
+  }, [activeTab, galleryDetail, memoDetail]);
 
   return (
     <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value as MiniHomeTabs)}>
@@ -21,10 +38,24 @@ export default function MiniHome({ tab = "Home" }: { tab?: MiniHomeTabs }) {
         <Activity>홈</Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.GALLERY}>
-        <Activity>사진첩</Activity>
+        <Activity>
+          사진첩
+          {/* {galleryDetail.selectedId ? (
+            <GalleryDetail photoId={galleryDetail.selectedId} onBack={galleryDetail.exitDetail} />
+          ) : (
+            <Gallery onSelectPhoto={galleryDetail.enterDetail} />
+          )} */}
+        </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.MEMO}>
-        <Activity>메모장</Activity>
+        <Activity>
+          메모
+          {/* {memoDetail.selectedId ? (
+            <MemoDetail memoId={memoDetail.selectedId} onBack={memoDetail.exitDetail} />
+          ) : (
+            <Memo onSelectMemo={memoDetail.enterDetail} />
+          )} */}
+        </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.GUESTBOOK}>
         <Activity>방명록</Activity>

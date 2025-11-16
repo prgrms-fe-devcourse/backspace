@@ -49,4 +49,4 @@ export const WINDOW_APPS = {
   },
 } as const;
 
-export type WindowApp = (typeof WINDOW_APPS)[keyof typeof WINDOW_APPS];
+export type WindowApps = (typeof WINDOW_APPS)[keyof typeof WINDOW_APPS];
