@@ -1,6 +1,8 @@
 import { type ComponentType, type FunctionComponent, type SVGProps } from "react";
 
-export type WindowAppId = "home" | "gallery" | "memo" | "guestbook" | "friends" | "settings";
+import type { MiniHomeTabId } from "@/types/minihome.types";
+
+export type WindowAppId = MiniHomeTabId | "friends" | "settings";
 
 export interface WindowApp {
   id: WindowAppId;

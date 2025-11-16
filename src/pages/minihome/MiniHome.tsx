@@ -14,7 +14,7 @@ function useDetailState<TabId>() {
   return { selectedId, enterDetail, exitDetail };
 }
 
-export default function MiniHome({ tab = MINIHOME_TABS.HOME }: { tab?: MiniHomeTabs }) {
+export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeTabs }) {
   const [activeTab, setActiveTab] = useState<MiniHomeTabs>(tab);
 
   const galleryDetail = useDetailState<string>();
@@ -35,10 +35,10 @@ export default function MiniHome({ tab = MINIHOME_TABS.HOME }: { tab?: MiniHomeT
         ))}
       </Tabs.List>
       {/* TODO: 컴포넌트 주입해주시면 됩니다. */}
-      <Tabs.Content value={MINIHOME_TABS.HOME}>
+      <Tabs.Content value={MINIHOME_TABS.home}>
         <Activity>홈</Activity>
       </Tabs.Content>
-      <Tabs.Content value={MINIHOME_TABS.GALLERY}>
+      <Tabs.Content value={MINIHOME_TABS.gallery}>
         <Activity>
           사진첩
           {/* {galleryDetail.selectedId ? (
@@ -48,7 +48,7 @@ export default function MiniHome({ tab = MINIHOME_TABS.HOME }: { tab?: MiniHomeT
           )} */}
         </Activity>
       </Tabs.Content>
-      <Tabs.Content value={MINIHOME_TABS.MEMO}>
+      <Tabs.Content value={MINIHOME_TABS.memo}>
         <Activity>
           메모
           {/* {memoDetail.selectedId ? (
@@ -58,7 +58,7 @@ export default function MiniHome({ tab = MINIHOME_TABS.HOME }: { tab?: MiniHomeT
           )} */}
         </Activity>
       </Tabs.Content>
-      <Tabs.Content value={MINIHOME_TABS.GUESTBOOK}>
+      <Tabs.Content value={MINIHOME_TABS.guestbook}>
         <Activity>
           <GuestBook />
         </Activity>
