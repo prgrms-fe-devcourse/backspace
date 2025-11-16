@@ -39,20 +39,24 @@ export const useAuthStore = create<AuthStore>()(
         },
 
         hydrateFromAuth: async () => {
-          set((state: AuthStore) => {
-            state.isLoading = true;
-          });
-
           const {
             data: { session },
             error,
           } = await supabase.auth.getSession();
 
-          if (error || !session) {
+          if (error) {
+            console.error(error);
             set((state: AuthStore) => {
               state.user = null;
               state.profile = null;
               state.homepageId = null;
+              state.isLoading = false;
+            });
+            return;
+          }
+
+          if (!session) {
+            set((state: AuthStore) => {
               state.isLoading = false;
             });
             return;
