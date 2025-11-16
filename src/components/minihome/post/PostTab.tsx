@@ -7,7 +7,7 @@ export default function PostTab() {
   const [isWriting, setIsWriting] = useState(false);
 
   return (
-    <div>
+    <div className="h-full">
       {isWriting ? (
         <PostWrite onClose={() => setIsWriting(false)} />
       ) : (
