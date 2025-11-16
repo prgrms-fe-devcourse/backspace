@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from "react";
 import { twMerge } from "tailwind-merge";
 
-import type { WindowApp } from "@/types/window-app.type.ts";
+import type { WindowApp } from "@/types/window.types";
 
 interface ShortcutProps extends ComponentPropsWithRef<"button"> {
   Icon: WindowApp["icon"];
@@ -35,25 +35,20 @@ export default function Shortcut({
   return (
     <button
       type="button"
-      className={twMerge(
-        "group",
-        "inline-flex min-h-16 min-w-16 flex-col items-center justify-center",
-        "gap-1 px-2 py-2",
-        "text-center"
-      )}
+      className={twMerge("group inline-flex flex-col items-center gap-1")}
       {...props}
     >
       <Icon
         className={twMerge(
           "text-text-default",
-          "size-11 md:size-14 lg:size-16",
+          "size-9 md:size-10",
           isSelected && "bg-secondary/80"
         )}
         aria-hidden="true"
       />
       <span
         className={twMerge(
-          "text-text-default",
+          "text-text-default text-xs select-none md:text-sm",
           isSelected && "bg-secondary/80 focus-dotted",
           isFocused && "focus-dotted"
         )}

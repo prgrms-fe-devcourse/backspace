@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentType, SVGProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
@@ -6,7 +6,7 @@ import Button from "@/components/common/Button/Button";
 import { taskbarTab } from "./variants";
 
 interface TaskbarTabProps {
-  icon: ReactNode;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
   isFocused?: boolean;
   className?: string;
@@ -23,7 +23,7 @@ interface TaskbarTabProps {
  * Button 컴포넌트를 기반으로 구현되었습니다.
  *
  * @component
- * @param {ReactNode} icon - 아이콘을 나타내는 React 노드
+ * @param {ComponentType<SVGProps<SVGSVGElement>>} icon - 아이콘 컴포넌트
  * @param {string} title - 탭에 표시할 윈도우 제목
  * @param {boolean} [isFocused=false] - focus 상태 (true면 pressed, false면 neutral)
  * @param {string} [className] - 추가 Tailwind 클래스
@@ -32,11 +32,11 @@ interface TaskbarTabProps {
  *
  * @example
  * ```tsx
- * <TaskbarTab icon={<Folder size={14} />} title="My Computer" isFocused />
+ * <TaskbarTab icon={Folder} title="My Computer" isFocused />
  * ```
  */
 export default function TaskbarTab({
-  icon,
+  icon: Icon,
   title,
   isFocused = false,
   className,
@@ -51,8 +51,10 @@ export default function TaskbarTab({
       className={twMerge(taskbarTab, className)}
       onClick={onClick}
     >
-      <span className="flex overflow-hidden">
-        <span className="shrink-0">{icon}</span>
+      <span className="flex gap-1.5 overflow-hidden">
+        <span className="shrink-0">
+          <Icon className="h-3.5 w-3.5" />
+        </span>
         {title && (
           <span className="min-w-0 flex-1 truncate @max-[44px]:hidden" title={title}>
             {title}

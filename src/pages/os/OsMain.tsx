@@ -1,90 +1,81 @@
 import { useRef, useState } from "react";
-import type { ComponentType } from "react";
 
 import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
 import Window from "@/components/window/Window/Window";
+import { WINDOW_APPS } from "@/config/window";
 import { useWindowStore } from "@/stores/useWindowStore";
-import { WINDOW_APPS, type WindowApps } from "@/types/window-app.type";
-
-const WINDOW_CONFIGS: WindowApps[] = Object.values(WINDOW_APPS);
+import type { WindowAppId } from "@/types/window.types";
 
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
-  const { windows, runWindow, closeWindow } = useWindowStore();
-  const [selectedShortcutCategory, setSelectedShortcutCategory] = useState<string | null>(null);
-  const [focusedShortcutCategory, setFocusedShortcutCategory] = useState<string | null>(null);
+  const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
+  const [focusedShortcutId, setFocusedShortcutId] = useState<string | null>(null);
+  const { windows, openWindow, closeWindow } = useWindowStore();
 
-  const handleShortcutFocus = (category: string) => {
-    // 포커스가 들어올 때 -> isSelected와 isFocused 모두 true
-    setSelectedShortcutCategory(category);
-    setFocusedShortcutCategory(category);
+  const handleShortcutFocus = (id: string) => {
+    setSelectedShortcutId(id);
+    setFocusedShortcutId(id);
   };
 
   const handleShortcutBlur = () => {
-    // 포커스가 다른 곳으로 이동할 때 selected 해제
-    setSelectedShortcutCategory(null);
+    setSelectedShortcutId(null);
   };
 
-  const handleShortcutDoubleClick = (
-    category: string,
-    title: string,
-    IconComponent: ComponentType
-  ) => {
-    runWindow({
-      category,
-      title,
-      icon: <IconComponent />,
-    });
-
-    // 더블클릭 시 상태 해제
-    setSelectedShortcutCategory(null);
-    setFocusedShortcutCategory(null);
+  const handleShortcutDoubleClick = (id: WindowAppId) => {
+    openWindow(id);
+    setSelectedShortcutId(null);
+    setFocusedShortcutId(null);
   };
 
   return (
-    <main ref={ref} className="bg-surface flex h-screen flex-col">
-      {/* 바탕화면 영역 */}
+    <main ref={ref} className="bg-base-2 flex h-screen flex-col">
       <div className="flex-1 p-4">
-        {/* 바로가기 그리드 영역 */}
         <div
-          className="grid h-full w-full auto-cols-[80px] grid-flow-col grid-rows-[repeat(auto-fill,100px)] content-start gap-4"
+          className="grid h-full w-full auto-cols-max grid-flow-row auto-rows-max gap-6 md:gap-8"
           aria-label="바로가기"
         >
-          {WINDOW_CONFIGS.map(({ category, icon, caption }) => (
+          {Object.values(WINDOW_APPS).map(({ id, icon, caption }) => (
             <Shortcut
-              key={category}
+              key={id}
               Icon={icon}
               caption={caption}
-              isSelected={selectedShortcutCategory === category}
-              isFocused={focusedShortcutCategory === category}
-              onFocus={() => handleShortcutFocus(category)}
+              isSelected={selectedShortcutId === id}
+              isFocused={focusedShortcutId === id}
+              onFocus={() => handleShortcutFocus(id)}
               onBlur={handleShortcutBlur}
-              onDoubleClick={() => handleShortcutDoubleClick(category, caption, icon)}
+              onDoubleClick={() => handleShortcutDoubleClick(id)}
             />
           ))}
         </div>
-        {/* 윈도우 렌더링 */}
-        {windows.map((window) => {
-          const windowConfig = WINDOW_CONFIGS.find((config) => config.category === window.category);
-          const WindowContent = windowConfig?.component;
-          if (!WindowContent) return null;
-          return (
-            <Window
-              key={window.category}
-              ref={ref}
-              open
-              buttons="all"
-              onClose={() => closeWindow(window.category)}
-              title={window.title}
-              icon={window.icon}
-            >
-              <WindowContent />
-            </Window>
-          );
-        })}
+
+        {Object.values(windows)
+          .filter((windowState, index, arr) => {
+            const minihomeIds = ["home", "gallery", "memo", "guestbook"];
+            if (minihomeIds.includes(windowState.id)) {
+              return arr.findIndex((w) => minihomeIds.includes(w.id)) === index;
+            }
+            return true;
+          })
+          .map((windowState) => {
+            const Component = windowState.component;
+            if (!Component) return null;
+
+            return (
+              <Window
+                key={windowState.id}
+                ref={ref}
+                open
+                buttons="all"
+                onClose={() => closeWindow(windowState.id)}
+                title={windowState.caption}
+                icon={windowState.icon}
+              >
+                <Component />
+              </Window>
+            );
+          })}
       </div>
-      {/* 태스크바 영역 */}
       <Taskbar />
     </main>
   );

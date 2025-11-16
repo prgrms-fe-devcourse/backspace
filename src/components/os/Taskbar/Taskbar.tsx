@@ -49,30 +49,30 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"nav"> & {
 export default function Taskbar({ className, config = "default", ...rest }: TaskbarProps) {
   // Taskbar 탭으로 노출할 전체 창 목록
   const windows = useWindowStore((state) => state.windows);
-  // 현재 포커스된 창의 카테고리
-  const focusedWindowCategory = useWindowStore((state) => state.focusedWindowCategory);
+  // 현재 포커스된 창의 ID
+  const activeWindowId = useWindowStore((state) => state.activeWindowId);
   // 특정 창으로 포커스를 이동시키는 액션
-  const setFocusWindow = useWindowStore((state) => state.setFocusWindow);
+  const setActiveWindow = useWindowStore((state) => state.setActiveWindow);
 
   const showStart = config === "default" || config === "noSystemTray";
   const showSystemTray = config === "default" || config === "noStartButton";
 
-  const handleTabClick = (category: string) => {
+  const handleTabClick = (id: string) => {
     // Taskbar 탭 클릭 시 해당 window로 focus
-    setFocusWindow(category);
+    setActiveWindow(id as any); // WindowAppId로 타입 캐스팅
   };
 
   return (
     <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
-        {windows.map((window) => (
-          <li key={window.category} className="@container flex max-w-43 min-w-0 flex-1">
+        {Object.values(windows).map((app) => (
+          <li key={app.id} className="@container flex max-w-43 min-w-0 flex-1">
             <TaskbarTab
-              icon={window.icon}
-              title={window.title}
-              isFocused={window.category === focusedWindowCategory}
-              onClick={() => handleTabClick(window.category)}
+              icon={app.icon}
+              title={app.caption}
+              isFocused={app.id === activeWindowId}
+              onClick={() => handleTabClick(app.id)}
             />
           </li>
         ))}
