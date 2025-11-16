@@ -3,6 +3,7 @@
 import dayjs from "dayjs";
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 import type { Database } from "@/types/database.types";
 import supabase from "@/utils/supabase";
@@ -35,7 +36,7 @@ export default function HomePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
 
-  const [homepageId, setHomepageId] = useState<string>("");
+  const [homepageId, setHomepageId] = useState<string | null>("");
   const [visibility, setVisibility] = useState<Visibility | null>(null);
 
   const [images, setImages] = useState<GalleryImage[]>([]);
@@ -44,29 +45,26 @@ export default function HomePage() {
   const [posts, setPosts] = useState<GalleryPost[]>([]);
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(false);
 
+  const params = useParams();
+
   useEffect(() => {
     const fetchHomePage = async () => {
       try {
         console.log("fetchHomePage()");
 
-        // 홈페이지의 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("auth_id, nickname, avatar_url, bio")
-          .eq("auth_id", ownerId)
-          .single();
-
-        if (profileError) throw profileError;
-
-        setNickname(profile.nickname);
-        setAvatarUrl(profile.avatar_url);
-        setBio(profile.bio);
-
         // 홈페이지 id 가져오기
+        if (!params?.homepageId) {
+          console.error("존재하지 않는 homepageId 입니다.");
+          setHomepageId(null);
+          return; // 홈페이지 렌더링 불가
+        }
+
+        setHomepageId(params.homepageId);
+
         const { data: homepage, error: homepageError } = await supabase
           .from("homepages")
-          .select("id")
-          .eq("owner_id", profile.auth_id)
+          .select("owner_id")
+          .eq("id", params.homepageId)
           .single();
 
         if (homepageError) {
@@ -74,8 +72,20 @@ export default function HomePage() {
           throw homepageError;
         }
 
-        setHomepageId(homepage.id);
-        console.log("homepage.id", homepage.id);
+        setOwnerId(homepage.owner_id);
+
+        // 홈페이지의 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("nickname, avatar_url, bio")
+          .eq("auth_id", homepage.owner_id)
+          .single();
+
+        if (profileError) throw profileError;
+
+        setNickname(profile.nickname);
+        setAvatarUrl(profile.avatar_url);
+        setBio(profile.bio);
 
         // 사진첩 정보 가져오기 (최근 8개)
         const {
@@ -85,7 +95,7 @@ export default function HomePage() {
         } = await supabase
           .from("homepage_gallery_images")
           .select("id, visibility, image_url", { count: "exact" })
-          .eq("homepage_id", homepage.id)
+          .eq("homepage_id", params.homepageId)
           .order("created_at", { ascending: false })
           .limit(8);
 
@@ -116,7 +126,7 @@ export default function HomePage() {
         } = await supabase
           .from("homepage_posts")
           .select("id, title, created_at, visibility", { count: "exact" })
-          .eq("homepage_id", homepage.id)
+          .eq("homepage_id", params.homepageId)
           .order("created_at", { ascending: false })
           .limit(3);
 
@@ -165,7 +175,7 @@ export default function HomePage() {
     };
 
     fetchHomePage();
-  }, [ownerId]);
+  }, [params.homepageId]);
 
   return (
     <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
