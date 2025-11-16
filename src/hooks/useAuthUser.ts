@@ -2,7 +2,7 @@ import type { User } from "@supabase/supabase-js";
 import { useShallow } from "zustand/shallow";
 
 import { useAuthStore } from "@/stores/useAuthStore";
-import type { Profile } from "@/types/profile";
+import type { Profile } from "@/types/profile.types";
 
 interface AuthUserData {
   user: User | null;
