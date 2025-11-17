@@ -4,6 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import dayjs from "dayjs";
 import { MessageCircle, UserRound, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Database } from "@/types/database.types";
@@ -41,6 +42,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
   const [visibility, setVisibility] = useState<Visibility | null>(null);
 
   const [friendRequested, setFriendRequested] = useState<boolean>(false);
+  const [toggleAnimating, setToggleAnimating] = useState(false);
 
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [hasMoreImages, setHasMoreImages] = useState<boolean>(false);
@@ -192,6 +194,45 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
     fetchHomePage();
   }, [ownerId, user]);
 
+  // 친구신청 토글 기능
+  const toggleFriendRequest = async () => {
+    if (!user?.id) {
+      console.error("로그인 후 이용해주세요.");
+      return;
+    }
+    if (!ownerId) {
+      console.error("친구신청 상대가 존재하지 않습니다.");
+      return;
+    }
+
+    setToggleAnimating(true);
+
+    try {
+      if (friendRequested) {
+        // 이미 친구신청한 경우 → 삭제
+        const { error: deleteError } = await supabase
+          .from("friend_requests")
+          .delete()
+          .eq("requester_id", user.id)
+          .eq("addressee_id", ownerId)
+          .select();
+        if (deleteError) throw deleteError;
+        setFriendRequested(false);
+      } else {
+        // 친구신청 안 한 경우 → 등록
+        const { error: insertError } = await supabase
+          .from("friend_requests")
+          .insert([{ requester_id: user.id, addressee_id: ownerId }]);
+        if (insertError) throw insertError;
+        setFriendRequested(true);
+      }
+    } catch (e) {
+      console.error("친구신청 처리 중 오류:", e);
+    } finally {
+      setTimeout(() => setToggleAnimating(false), 300);
+    }
+  };
+
   return (
     <div className="bevel-default flex min-h-[428px] w-[592px] p-6">
       {/* 왼쪽 프로필 영역 */}
@@ -218,14 +259,26 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         </div>
 
         {/* 친구 신청 버튼 */}
-        <Button
-          type="button"
-          className="mt-6 h-16 w-1/1 py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
-        >
-          <div className="flex items-center gap-3">
-            <Star size={17} color="#B2AAEB" /> <p>친구 신청</p>
-          </div>
-        </Button>
+        {!isMine && (
+          <Button
+            type="button"
+            className="mt-6 h-16 w-1/1 py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
+            onClick={toggleFriendRequest}
+          >
+            <div className="flex items-center gap-3">
+              <Star
+                size={17}
+                color="#B2AAEB"
+                className={twMerge(
+                  "transition-transform duration-300",
+                  friendRequested ? "fill-[#B2AAEB]" : "fill-transparent",
+                  toggleAnimating && "scale-120"
+                )}
+              />{" "}
+              <p>친구 신청</p>
+            </div>
+          </Button>
+        )}
       </div>
 
       {/* 오른쪽 콘텐츠 */}
