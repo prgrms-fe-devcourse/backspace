@@ -45,10 +45,8 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
   const [toggleAnimating, setToggleAnimating] = useState(false);
 
   const [images, setImages] = useState<GalleryImage[]>([]);
-  const [hasMoreImages, setHasMoreImages] = useState<boolean>(false);
 
   const [posts, setPosts] = useState<GalleryPost[]>([]);
-  const [hasMorePosts, setHasMorePosts] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchHomePage = async () => {
@@ -105,13 +103,9 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         }
 
         // 사진첩 정보 가져오기 (최근 8개)
-        const {
-          data: imageRows,
-          count: imageCount,
-          error: imageError,
-        } = await supabase
+        const { data: imageRows, error: imageError } = await supabase
           .from("homepage_gallery_images")
-          .select("id, visibility, image_url", { count: "exact" })
+          .select("id, visibility, image_url")
           .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
           .limit(8);
@@ -130,19 +124,12 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
           }));
 
           setImages(mappedImages);
-
-          const isMoreImages = (imageCount ?? 0) > 8;
-          setHasMoreImages(isMoreImages);
         }
 
         // 게시물 정보 가져오기 (최근 3개)
-        const {
-          data: postRows,
-          count: postCount,
-          error: postError,
-        } = await supabase
+        const { data: postRows, error: postError } = await supabase
           .from("homepage_posts")
-          .select("id, title, created_at, visibility", { count: "exact" })
+          .select("id, title, created_at, visibility")
           .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
           .limit(3);
@@ -180,9 +167,6 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
           }));
 
           setPosts(mappedPosts);
-
-          const isMorePosts = (postCount ?? 0) > 3;
-          setHasMorePosts(isMorePosts);
         }
       } catch (e) {
         console.error("홈 페이지 데이터 로드 중 오류", e);
@@ -234,9 +218,9 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
   };
 
   return (
-    <div className="flex min-h-[428px] w-[592px] p-6">
+    <div className="flex w-[592px] p-3">
       {/* 왼쪽 프로필 영역 */}
-      <div className="mr-6 flex w-1/3 flex-col items-center">
+      <div className="mr-3 flex w-1/3 flex-col items-center">
         {/* 프로필 이미지 */}
         <div className="relative">
           {avatarUrl ? (
@@ -254,7 +238,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>
 
         {/* 소개글 */}
-        <div className="bevel-pressed relative mt-4 flex h-2/3 w-1/1 justify-center bg-white p-4 text-center text-xs leading-relaxed text-[#2D2640]">
+        <div className="bevel-pressed relative mt-4 flex h-2/3 w-full justify-center bg-white p-4 text-center text-xs leading-relaxed text-[#2D2640]">
           <p>{bio}</p>
         </div>
 
@@ -262,7 +246,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         {!isMine && (
           <Button
             type="button"
-            className="mt-6 h-16 w-1/1 py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
+            className="mt-3 h-16 w-full py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
             onClick={toggleFriendRequest}
           >
             <div className="flex items-center gap-3">
@@ -282,16 +266,14 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
       </div>
 
       {/* 오른쪽 콘텐츠 */}
-      <div className="flex w-2/3 flex-col gap-6">
+      <div className="flex w-2/3 flex-col gap-3">
         {/* 사진첩 */}
         <div className="bevel-pressed bg-white p-4 text-[#2D2640]">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm text-[#3d3462]">사진첩</p>
-            {hasMoreImages && (
-              <Button type="button" size="md">
-                더보기
-              </Button>
-            )}
+            <Button type="button" size="md">
+              더보기
+            </Button>
           </div>
 
           {/* 2행 4열 사진칸 */}
@@ -323,14 +305,12 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         </div>
 
         {/* 최근 게시물 */}
-        <div className="bevel-pressed flex h-[170px] flex-col bg-white p-4 text-[#2D2640]">
+        <div className="bevel-pressed flex flex-col bg-white p-4 text-[#2D2640]">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm text-[#3d3462]">최근 게시물</p>
-            {hasMorePosts && (
-              <Button type="button" size="md">
-                더보기
-              </Button>
-            )}
+            <Button type="button" size="md">
+              더보기
+            </Button>
           </div>
 
           <ul className="flex flex-1 flex-col text-xs text-[#3d3462]">
