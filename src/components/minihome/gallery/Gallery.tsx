@@ -1,6 +1,7 @@
+import { useMemo } from "react";
+
 import Button from "@/components/common/Button/Button";
 
-// 임시 아이콘 컴포넌트 (이미지 플레이스홀더)
 const ImagePlaceholder = () => (
   <div className="flex h-full w-full items-center justify-center">
     <svg className="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,21 +15,24 @@ const ImagePlaceholder = () => (
   </div>
 );
 
-export default function Gallery() {
-  // 임시 이미지 데이터 (20개)
-  const images = Array.from({ length: 20 }, (_, i) => i + 1);
+interface GalleryProps {
+  onUpload: () => void;
+}
+
+export default function Gallery({ onUpload }: GalleryProps) {
+  const images = useMemo(() => Array.from({ length: 8 }, (_, i) => i + 1), []);
 
   return (
-    <div className="bevel-default flex h-full w-full flex-col overflow-hidden p-7">
-      <div className="bevel-pressed h-[360px] w-full overflow-hidden p-1">
+    <div className="flex h-full w-full flex-col overflow-hidden p-7">
+      <div className="bevel-pressed flex-1 overflow-hidden p-1">
         <div className="scrollbar bg-text-invert h-full w-full overflow-y-auto px-4 pt-4 pb-4">
-          {/* 헤더 */}
           <div className="flex items-center justify-between">
             <h1 className="font-semibold">사진첩</h1>
-            <Button composition="textOnly">업로드</Button>
+            <Button composition="textOnly" onClick={onUpload}>
+              업로드
+            </Button>
           </div>
 
-          {/* 사진 그리드 */}
           <div className="mt-2 grid grid-cols-4 gap-1">
             {images.map((image) => (
               <div key={image} className="bevel-default aspect-square w-full overflow-hidden p-1">
