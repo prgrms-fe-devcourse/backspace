@@ -1,5 +1,5 @@
 @utility scrollbar {
-  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable;
 
   &::-webkit-scrollbar {
     width: var(--scrollbar-size);
