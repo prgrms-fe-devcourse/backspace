@@ -83,26 +83,33 @@ export interface Database {
       guestbook_comments: {
         Row: {
           author_id: string;
-          content: Json | null;
+          content: string | null;
           created_at: string;
           id: string;
           post_id: string;
         };
         Insert: {
           author_id?: string;
-          content?: Json | null;
+          content?: string | null;
           created_at?: string;
           id?: string;
           post_id?: string;
         };
         Update: {
           author_id?: string;
-          content?: Json | null;
+          content?: string | null;
           created_at?: string;
           id?: string;
           post_id?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "guestbook_comments_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["auth_id"];
+          },
           {
             foreignKeyName: "guestbook_replies_author_id_fkey";
             columns: ["author_id"];
@@ -122,7 +129,7 @@ export interface Database {
       guestbook_posts: {
         Row: {
           author_id: string | null;
-          content: Json | null;
+          content: string | null;
           created_at: string;
           homepage_id: string;
           id: string;
@@ -130,7 +137,7 @@ export interface Database {
         };
         Insert: {
           author_id?: string | null;
-          content?: Json | null;
+          content?: string | null;
           created_at?: string;
           homepage_id: string;
           id?: string;
@@ -138,7 +145,7 @@ export interface Database {
         };
         Update: {
           author_id?: string | null;
-          content?: Json | null;
+          content?: string | null;
           created_at?: string;
           homepage_id?: string;
           id?: string;

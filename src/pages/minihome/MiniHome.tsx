@@ -32,7 +32,11 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
   }, [activeTab]);
 
   return (
-    <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value as MiniHomeTabs)}>
+    <Tabs.Root
+      value={activeTab}
+      onValueChange={(value) => setActiveTab(value as MiniHomeTabs)}
+      className="flex h-full min-h-0 flex-col"
+    >
       <Tabs.List aria-label="미니홈 탭">
         {Object.values(MINIHOME_TABS).map((v) => (
           <Tabs.Trigger key={v} value={v} asChild>
@@ -63,10 +67,8 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
           )} */}
         </Activity>
       </Tabs.Content>
-      <Tabs.Content value={MINIHOME_TABS.guestbook}>
-        <Activity>
-          <GuestBook ownerId={ownerId} />
-        </Activity>
+      <Tabs.Content value={MINIHOME_TABS.guestbook} asChild>
+        <GuestBook ownerId={ownerId} />
       </Tabs.Content>
     </Tabs.Root>
   );
