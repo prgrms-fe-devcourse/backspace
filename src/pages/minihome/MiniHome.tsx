@@ -1,6 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { Activity, useEffect, useState } from "react";
 
+import Gallery from "@/components/minihome/gallery/Gallery";
 import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
@@ -48,14 +49,7 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
         <Activity>홈</Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.gallery}>
-        <Activity>
-          갤러리
-          {/* {galleryDetail.selectedId ? (
-            <GalleryDetail photoId={galleryDetail.selectedId} onBack={galleryDetail.exitDetail} />
-          ) : (
-            <GalleryList onSelectPhoto={galleryDetail.enterDetail} />
-          )} */}
-        </Activity>
+        <Gallery />
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.memo}>
         <Activity>
