@@ -1,9 +1,10 @@
-import Friends from "@/assets/icons/friends.svg?react";
+import Users from "@/assets/icons/friends.svg?react";
 import Gallery from "@/assets/icons/gallery.svg?react";
 import Guestbook from "@/assets/icons/guestbook.svg?react";
 import Home from "@/assets/icons/home.svg?react";
 import Memo from "@/assets/icons/memo.svg?react";
 import Settings from "@/assets/icons/settings.svg?react";
+import Friends from "@/pages/friends/Friends";
 import MiniHome from "@/pages/minihome/MiniHome";
 import { MINIHOME_TABS } from "@/types/minihome.types";
 import type { WindowApp, WindowAppId, WindowComponentProps } from "@/types/window.types";
@@ -43,7 +44,8 @@ export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
     id: "friends",
     category: "friends",
     caption: "Friends",
-    icon: Friends,
+    icon: Users,
+    component: () => <Friends />,
   },
   settings: {
     id: "settings",
