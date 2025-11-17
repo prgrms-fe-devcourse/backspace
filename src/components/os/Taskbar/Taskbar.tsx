@@ -1,6 +1,7 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
+import { WINDOW_APPS } from "@/config/window";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { WindowAppId } from "@/types/window.types";
 
@@ -48,11 +49,8 @@ type TaskbarProps = React.ComponentPropsWithoutRef<"nav"> & {
  * ```
  */
 export default function Taskbar({ className, config = "default", ...rest }: TaskbarProps) {
-  // Taskbar 탭으로 노출할 전체 창 목록
   const windows = useWindowStore((state) => state.windows);
-  // 현재 포커스된 창의 ID
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
-  // 특정 창으로 포커스를 이동시키는 액션
   const setActiveWindow = useWindowStore((state) => state.setActiveWindow);
 
   const showStart = config === "default" || config === "noSystemTray";
@@ -67,16 +65,23 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
     <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
-        {Object.values(windows).map((window) => (
-          <li key={window.id} className="@container flex max-w-43 min-w-0 flex-1">
-            <TaskbarTab
-              icon={window.icon}
-              title={window.caption}
-              isFocused={window.id === activeWindowId}
-              onClick={() => handleTabClick(window.id)}
-            />
-          </li>
-        ))}
+        {Object.values(windows).map((window) => {
+          if (!window) return null;
+
+          const app = WINDOW_APPS[window.id];
+          if (!app) return null;
+
+          return (
+            <li key={window.id} className="@container flex max-w-43 min-w-0 flex-1">
+              <TaskbarTab
+                icon={app.icon}
+                title={window.caption ?? app.caption}
+                isFocused={window.id === activeWindowId}
+                onClick={() => handleTabClick(window.id)}
+              />
+            </li>
+          );
+        })}
       </ul>
       {showSystemTray && <TaskbarSystemTray />}
     </nav>

@@ -12,7 +12,10 @@ export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [focusedShortcutId, setFocusedShortcutId] = useState<string | null>(null);
-  const { windows, openWindow, closeWindow } = useWindowStore();
+  const windows = useWindowStore((state) => state.windows);
+  const openWindow = useWindowStore((state) => state.openWindow);
+  const closeWindow = useWindowStore((state) => state.closeWindow);
+
   const user = useAuthStore((state) => state.user);
   const ownerId = user?.id;
 
@@ -42,23 +45,29 @@ export default function OsMain() {
           className="grid h-full w-full auto-cols-max grid-flow-row auto-rows-max gap-6 md:gap-8"
           aria-label="바로가기"
         >
-          {Object.values(WINDOW_APPS).map(({ id, icon, caption, category }) => (
-            <Shortcut
-              key={id}
-              Icon={icon}
-              caption={caption}
-              isSelected={selectedShortcutId === id}
-              isFocused={focusedShortcutId === id}
-              onFocus={() => handleShortcutFocus(id)}
-              onBlur={handleShortcutBlur}
-              onDoubleClick={() => handleShortcutDoubleClick(id, category)}
-            />
-          ))}
+          {Object.values(WINDOW_APPS).map(({ id, icon, caption, category, isOnDesktop }) =>
+            !isOnDesktop ? null : (
+              <Shortcut
+                key={id}
+                Icon={icon}
+                caption={caption}
+                isSelected={selectedShortcutId === id}
+                isFocused={focusedShortcutId === id}
+                onFocus={() => handleShortcutFocus(id)}
+                onBlur={handleShortcutBlur}
+                onDoubleClick={() => handleShortcutDoubleClick(id, category)}
+              />
+            )
+          )}
         </div>
 
         {Object.values(windows).map((windowState) => {
-          const Component = windowState.component;
-          if (!Component) return null;
+          if (!windowState) return null;
+
+          const app = WINDOW_APPS[windowState.id];
+          if (!app || !app.component) return null;
+
+          const Component = app.component;
 
           return (
             <Window
@@ -68,7 +77,7 @@ export default function OsMain() {
               buttons="all"
               onClose={() => closeWindow(windowState.id)}
               title={windowState.caption}
-              icon={windowState.icon}
+              icon={app.icon}
             >
               <Component ownerId={windowState.ownerId} />
             </Window>

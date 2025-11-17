@@ -2,11 +2,18 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { WINDOW_APPS } from "@/config/window";
-import type { WindowApp, WindowAppId, WindowCategory } from "@/types/window.types";
+import { WINDOW_INFO } from "@/config/windowInfo";
+import type { WindowAppId, WindowCategory } from "@/types/window.types";
+
+interface WindowInstance {
+  id: WindowAppId;
+  category: WindowCategory;
+  caption: string;
+  ownerId?: string;
+}
 
 interface WindowStore {
-  windows: Partial<Record<WindowAppId, WindowApp>>;
+  windows: Partial<Record<WindowAppId, WindowInstance>>;
   activeWindowId: WindowAppId | null;
   openWindow: (id: WindowAppId, ownerId?: string) => void;
   closeWindow: (id: WindowAppId) => void;
@@ -15,14 +22,16 @@ interface WindowStore {
 }
 
 const clearWindowsByCategory = (
-  windows: Partial<Record<WindowAppId, WindowApp>>,
+  windows: Partial<Record<WindowAppId, WindowInstance>>,
   category: WindowCategory
 ) => {
   const idsToDelete = Object.values(windows)
     .filter((window) => window?.category === category)
     .map((window) => window.id);
 
-  idsToDelete.forEach((id) => delete windows[id]);
+  idsToDelete.forEach((id) => {
+    if (id) delete windows[id];
+  });
 };
 
 export const useWindowStore = create<WindowStore>()(
@@ -33,17 +42,22 @@ export const useWindowStore = create<WindowStore>()(
 
       openWindow: (id, ownerId) =>
         set((state) => {
-          const appConfig = WINDOW_APPS[id];
-          if (!appConfig) return;
+          const info = WINDOW_INFO[id];
+          if (!info) return;
 
           if (state.windows[id]) {
             state.activeWindowId = id;
             return;
           }
 
-          clearWindowsByCategory(state.windows, appConfig.category);
+          clearWindowsByCategory(state.windows, info.category);
 
-          state.windows[id] = { ...appConfig, ownerId };
+          state.windows[id] = {
+            id,
+            category: info.category,
+            caption: info.caption,
+            ownerId,
+          };
           state.activeWindowId = id;
         }),
 

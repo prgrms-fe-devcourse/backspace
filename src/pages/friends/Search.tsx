@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useWindowStore } from "@/stores/useWindowStore";
 import type { Profile } from "@/types/profile";
 
 import { searchFriends } from "./api/searchFriends";
@@ -10,6 +12,8 @@ export default function Search() {
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState<Profile[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const openWindow = useWindowStore((state) => state.openWindow);
+  const userId = useAuthStore((state) => state.user?.id);
   /* eslint-disable @typescript-eslint/no-unused-vars */
   // TODO: 이후 에러 핸들링 및 폴백 구현
   const [error, setError] = useState(false);
@@ -24,7 +28,7 @@ export default function Search() {
     */
     try {
       setIsLoading(true);
-      const data = await searchFriends(keyword);
+      const data = await searchFriends(keyword, userId);
       setResults(data);
       setHasSearched(true);
     } catch (err) {
@@ -67,7 +71,7 @@ export default function Search() {
           <div className="bevel-pressed bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3">
             <ul>
               {results.map((user) => (
-                <li>
+                <li key={user.auth_id}>
                   <div className="flex items-center gap-3 p-2 pl-2 select-none">
                     <div className="shrink-0">
                       <img
@@ -86,7 +90,7 @@ export default function Search() {
                       <Button
                         size="md"
                         onClick={() => {
-                          // TODO: 미니홈 방문 기능
+                          openWindow("friendHome", user.auth_id);
                         }}
                       >
                         방문
