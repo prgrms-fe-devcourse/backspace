@@ -67,13 +67,13 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
     <nav className={twMerge(taskbar, className)} {...rest}>
       {showStart && <TaskbarStart />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
-        {Object.values(windows).map((app) => (
-          <li key={app.id} className="@container flex max-w-43 min-w-0 flex-1">
+        {Object.values(windows).map((window) => (
+          <li key={window.id} className="@container flex max-w-43 min-w-0 flex-1">
             <TaskbarTab
-              icon={app.icon}
-              title={app.caption}
-              isFocused={app.id === activeWindowId}
-              onClick={() => handleTabClick(app.id)}
+              icon={window.icon}
+              title={window.caption}
+              isFocused={window.id === activeWindowId}
+              onClick={() => handleTabClick(window.id)}
             />
           </li>
         ))}

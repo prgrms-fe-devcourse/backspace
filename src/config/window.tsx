@@ -11,35 +11,41 @@ import type { WindowApp, WindowAppId } from "@/types/window.types";
 export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
   home: {
     id: "home",
+    category: "minihome",
     caption: "Home",
     icon: Home,
     component: MiniHome,
   },
   gallery: {
     id: "gallery",
+    category: "minihome",
     caption: "Gallery",
     icon: Gallery,
     component: () => <MiniHome tab={MINIHOME_TABS.gallery} />,
   },
   memo: {
     id: "memo",
+    category: "minihome",
     caption: "Memo",
     icon: Memo,
     component: () => <MiniHome tab={MINIHOME_TABS.memo} />,
   },
   guestbook: {
     id: "guestbook",
+    category: "minihome",
     caption: "Guest Book",
     icon: Guestbook,
     component: () => <MiniHome tab={MINIHOME_TABS.guestbook} />,
   },
   friends: {
     id: "friends",
+    category: "friends",
     caption: "Friends",
     icon: Friends,
   },
   settings: {
     id: "settings",
+    category: "settings",
     caption: "Settings",
     icon: Settings,
   },

@@ -34,17 +34,16 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
           </Tabs.Trigger>
         ))}
       </Tabs.List>
-      {/* TODO: 컴포넌트 주입해주시면 됩니다. */}
       <Tabs.Content value={MINIHOME_TABS.home}>
         <Activity>홈</Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.gallery}>
         <Activity>
-          사진첩
+          갤러리
           {/* {galleryDetail.selectedId ? (
             <GalleryDetail photoId={galleryDetail.selectedId} onBack={galleryDetail.exitDetail} />
           ) : (
-            <Gallery onSelectPhoto={galleryDetail.enterDetail} />
+            <GalleryList onSelectPhoto={galleryDetail.enterDetail} />
           )} */}
         </Activity>
       </Tabs.Content>
@@ -54,12 +53,12 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
           {/* {memoDetail.selectedId ? (
             <MemoDetail memoId={memoDetail.selectedId} onBack={memoDetail.exitDetail} />
           ) : (
-            <Memo onSelectMemo={memoDetail.enterDetail} />
+            <MemoList onSelectMemo={memoDetail.enterDetail} />
           )} */}
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook}>
-        <Activity>방명록{/* <GuestBook /> */}</Activity>
+        <Activity>방명록</Activity>
       </Tabs.Content>
     </Tabs.Root>
   );
