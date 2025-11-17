@@ -77,11 +77,11 @@ export default function PostWrite({ onClose }: PostWriteProps) {
         />
       </div>
       <div className="flex w-full justify-end gap-2">
-        <Button size="lg" type="button" onClick={onClose}>
-          <X size={14} /> 취소
+        <Button size="md" type="button" onClick={onClose}>
+          <X size={12} /> 취소
         </Button>
-        <Button size="lg" type="submit" disabled={isSubmitting}>
-          <Send size={14} /> {isSubmitting ? "등록 중..." : "등록"}
+        <Button size="md" type="submit" disabled={isSubmitting}>
+          <Send size={12} /> {isSubmitting ? "등록 중..." : "등록"}
         </Button>
       </div>
     </form>

@@ -15,5 +15,6 @@ export type PostWithCounts = Post & {
 export type CommentWithProfile = Comment & {
   profiles: {
     nickname: string | null;
+    avatar_url: string | null;
   } | null;
 };
