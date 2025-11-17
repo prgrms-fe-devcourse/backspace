@@ -6,7 +6,11 @@ import supabase from "@/utils/supabase";
 
 import PostItem from "./PostItem";
 
-export default function PostList() {
+interface PostListProps {
+  onPostClick: (postId: string) => void;
+}
+
+export default function PostList({ onPostClick }: PostListProps) {
   const [posts, setPosts] = useState<PostWithCounts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,7 +56,12 @@ export default function PostList() {
     <div className="bevel-pressed scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-white p-2.5">
       {posts.length > 0 ? (
         posts.map((post) => (
-          <PostItem key={post.id} post={post} authorName={authorName || "주인장"} />
+          <PostItem
+            key={post.id}
+            post={post}
+            authorName={authorName || "주인장"}
+            onPostClick={onPostClick}
+          />
         ))
       ) : (
         <div className="py-4 text-center text-gray-500">작성된 게시글이 없습니다.</div>
