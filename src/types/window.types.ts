@@ -2,7 +2,7 @@ import { type ComponentType, type FunctionComponent, type SVGProps } from "react
 
 import type { MiniHomeTabId } from "@/types/minihome.types";
 
-export type WindowAppId = MiniHomeTabId | "friends" | "settings";
+export type WindowAppId = MiniHomeTabId | "friends" | "friendHome" | "settings";
 
 export type WindowCategory = "minihome" | "friends" | "friendHome" | "settings";
 
@@ -17,4 +17,5 @@ export interface WindowApp {
   caption: string;
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
   component?: ComponentType<WindowComponentProps>;
+  isOnDesktop: boolean;
 }
