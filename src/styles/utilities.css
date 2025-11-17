@@ -38,3 +38,10 @@
     background-color: color-mix(in srgb, var(--color-error) 20%, var(--color-base-3));
   }
 }
+
+@utility container-default {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
