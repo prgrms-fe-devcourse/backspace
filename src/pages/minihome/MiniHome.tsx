@@ -1,6 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { Activity, useEffect, useState } from "react";
 
+import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
 
@@ -58,7 +59,9 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook}>
-        <Activity>방명록</Activity>
+        <Activity>
+          <GuestBook />
+        </Activity>
       </Tabs.Content>
     </Tabs.Root>
   );
