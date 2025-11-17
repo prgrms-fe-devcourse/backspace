@@ -6,10 +6,15 @@ export type WindowAppId = MiniHomeTabId | "friends" | "settings";
 
 export type WindowCategory = "minihome" | "friends" | "friendHome" | "settings";
 
+export interface WindowComponentProps {
+  ownerId?: string;
+}
+
 export interface WindowApp {
   id: WindowAppId;
+  ownerId?: string;
   category: WindowCategory;
   caption: string;
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
-  component?: ComponentType;
+  component?: ComponentType<WindowComponentProps>;
 }
