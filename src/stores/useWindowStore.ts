@@ -3,8 +3,7 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { WINDOW_APPS } from "@/config/window";
-import { MINIHOME_TABS } from "@/types/minihome.types";
-import type { WindowApp, WindowAppId } from "@/types/window.types";
+import type { WindowApp, WindowAppId, WindowCategory } from "@/types/window.types";
 
 interface WindowStore {
   windows: Partial<Record<WindowAppId, WindowApp>>;
@@ -12,14 +11,18 @@ interface WindowStore {
   openWindow: (id: WindowAppId) => void;
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
+  updateWindowTitle: (id: WindowAppId, title: string) => void;
 }
 
-const isMiniHomeTab = (id: WindowAppId) => id in MINIHOME_TABS;
+const clearWindowsByCategory = (
+  windows: Partial<Record<WindowAppId, WindowApp>>,
+  category: WindowCategory
+) => {
+  const idsToDelete = Object.values(windows)
+    .filter((window) => window?.category === category)
+    .map((window) => window.id);
 
-const clearMiniHomeTabs = (windows: Partial<Record<WindowAppId, WindowApp>>) => {
-  Object.keys(MINIHOME_TABS).forEach((key) => {
-    delete windows[key as WindowAppId];
-  });
+  idsToDelete.forEach((id) => delete windows[id]);
 };
 
 export const useWindowStore = create<WindowStore>()(
@@ -33,11 +36,14 @@ export const useWindowStore = create<WindowStore>()(
           const appConfig = WINDOW_APPS[id];
           if (!appConfig) return;
 
-          if (isMiniHomeTab(id)) {
-            clearMiniHomeTabs(state.windows);
+          if (state.windows[id]) {
+            state.activeWindowId = id;
+            return;
           }
 
-          state.windows[id] = appConfig;
+          clearWindowsByCategory(state.windows, appConfig.category);
+
+          state.windows[id] = { ...appConfig };
           state.activeWindowId = id;
         }),
 
@@ -54,6 +60,13 @@ export const useWindowStore = create<WindowStore>()(
         set((state) => {
           if (state.windows[id]) {
             state.activeWindowId = id;
+          }
+        }),
+
+      updateWindowTitle: (id, title) =>
+        set((state) => {
+          if (state.windows[id]) {
+            state.windows[id].caption = title;
           }
         }),
     })),
