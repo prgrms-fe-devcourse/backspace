@@ -17,15 +17,18 @@ const ImagePlaceholder = () => (
 
 interface GalleryProps {
   onUpload: () => void;
+  onSelectImage: (id: number) => void;
 }
 
-export default function Gallery({ onUpload }: GalleryProps) {
-  const images = useMemo(() => Array.from({ length: 8 }, (_, i) => i + 1), []);
+export default function Gallery({ onUpload, onSelectImage }: GalleryProps) {
+  const images = useMemo(() => Array.from({ length: 20 }, (_, i) => i + 1), []);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden p-7">
+      {/* 스크롤 가능한 사진 목록 영역 */}
       <div className="bevel-pressed flex-1 overflow-hidden p-1">
         <div className="scrollbar bg-text-invert h-full w-full overflow-y-auto px-4 pt-4 pb-4">
+          {/* 제목, 업로드 버튼 */}
           <div className="flex items-center justify-between">
             <h1 className="font-semibold">사진첩</h1>
             <Button composition="textOnly" onClick={onUpload}>
@@ -33,13 +36,19 @@ export default function Gallery({ onUpload }: GalleryProps) {
             </Button>
           </div>
 
+          {/* 사진 썸네일 그리드 */}
           <div className="mt-2 grid grid-cols-4 gap-1">
             {images.map((image) => (
-              <div key={image} className="bevel-default aspect-square w-full overflow-hidden p-1">
+              <button
+                key={image}
+                type="button"
+                className="bevel-default aspect-square w-full cursor-pointer overflow-hidden p-1 transition hover:opacity-90"
+                onClick={() => onSelectImage(image)}
+              >
                 <div className="h-full w-full">
                   <ImagePlaceholder />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

@@ -31,7 +31,8 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-3 p-6 text-xs">
+    <div className="h/full w/full flex flex-col gap-3 p-6 text-xs">
+      {/* 파일 선택 영역 */}
       <span>파일 선택</span>
       <GalleryUploadFileSelector
         fileName={fileName}
@@ -56,17 +57,19 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
         }}
       />
 
+      {/* 설명 입력 영역 */}
       <section className="space-y-2">
         <span>설명</span>
         <TextArea
           id={descriptionId}
           className="h-20"
-          placeholder="친구들에게 보여줄 사진 설명을 작성해 보세요."
+          placeholder="사진 설명을 작성해 보세요."
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
       </section>
 
+      {/* 업로드/취소 버튼 영역 */}
       <div className="mt-auto flex justify-end gap-2">
         <Button composition="textOnly" onClick={onCancel}>
           취소
