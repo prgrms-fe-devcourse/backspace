@@ -1,4 +1,4 @@
-import { type ComponentType, type FunctionComponent, type SVGProps } from "react";
+import type { ComponentType, FunctionComponent, SVGProps } from "react";
 
 import type { MiniHomeTabId } from "@/types/minihome.types";
 
@@ -7,15 +7,25 @@ export type WindowAppId = MiniHomeTabId | "friends" | "friendHome" | "settings";
 export type WindowCategory = "minihome" | "friends" | "friendHome" | "settings";
 
 export interface WindowComponentProps {
+  windowId?: WindowAppId;
   ownerId?: string;
 }
 
-export interface WindowApp {
+export interface WindowInfo {
   id: WindowAppId;
-  ownerId?: string;
   category: WindowCategory;
   caption: string;
+  isOnDesktop: boolean;
+}
+
+export interface WindowApp extends WindowInfo {
   icon: FunctionComponent<SVGProps<SVGSVGElement>>;
   component?: ComponentType<WindowComponentProps>;
-  isOnDesktop: boolean;
+}
+
+export interface WindowInstance {
+  id: WindowAppId;
+  category: WindowCategory;
+  caption: string;
+  ownerId?: string;
 }
