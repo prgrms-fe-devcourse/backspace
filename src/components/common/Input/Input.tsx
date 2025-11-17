@@ -39,7 +39,7 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
  */
 export default function Input({ id, error, className, ...props }: InputProps) {
   return (
-    <div className="flex flex-col justify-center gap-1">
+    <div className="flex flex-1 flex-col justify-center gap-1">
       <div className="relative">
         <input
           id={id}

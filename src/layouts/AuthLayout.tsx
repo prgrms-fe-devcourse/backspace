@@ -20,7 +20,7 @@ export default function AuthLayout() {
           "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
         )}
       >
-        <TitleBar icon={<Logo />} title="Welcome to BackSpace" />
+        <TitleBar icon={Logo} title="Welcome to BackSpace" />
         <Outlet />
       </section>
     </main>
