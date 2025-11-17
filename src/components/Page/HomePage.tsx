@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import dayjs from "dayjs";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, UserRound, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -178,49 +178,49 @@ export default function HomePage() {
   }, [params.homepageId]);
 
   return (
-    <div className="bevel-default flex min-h-[520px] w-[900px] p-6">
+    <div className="bevel-default flex min-h-[428px] w-[592px] p-6">
       {/* 왼쪽 프로필 영역 */}
-      <div className="flex w-1/3 flex-col items-center">
+      <div className="mr-6 flex w-1/3 flex-col items-center">
         {/* 프로필 이미지 */}
         <div className="relative">
           {avatarUrl ? (
-            <div className="h-32 w-32 overflow-hidden rounded-full">
+            <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[#B2AAEB]">
               <img className="h-full w-full object-cover" src={avatarUrl} alt="" />
             </div>
           ) : (
-            <div className="flex h-32 w-32 items-center justify-center rounded-full bg-[#e0d4f7] shadow-[4px_4px_0_#b9a8e3]" />
+            <div className="bevel-default flex h-32 w-32 items-center justify-center rounded-full">
+              <UserRound size={48} color="#B2AAEB" />
+            </div>
           )}
         </div>
 
         {/* 이름 */}
-        <p className="mt-4 text-lg font-bold text-[#342b4e]">{nickname}</p>
+        <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>
 
         {/* 소개글 */}
-        <div className="relative mt-4 flex h-[100px] w-[200px] items-center justify-center rounded-md border border-[#c8bce9] bg-white text-center text-sm leading-relaxed text-[#3d3462] shadow-[3px_3px_0_#b9a8e3]">
+        <div className="bevel-pressed relative mt-4 flex h-2/3 w-1/1 justify-center bg-white p-4 text-center text-xs leading-relaxed text-[#2D2640]">
           <p>{bio}</p>
         </div>
 
         {/* 친구 신청 버튼 */}
         <Button
           type="button"
-          size="lg"
-          className="mt-6 w-[180px] rounded-md border border-[#bfaee9] bg-[#f3edff] py-2 text-[#3f3570] shadow-[3px_3px_0_#b9a8e3] transition hover:bg-[#e9e0ff]"
+          className="mt-6 h-16 w-1/1 py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
         >
-          ☆ 친구 신청
+          <div className="flex items-center gap-3">
+            <Star size={17} color="#B2AAEB" /> <p>친구 신청</p>
+          </div>
         </Button>
       </div>
 
       {/* 오른쪽 콘텐츠 */}
-      <div className="ml-8 flex w-2/3 flex-col gap-6">
+      <div className="flex w-2/3 flex-col gap-6">
         {/* 사진첩 */}
-        <div className="rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
+        <div className="bevel-pressed bg-white p-4 text-[#2D2640]">
           <div className="mb-3 flex items-center justify-between">
-            <p className="font-semibold text-[#3d3462]">사진첩</p>
+            <p className="text-sm text-[#3d3462]">사진첩</p>
             {hasMoreImages && (
-              <Button
-                type="button"
-                className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
-              >
+              <Button type="button" size="md">
                 더보기
               </Button>
             )}
@@ -231,10 +231,10 @@ export default function HomePage() {
             {images.map((img) => (
               <div
                 key={img.id}
-                className="flex aspect-square w-full items-center justify-center rounded-md border border-[#c8bce9] bg-[#eae3fa] text-[#a18ed7] shadow-[3px_3px_0_#b9a8e3]"
+                className="bevel-default flex aspect-square w-full items-center justify-center p-1"
               >
                 {img.url ? (
-                  <img src={img.url} alt="" className="h-full w-full rounded-md object-cover" />
+                  <img src={img.url} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -255,27 +255,24 @@ export default function HomePage() {
         </div>
 
         {/* 최근 게시물 */}
-        <div className="flex h-[170px] flex-col rounded-md border border-[#c8bce9] bg-[#f8f4ff] p-4 shadow-[3px_3px_0_#b9a8e3]">
+        <div className="bevel-pressed flex h-[170px] flex-col bg-white p-4 text-[#2D2640]">
           <div className="mb-2 flex items-center justify-between">
-            <p className="font-semibold text-[#3d3462]">최근 게시물</p>
+            <p className="text-sm text-[#3d3462]">최근 게시물</p>
             {hasMorePosts && (
-              <Button
-                type="button"
-                className="rounded border border-[#bfaee9] bg-[#f3edff] px-2 text-sm shadow-[2px_2px_0_#b9a8e3]"
-              >
+              <Button type="button" size="md">
                 더보기
               </Button>
             )}
           </div>
 
-          <ul className="flex flex-1 flex-col text-sm text-[#3d3462]">
+          <ul className="flex flex-1 flex-col text-xs text-[#3d3462]">
             {posts.map((post) => (
               <li
                 key={post.id}
-                className="flex flex-1 items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
+                className="mr-3 flex flex-1 items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
               >
                 <span className="pl-3">{post.title}</span>
-                <div className="flex items-center gap-3 text-sm text-[#6b5fa0]">
+                <div className="flex items-center gap-3 text-[#6b5fa0]">
                   <span>{dayjs(post.created_at).format("MM/DD")}</span>
                   <div className="flex items-center gap-1">
                     <MessageCircle size={14} />
