@@ -15,6 +15,8 @@ export default function OsMain() {
   const windows = useWindowStore((state) => state.windows);
   const openWindow = useWindowStore((state) => state.openWindow);
   const closeWindow = useWindowStore((state) => state.closeWindow);
+  const setActiveWindow = useWindowStore((state) => state.setActiveWindow);
+  const activeWindowId = useWindowStore((state) => state.activeWindowId);
 
   const user = useAuthStore((state) => state.user);
   const ownerId = user?.id;
@@ -68,6 +70,7 @@ export default function OsMain() {
           if (!app || !app.component) return null;
 
           const Component = app.component;
+          const isActive = windowState.id === activeWindowId;
 
           return (
             <Window
@@ -78,8 +81,10 @@ export default function OsMain() {
               onClose={() => closeWindow(windowState.id)}
               title={windowState.caption}
               icon={app.icon}
+              isActive={isActive}
+              onPointerDown={() => setActiveWindow(windowState.id)}
             >
-              <Component ownerId={windowState.ownerId} />
+              <Component windowId={windowState.id} ownerId={windowState.ownerId} />
             </Window>
           );
         })}

@@ -1,11 +1,4 @@
-import type { WindowAppId, WindowCategory } from "@/types/window.types";
-
-export interface WindowInfo {
-  id: WindowAppId;
-  category: WindowCategory;
-  caption: string;
-  isOnDesktop: boolean;
-}
+import type { WindowAppId, WindowInfo } from "@/types/window.types";
 
 export const WINDOW_INFO: Record<WindowAppId, WindowInfo> = {
   home: {
