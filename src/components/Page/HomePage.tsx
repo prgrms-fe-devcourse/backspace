@@ -234,7 +234,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
   };
 
   return (
-    <div className="bevel-default flex min-h-[428px] w-[592px] p-6">
+    <div className="flex min-h-[428px] w-[592px] p-6">
       {/* 왼쪽 프로필 영역 */}
       <div className="mr-6 flex w-1/3 flex-col items-center">
         {/* 프로필 이미지 */}
