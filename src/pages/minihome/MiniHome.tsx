@@ -4,6 +4,7 @@ import { Activity, useEffect, useState } from "react";
 import Gallery from "@/components/minihome/gallery/Gallery";
 import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
+import HomePage from "@/components/Page/HomePage";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
 
 interface MiniHomeProps {
@@ -46,7 +47,9 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
         ))}
       </Tabs.List>
       <Tabs.Content value={MINIHOME_TABS.home}>
-        <Activity>홈</Activity>
+        <Activity>
+          <HomePage ownerId={ownerId} />
+        </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.gallery} className="min-h-0 flex-1">
         <Activity>

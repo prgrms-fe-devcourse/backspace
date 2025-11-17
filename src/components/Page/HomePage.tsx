@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { User } from "@supabase/supabase-js";
 import dayjs from "dayjs";
 import { MessageCircle, UserRound, Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
 
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { Database } from "@/types/database.types";
 import supabase from "@/utils/supabase";
 
@@ -28,9 +29,9 @@ interface GalleryPost {
   commentCount: number;
 }
 
-export default function HomePage() {
-  // 가짜 ownerId로 초기화 -> 추후 홈페이지 주인(owner)의 id 값으로 수정해야 함.
-  const [ownerId, setOwnerId] = useState<string>("f4d4a5aa-34b5-4f4c-aaee-5768d0fd78e4");
+export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
+  const [user, setUser] = useState<User | null>(useAuthStore((state) => state.user));
+  const isMine = ownerId === user?.id;
 
   const [nickname, setNickname] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -39,32 +40,34 @@ export default function HomePage() {
   const [homepageId, setHomepageId] = useState<string | null>("");
   const [visibility, setVisibility] = useState<Visibility | null>(null);
 
+  const [friendRequested, setFriendRequested] = useState<boolean>(false);
+
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [hasMoreImages, setHasMoreImages] = useState<boolean>(false);
 
   const [posts, setPosts] = useState<GalleryPost[]>([]);
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(false);
 
-  const params = useParams();
-
   useEffect(() => {
     const fetchHomePage = async () => {
       try {
+        if (!user) {
+          console.error("존재하지 않는 user 입니다.");
+          return;
+        }
         console.log("fetchHomePage()");
-
-        // 홈페이지 id 가져오기
-        if (!params?.homepageId) {
-          console.error("존재하지 않는 homepageId 입니다.");
+        console.log("user", user.id);
+        console.log("ownerId", ownerId);
+        if (!ownerId) {
+          console.error("존재하지 않는 ownerId 입니다.");
           setHomepageId(null);
           return; // 홈페이지 렌더링 불가
         }
 
-        setHomepageId(params.homepageId);
-
         const { data: homepage, error: homepageError } = await supabase
           .from("homepages")
-          .select("owner_id")
-          .eq("id", params.homepageId)
+          .select("id")
+          .eq("owner_id", ownerId)
           .single();
 
         if (homepageError) {
@@ -72,13 +75,13 @@ export default function HomePage() {
           throw homepageError;
         }
 
-        setOwnerId(homepage.owner_id);
+        setHomepageId(homepage.id);
 
         // 홈페이지의 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("nickname, avatar_url, bio")
-          .eq("auth_id", homepage.owner_id)
+          .eq("auth_id", ownerId)
           .single();
 
         if (profileError) throw profileError;
@@ -86,6 +89,18 @@ export default function HomePage() {
         setNickname(profile.nickname);
         setAvatarUrl(profile.avatar_url);
         setBio(profile.bio);
+
+        // 친구 신청 여부 정보 가져오기
+        const { count: friendRequestCount, error: friendRequestError } = await supabase
+          .from("friend_requests")
+          .select("*", { count: "exact", head: true })
+          .eq("requester_id", user.id)
+          .eq("addressee_id", ownerId);
+        if (friendRequestError) {
+          console.error("친구 신청 정보 불러오기 실패:", friendRequestError);
+        } else {
+          setFriendRequested(friendRequestCount === 1);
+        }
 
         // 사진첩 정보 가져오기 (최근 8개)
         const {
@@ -95,7 +110,7 @@ export default function HomePage() {
         } = await supabase
           .from("homepage_gallery_images")
           .select("id, visibility, image_url", { count: "exact" })
-          .eq("homepage_id", params.homepageId)
+          .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
           .limit(8);
 
@@ -126,7 +141,7 @@ export default function HomePage() {
         } = await supabase
           .from("homepage_posts")
           .select("id, title, created_at, visibility", { count: "exact" })
-          .eq("homepage_id", params.homepageId)
+          .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
           .limit(3);
 
@@ -141,9 +156,9 @@ export default function HomePage() {
           await Promise.all(
             postRows.map(async (row) => {
               const { count, error } = await supabase
-                .from("homepage_post_comments") // ✅ 실제 댓글 테이블 이름에 맞게 수정
+                .from("homepage_post_comments")
                 .select("*", { head: true, count: "exact" })
-                .eq("post_id", row.id); // ✅ 실제 FK 컬럼 이름에 맞게 수정
+                .eq("post_id", row.id);
 
               if (error) {
                 console.error("댓글 개수 조회 오류", error);
@@ -175,7 +190,7 @@ export default function HomePage() {
     };
 
     fetchHomePage();
-  }, [params.homepageId]);
+  }, [ownerId, user]);
 
   return (
     <div className="bevel-default flex min-h-[428px] w-[592px] p-6">
