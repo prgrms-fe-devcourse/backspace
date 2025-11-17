@@ -8,8 +8,6 @@ import OsMain from "@/pages/os/OsMain";
 import ProtectedRoute from "@/router/ProtectedRoute";
 import PublicRoute from "@/router/PublicRoute";
 
-import HomePage from "./components/Page/HomePage";
-
 export default function App() {
   return (
     <>
@@ -23,7 +21,6 @@ export default function App() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<OsMain />} />
-          <Route path="/homepage/:homepageId" element={<HomePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
