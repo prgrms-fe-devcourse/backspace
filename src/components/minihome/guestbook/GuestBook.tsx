@@ -1,13 +1,17 @@
 import { X } from "lucide-react";
 
 import Button from "@/components/common/Button/Button";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 import GuestbookWriteBox from "./GuestbookWriteBox";
 
-export default function GuestBook() {
+export default function GuestBook({ ownerId }: { ownerId: string | undefined }) {
+  const user = useAuthStore((state) => state.user);
+  const isMine = ownerId === user?.id;
+
   return (
     <div className="p-4">
-      <GuestbookWriteBox />
+      {!isMine && <GuestbookWriteBox />}
       <div className="flex flex-col gap-1">
         <span className="p">전체 방명록 {3}</span>
         <div className="bevel-pressed bg-text-invert gap-2 p-3">

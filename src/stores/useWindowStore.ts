@@ -8,7 +8,7 @@ import type { WindowApp, WindowAppId, WindowCategory } from "@/types/window.type
 interface WindowStore {
   windows: Partial<Record<WindowAppId, WindowApp>>;
   activeWindowId: WindowAppId | null;
-  openWindow: (id: WindowAppId) => void;
+  openWindow: (id: WindowAppId, ownerId?: string) => void;
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
   updateWindowTitle: (id: WindowAppId, title: string) => void;
@@ -31,7 +31,7 @@ export const useWindowStore = create<WindowStore>()(
       windows: {},
       activeWindowId: null,
 
-      openWindow: (id) =>
+      openWindow: (id, ownerId) =>
         set((state) => {
           const appConfig = WINDOW_APPS[id];
           if (!appConfig) return;
@@ -43,7 +43,7 @@ export const useWindowStore = create<WindowStore>()(
 
           clearWindowsByCategory(state.windows, appConfig.category);
 
-          state.windows[id] = { ...appConfig };
+          state.windows[id] = { ...appConfig, ownerId };
           state.activeWindowId = id;
         }),
 

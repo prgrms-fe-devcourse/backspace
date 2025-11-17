@@ -4,14 +4,17 @@ import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
 import Window from "@/components/window/Window/Window";
 import { WINDOW_APPS } from "@/config/window";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
-import type { WindowAppId } from "@/types/window.types";
+import type { WindowAppId, WindowCategory } from "@/types/window.types";
 
 export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [focusedShortcutId, setFocusedShortcutId] = useState<string | null>(null);
   const { windows, openWindow, closeWindow } = useWindowStore();
+  const user = useAuthStore((state) => state.user);
+  const ownerId = user?.id;
 
   const handleShortcutFocus = (id: string) => {
     setSelectedShortcutId(id);
@@ -22,8 +25,12 @@ export default function OsMain() {
     setSelectedShortcutId(null);
   };
 
-  const handleShortcutDoubleClick = (id: WindowAppId) => {
-    openWindow(id);
+  const handleShortcutDoubleClick = (id: WindowAppId, category: WindowCategory) => {
+    if (category === "minihome") {
+      openWindow(id, ownerId);
+    } else {
+      openWindow(id);
+    }
     setSelectedShortcutId(null);
     setFocusedShortcutId(null);
   };
@@ -35,7 +42,7 @@ export default function OsMain() {
           className="grid h-full w-full auto-cols-max grid-flow-row auto-rows-max gap-6 md:gap-8"
           aria-label="바로가기"
         >
-          {Object.values(WINDOW_APPS).map(({ id, icon, caption }) => (
+          {Object.values(WINDOW_APPS).map(({ id, icon, caption, category }) => (
             <Shortcut
               key={id}
               Icon={icon}
@@ -44,7 +51,7 @@ export default function OsMain() {
               isFocused={focusedShortcutId === id}
               onFocus={() => handleShortcutFocus(id)}
               onBlur={handleShortcutBlur}
-              onDoubleClick={() => handleShortcutDoubleClick(id)}
+              onDoubleClick={() => handleShortcutDoubleClick(id, category)}
             />
           ))}
         </div>
@@ -63,7 +70,7 @@ export default function OsMain() {
               title={windowState.caption}
               icon={windowState.icon}
             >
-              <Component />
+              <Component ownerId={windowState.ownerId} />
             </Window>
           );
         })}

@@ -5,6 +5,11 @@ import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
 
+interface MiniHomeProps {
+  ownerId?: string;
+  tab?: MiniHomeTabs;
+}
+
 function useDetailState<TabId>() {
   const [selectedId, setSelectedId] = useState<TabId | null>(null);
 
@@ -14,7 +19,7 @@ function useDetailState<TabId>() {
   return { selectedId, enterDetail, exitDetail };
 }
 
-export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeTabs }) {
+export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHomeProps) {
   const [activeTab, setActiveTab] = useState<MiniHomeTabs>(tab);
 
   const galleryDetail = useDetailState<string>();
@@ -60,7 +65,7 @@ export default function MiniHome({ tab = MINIHOME_TABS.home }: { tab?: MiniHomeT
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook}>
         <Activity>
-          <GuestBook />
+          <GuestBook ownerId={ownerId} />
         </Activity>
       </Tabs.Content>
     </Tabs.Root>
