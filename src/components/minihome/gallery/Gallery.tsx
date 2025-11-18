@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import Button from "@/components/common/Button/Button";
 import { useAuthStore } from "@/stores/useAuthStore";
-import supabase from "@/utils/supabase";
 
+import { getGalleryImagesByHomepage, getHomepageIdByOwner } from "./api/gallery";
 import GalleryDetailPanel from "./GalleryDetailPanel";
 import GalleryUploadPanel from "./GalleryUploadPanel";
 import type { GalleryImage } from "./types/gallery.types";
@@ -55,11 +55,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
       setError(null);
 
       try {
-        const { data: homepage, error: homepageError } = await supabase
-          .from("homepages")
-          .select("id")
-          .eq("owner_id", ownerId)
-          .maybeSingle();
+        const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
 
         if (homepageError) throw homepageError;
         if (!homepage) {
@@ -69,26 +65,12 @@ export default function Gallery({ ownerId }: GalleryProps) {
           return;
         }
 
-        const { data, error: galleryError } = await supabase
-          .from("homepage_gallery_images")
-          .select("id, caption, created_at, image_url, author_id, homepage_id, visibility")
-          .eq("homepage_id", homepage.id)
-          .order("created_at", { ascending: false });
+        const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
 
         if (galleryError) throw galleryError;
 
         if (isMounted) {
-          setImages(
-            (data ?? []).map((image) => ({
-              id: image.id,
-              caption: image.caption,
-              created_at: image.created_at,
-              image_url: image.image_url,
-              author_id: image.author_id,
-              homepage_id: image.homepage_id,
-              visibility: image.visibility,
-            }))
-          );
+          setImages(data ?? []);
         }
       } catch (fetchError) {
         if (isMounted) {
