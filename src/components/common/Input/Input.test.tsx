@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useState, type ChangeEvent } from "react";
 import { describe, test, expect } from "vitest";
 
-import Input from "./Input";
+import Input from "@/components/common/Input/Input";
 
 describe("Input", () => {
   describe("렌더링", () => {

@@ -51,7 +51,6 @@ export default function Button({
 
   return (
     <button
-      {...rest}
       type="button"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -67,6 +66,7 @@ export default function Button({
         }),
         className
       )}
+      {...rest}
     >
       <span
         className={twMerge(
