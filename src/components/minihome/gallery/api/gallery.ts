@@ -73,8 +73,9 @@ export const uploadGalleryImage = async ({
     .single();
 
   if (error) {
-    return { data: [], error };
+    await supabase.storage.from(FILE_BUCKET).remove([filePath]);
+    return { data: null, error };
   }
 
-  return { data: data ?? [], error: null };
+  return { data, error: null };
 };

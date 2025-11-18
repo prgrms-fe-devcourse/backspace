@@ -23,7 +23,6 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const [homepageId, setHomepageId] = useState<string | null>(null);
 
@@ -40,24 +39,20 @@ export default function Gallery({ ownerId }: GalleryProps) {
     if (!ownerId) {
       setImages([]);
       setListError(null);
-      setUploadError(null);
       setHomepageId(null);
       return;
     }
 
-    // ownerId를 받아 해당 홈피의 갤러리 목록을 불러오는 공통 함수
     const loadGallery = async () => {
       setIsLoading(true);
       setListError(null);
 
-      // 홈피 ID 조회
       const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
 
       if (homepageError) {
         setImages([]);
         setHomepageId(null);
         setListError(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
-        setUploadError(null);
         setIsLoading(false);
         return;
       }
@@ -66,19 +61,16 @@ export default function Gallery({ ownerId }: GalleryProps) {
         setImages([]);
         setHomepageId(null);
         setListError(null);
-        setUploadError(null);
         setIsLoading(false);
         return;
       }
 
-      // 실제 갤러리 이미지 목록 조회
       const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
 
       if (galleryError) {
         setImages([]);
         setHomepageId(homepage.id);
         setListError(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
-        setUploadError(null);
         setIsLoading(false);
         return;
       }
@@ -86,7 +78,6 @@ export default function Gallery({ ownerId }: GalleryProps) {
       setHomepageId(homepage.id);
       setImages(data ?? []);
       setListError(null);
-      setUploadError(null);
       setIsLoading(false);
     };
 
@@ -112,7 +103,6 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const handleBackToList = () => {
     setView("list");
     setSelectedImageId(null);
-    setUploadError(null);
   };
 
   const handleUploadComplete = async (file?: File, description?: string) => {
@@ -135,11 +125,9 @@ export default function Gallery({ ownerId }: GalleryProps) {
 
     if (error) {
       const message = error.message ?? "이미지를 업로드하지 못했습니다.";
-      setUploadError(message);
       throw new Error(message);
     }
 
-    setUploadError(null);
     setView("list");
     setReloadVersion((prev) => prev + 1);
   };
@@ -167,13 +155,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
     }
 
     if (view === "upload" && canManageGallery) {
-      return (
-        <GalleryUploadPanel
-          onCancel={handleBackToList}
-          onUpload={handleUploadComplete}
-          errorMessage={uploadError}
-        />
-      );
+      return <GalleryUploadPanel onCancel={handleBackToList} onUpload={handleUploadComplete} />;
     }
 
     // 3가지 뷰 상태 모두 해당되지 않는다면 null 반환
