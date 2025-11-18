@@ -7,6 +7,15 @@ import type { GalleryComment } from "../types/gallery.types";
 const FILE_BUCKET = "files";
 const PUBLIC_STORAGE_PREFIX = "/storage/v1/object/public/";
 
+// Storage 에러를 PostgrestError 로 변환
+const asPostgrestError = (message: string): PostgrestError => ({
+  message,
+  details: "",
+  hint: "",
+  code: "storage_error",
+  name: "storage_error",
+});
+
 // Storage에 저장할 때 겹치지 않도록 홈피 ID + UUID 기반 경로를 생성
 const createUniqueFilePath = (homepageId: string, fileName: string) => {
   const allowedExtensions = ["png", "jpg", "jpeg", "gif", "webp"];
@@ -164,16 +173,6 @@ export const addGalleryImageComment = async ({
   return { data: (data as GalleryComment | null) ?? null, error };
 };
 
-export const deleteGalleryImageComment = async (
-  commentId: string
-): Promise<PostgrestError | null> => {
-  const { error } = await supabase
-    .from("homepage_gallery_image_comments")
-    .delete()
-    .eq("id", commentId);
-  return error;
-};
-
 const extractStoragePath = (publicUrl: string | null | undefined) => {
   if (!publicUrl) {
     return null;
@@ -184,11 +183,20 @@ const extractStoragePath = (publicUrl: string | null | undefined) => {
     if (prefixIndex === -1) {
       return null;
     }
-    const path = url.pathname.slice(prefixIndex + PUBLIC_STORAGE_PREFIX.length);
-    return path;
+    return url.pathname.slice(prefixIndex + PUBLIC_STORAGE_PREFIX.length);
   } catch {
     return null;
   }
+};
+
+export const deleteGalleryImageComment = async (
+  commentId: string
+): Promise<PostgrestError | null> => {
+  const { error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .delete()
+    .eq("id", commentId);
+  return error;
 };
 
 export const deleteGalleryImage = async (imageId: string, imageUrl?: string | null) => {
@@ -197,7 +205,7 @@ export const deleteGalleryImage = async (imageId: string, imageUrl?: string | nu
   if (storagePath) {
     const { error: storageError } = await supabase.storage.from(FILE_BUCKET).remove([storagePath]);
     if (storageError) {
-      return storageError;
+      return asPostgrestError(storageError.message);
     }
   }
 
@@ -219,6 +227,72 @@ export const deleteGalleryImage = async (imageId: string, imageUrl?: string | nu
 
   const { error } = await supabase.from("homepage_gallery_images").delete().eq("id", imageId);
   return error;
+};
+
+interface UpdateGalleryImageParams {
+  imageId: string;
+  homepageId: string;
+  caption?: string;
+  file?: File;
+  previousImageUrl?: string | null;
+}
+
+export const updateGalleryImage = async ({
+  imageId,
+  homepageId,
+  caption,
+  file,
+  previousImageUrl,
+}: UpdateGalleryImageParams): Promise<{ error: PostgrestError | null }> => {
+  let uploadedPath: string | null = null;
+  let nextImageUrl = previousImageUrl ?? null;
+
+  if (file) {
+    const filePath = createUniqueFilePath(homepageId, file.name);
+    const { error: uploadError } = await supabase.storage
+      .from(FILE_BUCKET)
+      .upload(filePath, file, { cacheControl: "3600", upsert: false });
+    if (uploadError) {
+      return { error: asPostgrestError(uploadError.message) };
+    }
+    uploadedPath = filePath;
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(FILE_BUCKET).getPublicUrl(filePath);
+    nextImageUrl = publicUrl;
+  }
+
+  const updates: Record<string, string | null> = {};
+  if (typeof caption !== "undefined") {
+    updates.caption = caption ?? null;
+  }
+  if (file) {
+    updates.image_url = nextImageUrl;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { error: null };
+  }
+
+  const { error } = await supabase
+    .from("homepage_gallery_images")
+    .update(updates)
+    .eq("id", imageId);
+  if (error) {
+    if (uploadedPath) {
+      await supabase.storage.from(FILE_BUCKET).remove([uploadedPath]);
+    }
+    return { error };
+  }
+
+  if (file && previousImageUrl) {
+    const previousPath = extractStoragePath(previousImageUrl);
+    if (previousPath) {
+      await supabase.storage.from(FILE_BUCKET).remove([previousPath]);
+    }
+  }
+
+  return { error: null };
 };
 
 export const getGalleryImageLikeSummary = async (

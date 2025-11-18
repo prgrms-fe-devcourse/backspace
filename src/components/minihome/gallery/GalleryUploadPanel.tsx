@@ -8,31 +8,54 @@ import GalleryUploadFileSelector from "./GalleryUploadFileSelector";
 interface GalleryUploadPanelProps {
   onCancel: () => void;
   onUpload?: (file?: File, description?: string) => Promise<void> | void;
+  initialDescription?: string;
+  initialPreviewUrl?: string | null;
+  submitLabel?: string;
+  allowEmptyFile?: boolean;
 }
 
-export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUploadPanelProps) {
-  // TextArea와 연결될 고유 id 생성
+export default function GalleryUploadPanel({
+  onCancel,
+  onUpload,
+  initialDescription,
+  initialPreviewUrl,
+  submitLabel,
+  allowEmptyFile = false,
+}: GalleryUploadPanelProps) {
   const descriptionId = useId();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [description, setDescription] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialPreviewUrl ?? null);
+  const [description, setDescription] = useState(initialDescription ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Blob URL을 사용한 미리보기는 컴포넌트 언마운트 시 해제해 메모리 누수를 방지
   useEffect(
     () => () => {
-      if (previewUrl) {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
       }
     },
     [previewUrl]
   );
 
+  useEffect(() => {
+    setPreviewUrl(initialPreviewUrl ?? null);
+  }, [initialPreviewUrl]);
+
+  useEffect(() => {
+    setDescription(initialDescription ?? "");
+  }, [initialDescription]);
+
+  const requiresFile = !allowEmptyFile;
+
   const handleUpload = async () => {
-    if (!file || isSubmitting) return;
+    if (isSubmitting) return;
+    if (requiresFile && !file) {
+      setSubmitError("파일을 선택해 주세요.");
+      return;
+    }
     setSubmitError(null);
     setIsSubmitting(true);
     try {
@@ -65,7 +88,7 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
                 setFileName(null);
                 setFileSize(null);
                 setFile(undefined);
-                setPreviewUrl(null);
+                setPreviewUrl(initialPreviewUrl ?? null);
                 return;
               }
               setFile(selectedFile);
@@ -101,8 +124,15 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
           <Button composition="textOnly" onClick={onCancel} disabled={isSubmitting}>
             취소
           </Button>
-          <Button composition="textOnly" onClick={handleUpload} disabled={!file || isSubmitting}>
-            {isSubmitting ? "업로드 중..." : "업로드"}
+          <Button
+            composition="textOnly"
+            onClick={handleUpload}
+            disabled={(requiresFile && !file) || isSubmitting}
+          >
+            {(() => {
+              const baseLabel = submitLabel ?? (allowEmptyFile ? "수정" : "업로드");
+              return isSubmitting ? `${baseLabel} 중...` : baseLabel;
+            })()}
           </Button>
         </div>
       </div>
