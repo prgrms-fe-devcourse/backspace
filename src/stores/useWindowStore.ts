@@ -18,7 +18,7 @@ interface WindowStore {
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
   updateWindowTitle: (id: WindowAppId, title: string) => void;
-  updateWindowPosition: (id: WindowAppId, position: Position) => void;
+  updateWindowPosition: (category: WindowCategory, position: Position) => void;
 }
 
 const clearWindowsByCategory = (
@@ -41,7 +41,6 @@ export const useWindowStore = create<WindowStore>()(
     immer((set) => ({
       windows: {},
       activeWindowId: null,
-      windowPositions: {},
       categoryPositions: {},
 
       openWindow: (id, ownerId) =>
@@ -88,13 +87,9 @@ export const useWindowStore = create<WindowStore>()(
           }
         }),
 
-      updateWindowPosition: (id, position) =>
+      updateWindowPosition: (category, position) =>
         set((state) => {
-          const instance = state.windows[id];
-
-          if (instance) {
-            state.categoryPositions[instance.category] = position;
-          }
+          state.categoryPositions[category] = position;
         }),
     })),
     { name: "WindowStore" }

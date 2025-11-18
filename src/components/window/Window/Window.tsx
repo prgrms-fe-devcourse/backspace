@@ -36,10 +36,10 @@ export default function Window({
   const { onMouseDown, onDrag, isDragging } = useDraggable();
 
   useEffect(() => {
-    if (!isDragging && position) {
-      updateWindowPosition(windowId, position);
+    if (!isDragging && position && category) {
+      updateWindowPosition(category, position);
     }
-  }, [isDragging, position, windowId, updateWindowPosition]);
+  }, [isDragging, position, category, updateWindowPosition]);
 
   useEffect(() => {
     if (!isDragging) return;
