@@ -50,49 +50,54 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-3">
-      {/* 파일 선택 영역 */}
-      <span>파일 선택 </span>
+    <div className="flex h-full w-full flex-col gap-3 overflow-hidden">
+      <div className="scrollbar flex-1 overflow-y-auto pr-1">
+        <div className="flex flex-col">
+          {/* 파일 선택 영역 */}
+          <span>파일 선택 </span>
 
-      <GalleryUploadFileSelector
-        fileName={fileName}
-        fileSize={fileSize}
-        previewUrl={previewUrl}
-        onFileChange={(selectedFile) => {
-          if (!selectedFile) {
-            setFileName(null);
-            setFileSize(null);
-            setFile(undefined);
-            setPreviewUrl(null);
-            return;
-          }
-          setFile(selectedFile);
-          setFileName(selectedFile.name);
-          const sizeInMb = selectedFile.size / 1024 / 1024;
-          setFileSize(
-            sizeInMb < 1 ? `${(sizeInMb * 1024).toFixed(0)} KB` : `${sizeInMb.toFixed(1)} MB`
-          );
-          const objectUrl = URL.createObjectURL(selectedFile);
-          setPreviewUrl(objectUrl);
-        }}
-      />
+          <GalleryUploadFileSelector
+            fileName={fileName}
+            fileSize={fileSize}
+            previewUrl={previewUrl}
+            onFileChange={(selectedFile) => {
+              if (!selectedFile) {
+                setFileName(null);
+                setFileSize(null);
+                setFile(undefined);
+                setPreviewUrl(null);
+                return;
+              }
+              setFile(selectedFile);
+              setFileName(selectedFile.name);
+              const sizeInMb = selectedFile.size / 1024 / 1024;
+              setFileSize(
+                sizeInMb < 1 ? `${(sizeInMb * 1024).toFixed(0)} KB` : `${sizeInMb.toFixed(1)} MB`
+              );
+              const objectUrl = URL.createObjectURL(selectedFile);
+              setPreviewUrl(objectUrl);
+            }}
+          />
 
-      {/* 설명 입력 영역 */}
-      <section className="space-y-2">
-        <span>설명</span>
-        <TextArea
-          id={descriptionId}
-          className="h-20"
-          placeholder="사진 설명을 작성해 보세요."
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
-      </section>
+          {/* 설명 입력 영역 */}
+          <section className="space-y-2">
+            <span>설명</span>
+            <TextArea
+              id={descriptionId}
+              className="h-20"
+              placeholder="사진 설명을 작성해 보세요."
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </section>
+        </div>
+      </div>
 
       {/* 업로드/취소 버튼 영역 */}
-      <div className="mt-auto flex flex-col gap-2">
-        {submitError && <p className="text-sm text-red-500">{submitError}</p>}
+      <div className="flex flex-col gap-2">
         <div className="flex justify-end gap-2">
+          <div>{submitError && <p className="text-red-500">{submitError}</p>}</div>
+
           <Button composition="textOnly" onClick={onCancel} disabled={isSubmitting}>
             취소
           </Button>
