@@ -177,23 +177,31 @@ export const getGalleryImageLikeSummary = async (
   imageId: string,
   userId?: string
 ): Promise<{ count: number; liked: boolean; error: PostgrestError | null }> => {
-  const query = supabase
+  const { count, error } = await supabase
     .from("homepage_gallery_image_likes")
-    .select("user_id", { count: "exact" })
+    .select("*", { count: "exact", head: true })
     .eq("image_id", imageId);
-
-  const { data, count, error } = await (userId ? query.eq("user_id", userId) : query);
 
   if (error) {
     return { count: 0, liked: false, error };
   }
 
+  let liked = false;
   if (userId) {
-    return { count: count ?? 0, liked: (data?.length ?? 0) > 0, error: null };
+    const { data, error: likedError } = await supabase
+      .from("homepage_gallery_image_likes")
+      .select("id")
+      .eq("image_id", imageId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (likedError && likedError.code !== "PGRST116") {
+      return { count: count ?? 0, liked: false, error: likedError };
+    }
+    liked = Boolean(data);
   }
 
-  const likeCount = count ?? 0;
-  return { count: likeCount, liked: false, error: null };
+  return { count: count ?? 0, liked, error: null };
 };
 
 export const likeGalleryImage = async (imageId: string, userId: string) => {
