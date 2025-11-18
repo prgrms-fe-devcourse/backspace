@@ -13,8 +13,9 @@ import CommentList from "./CommentList";
 interface PostDetailProps {
   postId: string;
   onBack: () => void;
+  onEdit: (post: any) => void;
 }
-export default function PostDetail({ postId, onBack }: PostDetailProps) {
+export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentWithProfile[]>([]);
   const [likeCount, setLikeCount] = useState(0);
@@ -185,7 +186,7 @@ export default function PostDetail({ postId, onBack }: PostDetailProps) {
 
         {isOwner && (
           <div className="flex gap-2">
-            <Button size="md" className="flex items-center gap-1">
+            <Button size="md" className="flex items-center gap-1" onClick={() => onEdit(post)}>
               <Pencil width={14} /> 수정
             </Button>
             <Button size="md" className="flex items-center gap-1" onClick={handleDeletePost}>
