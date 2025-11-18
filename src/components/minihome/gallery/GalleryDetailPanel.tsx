@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { ChevronLeft, Heart, Send } from "lucide-react";
+import { ChevronLeft, Heart, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -7,12 +7,17 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { addGalleryImageComment, getGalleryImageComments } from "./api/gallery";
+import {
+  addGalleryImageComment,
+  deleteGalleryImageComment,
+  getGalleryImageComments,
+} from "./api/gallery";
 import type { GalleryComment, GalleryImage } from "./types/gallery.types";
 
 interface GalleryDetailPanelProps {
   image: GalleryImage;
   onBack: () => void;
+  isMine?: boolean;
 }
 
 // JSON 타입의 댓글 내용을 문자열로 변환
@@ -36,7 +41,11 @@ const stringifyCommentContent = (value: unknown): string => {
   }
 };
 
-export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanelProps) {
+export default function GalleryDetailPanel({
+  image,
+  onBack,
+  isMine = false,
+}: GalleryDetailPanelProps) {
   const [photoLiked, setPhotoLiked] = useState(false);
   const [comments, setComments] = useState<GalleryComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
@@ -115,6 +124,18 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
       setComments((prev) => [...prev, data]);
       setNewComment("");
     }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!isMine) {
+      return;
+    }
+    const error = await deleteGalleryImageComment(commentId);
+    if (error) {
+      setSubmitError(error.message ?? "댓글을 삭제하지 못했습니다.");
+      return;
+    }
+    setComments((prev) => prev.filter((comment) => comment.id !== commentId));
   };
 
   return (
@@ -218,7 +239,19 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
                         <div className="flex-1">
                           <div className="text-muted mb-1 flex items-center justify-between">
                             <span className="text-primary">{nickname}</span>
-                            <span>{dayjs(comment.created_at).format("YYYY.MM.DD HH:mm")}</span>
+                            <div className="flex items-center gap-2">
+                              <span>{dayjs(comment.created_at).format("YYYY.MM.DD HH:mm")}</span>
+                              {isMine && (
+                                <Button
+                                  size="sm"
+                                  composition="iconOnly"
+                                  aria-label="댓글 삭제"
+                                  onClick={() => handleDeleteComment(comment.id)}
+                                >
+                                  <X size={12} />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                           <p>{body || "내용이 없습니다."}</p>
                         </div>

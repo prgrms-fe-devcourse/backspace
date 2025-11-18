@@ -159,7 +159,13 @@ export default function Gallery({ ownerId }: GalleryProps) {
     }
 
     if (view === "detail" && selectedImage) {
-      return <GalleryDetailPanel image={selectedImage} onBack={handleBackToList} />;
+      return (
+        <GalleryDetailPanel
+          image={selectedImage}
+          onBack={handleBackToList}
+          isMine={canManageGallery}
+        />
+      );
     }
 
     if (view === "upload" && canManageGallery) {
