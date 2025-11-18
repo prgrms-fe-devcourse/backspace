@@ -86,7 +86,7 @@ export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPan
       <div className="flex-1 overflow-hidden">
         <div className="scrollbar flex h-full w-full flex-col gap-4 overflow-y-auto p-2">
           {/* 이미지 표시 영역 */}
-          <section className="flex w-full flex-col items-center gap-4 p-4">
+          <section className="flex w-full flex-col items-center gap-4">
             <div className="w-full overflow-hidden">
               <div className="aspect-square h-full w-full overflow-hidden">
                 <ImagePlaceholder />
