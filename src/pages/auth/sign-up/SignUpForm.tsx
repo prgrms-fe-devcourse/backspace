@@ -105,14 +105,14 @@ export default function SignUpForm() {
     <form onSubmit={handleSignUp} className="flex w-full flex-col items-center gap-2">
       {isSuccess ? (
         <div className="flex flex-col items-center gap-4 text-center">
-          <h3 className="text-lg font-semibold">회원가입 성공!</h3>
-          <p>로그인되었습니다. 메인 페이지로 이동합니다...</p>
+          <h3 className="text-lg font-semibold">Sign-up Successful!</h3>
+          <p>You are now logged in. Redirecting to the main page...</p>
         </div>
       ) : (
         <>
           <div className="flex w-full flex-col gap-1">
             <label htmlFor="username" className="px-1 select-none">
-              유저 이름:
+              Username:
             </label>
 
             <Input
@@ -133,7 +133,7 @@ export default function SignUpForm() {
 
           <div className="flex w-full flex-col gap-1">
             <label htmlFor="email" className="px-1 select-none">
-              이메일:
+              Email:
             </label>
 
             <Input

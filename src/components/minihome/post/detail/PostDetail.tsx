@@ -77,6 +77,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
     setIsLikeLoading(true);
 
+    const originalLikeCount = likeCount;
     const prev = isLiked;
     setIsLiked(!prev);
     setLikeCount(prev ? likeCount - 1 : likeCount + 1);
@@ -87,7 +88,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
     if (error) {
       setIsLiked(prev);
-      setLikeCount(prev ? likeCount : likeCount + (prev ? 1 : -1));
+      setLikeCount(originalLikeCount);
     }
 
     setIsLikeLoading(false);
@@ -100,7 +101,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="scrollbar flex min-h-0 flex-col gap-2.5 overflow-auto px-4 py-3.5">
+      <div className="scrollbar flex min-h-0 flex-col gap-2.5 overflow-auto py-3.5 pr-1 pl-4">
         <Button onClick={onBack} className="self-start">
           <ArrowLeft size={14} /> 목록으로
         </Button>
@@ -118,8 +119,8 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
         </div>
 
         <div className="flex">
-          <div className="min-h-[120px] flex-1 whitespace-pre-wrap">
-            {String(post.content || "")}
+          <div className="min-h-[110px] flex-1 whitespace-pre-wrap">
+            {String(post.content ?? "")}
           </div>
         </div>
 
@@ -143,10 +144,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
                   onEdit({
                     id: post.id,
                     title: post.title ?? "",
-                    content:
-                      typeof post.content === "string"
-                        ? post.content
-                        : JSON.stringify(post.content),
+                    content: String(post.content ?? ""),
                   })
                 }
               >

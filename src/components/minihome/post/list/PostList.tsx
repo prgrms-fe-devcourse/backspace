@@ -53,8 +53,8 @@ export default function PostList({ onPostClick }: PostListProps) {
   }
 
   return (
-    <div className="bevel-pressed flex min-h-0 flex-1 flex-col overflow-hidden bg-white py-2.5">
-      <div className="scrollbar flex min-h-0 flex-col gap-2 overflow-y-auto px-4">
+    <div className="bevel-pressed bg-text-invert flex min-h-0 flex-1 flex-col overflow-hidden py-2.5">
+      <div className="scrollbar flex min-h-0 flex-col gap-2 overflow-y-auto pl-4">
         {posts.length > 0 ? (
           posts.map((post) => (
             <PostItem
