@@ -1,30 +1,15 @@
-import type { ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 import type { WindowApp } from "@/types/window.types";
 
-interface ShortcutProps extends ComponentPropsWithRef<"button"> {
+interface ShortcutProps extends ComponentPropsWithoutRef<"button"> {
   Icon: WindowApp["icon"];
   caption: WindowApp["caption"];
   isSelected?: boolean;
   isFocused?: boolean;
 }
 
-/**
- * 바로가기 컴포넌트
- *
- * @component
- * @example
- * ```tsx
- * import Shortcut from "@/components/Shortcut/Shortcut";
- * import { WINDOW_APP } from "@/types/window-app.type";
- *
- * <Shortcut
- *   Icon={WINDOW_APP.HOME.icon}
- *   caption={WINDOW_APP.HOME.caption
- * />
- * ```
- */
 export default function Shortcut({
   Icon,
   caption,

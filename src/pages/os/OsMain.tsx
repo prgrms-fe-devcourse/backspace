@@ -63,29 +63,29 @@ export default function OsMain() {
           )}
         </div>
 
-        {Object.values(windows).map((windowState) => {
-          if (!windowState) return null;
+        {Object.values(windows).map((window) => {
+          if (!window) return null;
 
-          const app = WINDOW_APPS[windowState.id];
-          if (!app || !app.component) return null;
+          const app = WINDOW_APPS[window.id];
+          if (!app.component) return null;
 
           const Component = app.component;
-          const isActive = windowState.id === activeWindowId;
+          const isActive = window.id === activeWindowId;
 
           return (
             <Window
-              key={windowState.id}
+              key={window.id}
               ref={ref}
               open
               buttons="all"
-              onClose={() => closeWindow(windowState.id)}
-              title={windowState.caption}
+              onClose={() => closeWindow(window.id)}
+              title={window.caption}
               icon={app.icon}
               isActive={isActive}
-              onPointerDown={() => setActiveWindow(windowState.id)}
-              windowId={windowState.id}
+              onPointerDown={() => setActiveWindow(window.id)}
+              windowId={window.id}
             >
-              <Component windowId={windowState.id} ownerId={windowState.ownerId} />
+              <Component windowId={window.id} ownerId={window.ownerId} />
             </Window>
           );
         })}

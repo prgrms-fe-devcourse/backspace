@@ -3,9 +3,10 @@ import { useEffect, useState, type RefObject } from "react";
 import { twMerge } from "tailwind-merge";
 
 import TitleBar, { type TitleBarProps } from "@/components/window/TitleBar/TitleBar";
+import { WINDOW_INFO } from "@/config/windowInfo";
 import { useDraggable } from "@/hooks/useDraggable";
 import { useWindowStore } from "@/stores/useWindowStore";
-import type { WindowAppId } from "@/types/window.types";
+import type { Position, WindowAppId } from "@/types/window.types";
 
 interface WindowProps extends Dialog.DialogProps, TitleBarProps {
   ref: RefObject<HTMLElement | null>;
@@ -13,8 +14,6 @@ interface WindowProps extends Dialog.DialogProps, TitleBarProps {
   description?: string | undefined;
   isActive?: boolean;
 }
-
-type Position = { x: number; y: number } | null;
 
 export default function Window({
   windowId,
@@ -27,12 +26,16 @@ export default function Window({
   children,
   ref,
   isActive,
+  onPointerDown,
   className,
 }: WindowProps) {
-  const { windows, categoryPositions, updateWindowPosition } = useWindowStore();
-  const category = windows[windowId]?.category;
-  const savedPosition = category ? categoryPositions[category] : undefined;
-  const [position, setPosition] = useState<Position>(savedPosition ?? null);
+  const { category } = WINDOW_INFO[windowId];
+  const categoryPositions = useWindowStore((state) => state.categoryPositions);
+  const updateWindowPosition = useWindowStore((state) => state.updateWindowPosition);
+
+  const savedPosition = categoryPositions[category];
+  const [position, setPosition] = useState<Position | null>(savedPosition ?? null);
+
   const { onMouseDown, onDrag, isDragging } = useDraggable();
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function Window({
     const update = () => {
       const next = onDrag.current;
       if (next) {
-        setPosition((prev) => (prev?.x === next.x && prev.y === next.y ? prev : next));
+        setPosition((prev) => (prev && prev.x === next.x && prev.y === next.y ? prev : next));
       }
       frameId = requestAnimationFrame(update);
     };
@@ -63,16 +66,14 @@ export default function Window({
       <Dialog.Portal container={ref.current}>
         <Dialog.Content onInteractOutside={(e) => e.preventDefault()} asChild>
           <section
+            onPointerDown={onPointerDown}
             className={twMerge(
               "bevel-default absolute inset-0 inline-flex h-full w-full flex-1 flex-col p-[3px] focus:outline-none",
               // TODO: 가변 사이즈 변경
               "md:h-[500px] md:w-[600px]",
-
-              position === null &&
+              !position &&
                 "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2",
-
               isActive ? "z-40" : "z-10",
-
               className
             )}
             style={
@@ -90,7 +91,7 @@ export default function Window({
               title={title}
               buttons={buttons}
               onClose={onClose}
-              onMouseDown={(event) => onMouseDown(event)}
+              onMouseDown={onMouseDown}
             />
             {children}
           </section>
