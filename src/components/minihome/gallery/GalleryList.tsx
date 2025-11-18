@@ -32,9 +32,7 @@ export default function GalleryList({
         <p className="text-muted mt-8 text-center text-sm">홈페이지 정보를 찾을 수 없습니다.</p>
       );
     }
-    if (showStatus.isLoading) {
-      return <p className="text-muted mt-8 text-center text-sm">사진을 불러오는 중입니다...</p>;
-    }
+
     if (showStatus.error) {
       return <p className="mt-8 text-center text-sm text-red-500">{showStatus.error}</p>;
     }
@@ -44,19 +42,30 @@ export default function GalleryList({
     return null;
   };
 
+  const statusContent = renderStatus();
+
   return (
+    // 베벨 테두리 래퍼
     <div className="bevel-pressed h-full w-full overflow-hidden p-1">
+      {/* 내부 컨텐츠 */}
       <div className="scrollbar bg-text-invert h-full w-full overflow-y-auto px-4 pt-4 pb-4">
-        <div className="flex items-center justify-between">
+        {/* 헤더 */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h1>사진첩</h1>
-          {isMine && (
-            <Button composition="textOnly" onClick={onRequestUpload}>
-              업로드
-            </Button>
-          )}
+          <div className="flex flex-col items-end gap-1">
+            {isMine && (
+              <Button composition="textOnly" onClick={onRequestUpload}>
+                업로드
+              </Button>
+            )}
+            {statusContent && (
+              <div className="[&>p]:mt-0 [&>p]:text-right [&>p]:text-xs">{statusContent}</div>
+            )}
+          </div>
         </div>
 
         {hasImages ? (
+          /* 이미지 그리드 영역 */
           <div className="mt-2 grid grid-cols-4 gap-1">
             {images.map((image) => (
               <button
@@ -81,9 +90,7 @@ export default function GalleryList({
               </button>
             ))}
           </div>
-        ) : (
-          renderStatus()
-        )}
+        ) : null}
       </div>
     </div>
   );
