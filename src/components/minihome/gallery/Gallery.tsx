@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -34,9 +34,9 @@ export default function Gallery({ ownerId }: GalleryProps) {
     ? (images.find((image) => image.id === selectedImageId) ?? null)
     : null;
 
-  // 갤러리 데이터를 ownerId 변경마다 다시 가져온다.
-  const fetchGalleryImages = useCallback(async () => {
-    if (!ownerId) {
+  // ownerId를 받아 해당 홈피의 갤러리 목록을 불러오는 공통 함수
+  const loadGallery = async (targetOwnerId?: string) => {
+    if (!targetOwnerId) {
       setImages([]);
       setListError(null);
       setUploadError(null);
@@ -47,7 +47,8 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setIsLoading(true);
     setListError(null);
 
-    const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
+    // 홈피 ID 조회
+    const { data: homepage, error: homepageError } = await getHomepageIdByOwner(targetOwnerId);
 
     if (homepageError) {
       setImages([]);
@@ -67,6 +68,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
       return;
     }
 
+    // 실제 갤러리 이미지 목록 조회
     const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
 
     if (galleryError) {
@@ -83,11 +85,12 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setListError(null);
     setUploadError(null);
     setIsLoading(false);
-  }, [ownerId]);
+  };
 
+  // ownerId나 의존한 값이 변할 때마다 목록을 조회
   useEffect(() => {
-    fetchGalleryImages();
-  }, [fetchGalleryImages]);
+    loadGallery(ownerId);
+  }, [ownerId]);
 
   // 다른 ownerId로 이동하거나 탭을 다시 열었을 때 상세/업로드 상태 초기화
   useEffect(() => {
@@ -137,7 +140,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
 
     setUploadError(null);
     setView("list");
-    fetchGalleryImages();
+    await loadGallery(ownerId);
   };
 
   const renderContent = () => {
