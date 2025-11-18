@@ -11,6 +11,9 @@ import {
   addGalleryImageComment,
   deleteGalleryImageComment,
   getGalleryImageComments,
+  getGalleryImageLikeSummary,
+  likeGalleryImage,
+  unlikeGalleryImage,
 } from "./api/gallery";
 import type { GalleryComment, GalleryImage } from "./types/gallery.types";
 
@@ -46,7 +49,10 @@ export default function GalleryDetailPanel({
   onBack,
   isMine = false,
 }: GalleryDetailPanelProps) {
-  const [photoLiked, setPhotoLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeError, setLikeError] = useState<string | null>(null);
+  const [isUpdatingLike, setIsUpdatingLike] = useState(false);
   const [comments, setComments] = useState<GalleryComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
@@ -58,6 +64,27 @@ export default function GalleryDetailPanel({
 
   useEffect(() => {
     let isMounted = true;
+
+    const loadLikes = async () => {
+      const { count, liked, error } = await getGalleryImageLikeSummary(
+        image.id,
+        userId ?? undefined
+      );
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (error) {
+        setLikeError(error.message ?? "좋아요 정보를 불러오지 못했습니다.");
+        setLikeCount(0);
+        setIsLiked(false);
+      } else {
+        setLikeError(null);
+        setLikeCount(count);
+        setIsLiked(liked);
+      }
+    };
 
     const loadComments = async () => {
       if (!image.id) {
@@ -84,14 +111,13 @@ export default function GalleryDetailPanel({
       setIsLoadingComments(false);
     };
 
+    loadLikes();
     loadComments();
 
     return () => {
       isMounted = false;
     };
-  }, [image.id]);
-
-  const togglePhotoLike = () => setPhotoLiked((prev) => !prev);
+  }, [image.id, userId]);
 
   const handleSubmitComment = async () => {
     const trimmed = newComment.trim();
@@ -136,6 +162,41 @@ export default function GalleryDetailPanel({
       return;
     }
     setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+  };
+
+  const handleToggleLike = async () => {
+    if (!userId) {
+      setLikeError("로그인이 필요합니다.");
+      return;
+    }
+    if (isUpdatingLike) {
+      return;
+    }
+
+    setIsUpdatingLike(true);
+    setLikeError(null);
+
+    if (isLiked) {
+      setIsLiked(false);
+      setLikeCount((prev) => Math.max(0, prev - 1));
+      const error = await unlikeGalleryImage(image.id, userId);
+      if (error) {
+        setIsLiked(true);
+        setLikeCount((prev) => prev + 1);
+        setLikeError(error.message ?? "좋아요 취소에 실패했습니다.");
+      }
+    } else {
+      setIsLiked(true);
+      setLikeCount((prev) => prev + 1);
+      const error = await likeGalleryImage(image.id, userId);
+      if (error) {
+        setIsLiked(false);
+        setLikeCount((prev) => Math.max(0, prev - 1));
+        setLikeError(error.message ?? "좋아요에 실패했습니다.");
+      }
+    }
+
+    setIsUpdatingLike(false);
   };
 
   return (
@@ -183,14 +244,14 @@ export default function GalleryDetailPanel({
               <Button
                 size="sm"
                 composition="iconText"
-                onClick={togglePhotoLike}
-                className={twMerge("text-primary px-3", photoLiked && "text-accent")}
+                onClick={handleToggleLike}
+                className={twMerge("text-primary px-3", isLiked && "text-accent")}
               >
                 <Heart
-                  className={twMerge("h-3.5 w-3.5", photoLiked && "text-accent fill-current")}
-                  fill={photoLiked ? "currentColor" : "none"}
+                  className={twMerge("h-3.5 w-3.5", isLiked && "text-accent fill-current")}
+                  fill={isLiked ? "currentColor" : "none"}
                 />
-                좋아요 4
+                좋아요 {likeCount}
               </Button>
               <div className="flex items-center gap-2">
                 <Button size="sm" composition="textOnly" className="text-primary px-3">
@@ -288,6 +349,7 @@ export default function GalleryDetailPanel({
             등록
           </Button>
         </div>
+        {likeError && <p className="text-right text-red-500">{likeError}</p>}
         {submitError && <p className="text-right text-red-500">{submitError}</p>}
       </div>
     </div>
