@@ -31,7 +31,7 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
   };
 
   return (
-    <div className="h/full w/full flex flex-col gap-3 p-6 text-xs">
+    <div className="flex h-full w-full flex-col gap-3">
       {/* 파일 선택 영역 */}
       <span>파일 선택</span>
       <GalleryUploadFileSelector

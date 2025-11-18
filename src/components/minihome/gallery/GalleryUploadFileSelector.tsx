@@ -43,7 +43,7 @@ export default function GalleryUploadFileSelector({
   return (
     <div className="space-y-3">
       {/* 이미지 프리뷰 카드 */}
-      <div className="bevel-pressed bg-text-invert text-muted flex flex-col items-center justify-center gap-2 p-6 text-xs">
+      <div className="bevel-pressed bg-text-invert text-muted flex flex-col items-center justify-center gap-2 p-4">
         <div className="bevel-default flex h-24 w-24 items-center justify-center overflow-hidden p-1">
           {previewUrl ? (
             <img
