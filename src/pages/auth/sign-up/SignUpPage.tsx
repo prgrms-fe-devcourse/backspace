@@ -1,6 +1,5 @@
 import Logo from "@/assets/logo/logo.svg?react";
-
-import SignUpForm from "./SignUpForm";
+import SignUpForm from "@/pages/auth/sign-up/SignUpForm";
 
 export default function SignUpPage() {
   return (

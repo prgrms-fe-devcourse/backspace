@@ -2,7 +2,7 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 import { StartMenu } from "@/components/os/Start/StartMenu";
-import { WINDOW_APPS } from "@/config/window";
+import { WINDOW_APPS } from "@/config/windowApps";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { WindowAppId } from "@/types/window.types";
 

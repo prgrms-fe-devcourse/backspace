@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import Shortcut from "@/components/os/Shortcut/Shortcut";
 import Taskbar from "@/components/os/Taskbar/Taskbar";
 import Window from "@/components/window/Window/Window";
-import { WINDOW_APPS } from "@/config/window";
+import { WINDOW_APPS } from "@/config/windowApps";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { WindowAppId, WindowCategory } from "@/types/window.types";

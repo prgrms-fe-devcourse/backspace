@@ -29,3 +29,8 @@ export interface WindowInstance {
   caption: string;
   ownerId?: string;
 }
+
+export interface Position {
+  x: number;
+  y: number;
+}

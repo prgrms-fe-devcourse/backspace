@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 
 import Logo from "@/assets/logo/logo.svg?react";
-
-import SignInForm from "./SignInForm";
-import SocialLoginButtons from "./SocialLoginButtons";
+import SignInForm from "@/pages/auth/sign-in/SignInForm";
+import SocialLoginButtons from "@/pages/auth/sign-in/SocialLoginButtons";
 
 export default function SignInPage() {
   return (

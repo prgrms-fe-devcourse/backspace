@@ -3,12 +3,12 @@ import { useState } from "react";
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 
-interface CommentWriteBoxProps {
+interface CommentInputProps {
   entryId: string;
   onSubmit: (id: string, content: string) => void;
 }
 
-export default function CommentWriteBox({ entryId, onSubmit }: CommentWriteBoxProps) {
+export default function CommentInput({ entryId, onSubmit }: CommentInputProps) {
   const [content, setContent] = useState("");
 
   return (
@@ -24,7 +24,6 @@ export default function CommentWriteBox({ entryId, onSubmit }: CommentWriteBoxPr
           onSubmit(entryId, content);
           setContent("");
         }}
-        size="md"
         className="self-center"
       >
         작성
