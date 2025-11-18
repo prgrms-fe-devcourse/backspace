@@ -152,8 +152,9 @@ export default function GalleryDetailPanel({
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    if (!isMine) {
+  const handleDeleteComment = async (commentId: string, commentAuthorId?: string | null) => {
+    if (!isMine && commentAuthorId !== userId) {
+      setSubmitError("댓글 삭제 권한이 없습니다.");
       return;
     }
     const error = await deleteGalleryImageComment(commentId);
@@ -302,12 +303,14 @@ export default function GalleryDetailPanel({
                             <span className="text-primary">{nickname}</span>
                             <div className="flex items-center gap-2">
                               <span>{dayjs(comment.created_at).format("YYYY.MM.DD HH:mm")}</span>
-                              {isMine && (
+                              {(isMine || comment.author?.auth_id === userId) && (
                                 <Button
                                   size="sm"
                                   composition="iconOnly"
                                   aria-label="댓글 삭제"
-                                  onClick={() => handleDeleteComment(comment.id)}
+                                  onClick={() =>
+                                    handleDeleteComment(comment.id, comment.author?.auth_id ?? null)
+                                  }
                                 >
                                   <X size={12} />
                                 </Button>
