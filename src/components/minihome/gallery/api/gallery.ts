@@ -172,3 +172,51 @@ export const deleteGalleryImageComment = async (
     .eq("id", commentId);
   return error;
 };
+
+export const getGalleryImageLikeSummary = async (
+  imageId: string,
+  userId?: string
+): Promise<{ count: number; liked: boolean; error: PostgrestError | null }> => {
+  const { count, error } = await supabase
+    .from("homepage_gallery_image_likes")
+    .select("*", { count: "exact", head: true })
+    .eq("image_id", imageId);
+
+  if (error) {
+    return { count: 0, liked: false, error };
+  }
+
+  if (!userId) {
+    return { count: count ?? 0, liked: false, error: null };
+  }
+
+  const { data: likeRow, error: likedError } = await supabase
+    .from("homepage_gallery_image_likes")
+    .select("id")
+    .eq("image_id", imageId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (likedError && likedError.code !== "PGRST116") {
+    return { count: count ?? 0, liked: false, error: likedError };
+  }
+
+  return { count: count ?? 0, liked: Boolean(likeRow), error: null };
+};
+
+export const likeGalleryImage = async (imageId: string, userId: string) => {
+  const { error } = await supabase.from("homepage_gallery_image_likes").insert({
+    image_id: imageId,
+    user_id: userId,
+  });
+  return error;
+};
+
+export const unlikeGalleryImage = async (imageId: string, userId: string) => {
+  const { error } = await supabase
+    .from("homepage_gallery_image_likes")
+    .delete()
+    .eq("image_id", imageId)
+    .eq("user_id", userId);
+  return error;
+};
