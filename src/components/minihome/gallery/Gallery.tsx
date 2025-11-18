@@ -90,6 +90,14 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setSelectedImageId(null);
   }, [ownerId]);
 
+  // 상세 보기 중 선택된 이미지가 목록에서 사라지면 자동으로 리스트 화면으로 복귀
+  useEffect(() => {
+    if (view === "detail" && !selectedImage) {
+      setView("list");
+      setSelectedImageId(null);
+    }
+  }, [view, selectedImage]);
+
   const handleSelectImage = (imageId: string) => {
     setSelectedImageId(imageId);
     setView("detail");

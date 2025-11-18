@@ -4,7 +4,15 @@ const FILE_BUCKET = "files";
 
 // Storage에 저장할 때 겹치지 않도록 홈피 ID + UUID 기반 경로를 생성
 const createUniqueFilePath = (homepageId: string, fileName: string) => {
-  const extension = fileName.split(".").pop() ?? "png";
+  const allowedExtensions = ["png", "jpg", "jpeg", "gif", "webp"];
+  let extension = "";
+  const lastDot = fileName.lastIndexOf(".");
+  if (lastDot !== -1 && lastDot < fileName.length - 1) {
+    extension = fileName.slice(lastDot + 1).toLowerCase();
+  }
+  if (!allowedExtensions.includes(extension)) {
+    extension = "png";
+  }
   const unique =
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
@@ -46,6 +54,14 @@ export const uploadGalleryImage = async ({
   authorId,
   caption,
 }: UploadGalleryImageParams) => {
+  const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return {
+      data: null,
+      error: new Error("JPEG, PNG, GIF, WebP 파일만 업로드 가능합니다."),
+    };
+  }
+
   const filePath = createUniqueFilePath(homepageId, file.name);
 
   const { error: uploadError } = await supabase.storage.from(FILE_BUCKET).upload(filePath, file, {
