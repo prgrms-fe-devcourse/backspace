@@ -3,6 +3,7 @@ import { Activity, useEffect, useState } from "react";
 
 import Gallery from "@/components/minihome/gallery/Gallery";
 import GuestBook from "@/components/minihome/guestbook/GuestBook";
+import MemoTab from "@/components/minihome/post/MemoTab";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import HomePage from "@/components/Page/HomePage";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
@@ -56,14 +57,9 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
           <Gallery ownerId={ownerId} />
         </Activity>
       </Tabs.Content>
-      <Tabs.Content value={MINIHOME_TABS.memo}>
+      <Tabs.Content value={MINIHOME_TABS.memo} className="min-h-0 flex-1">
         <Activity>
-          메모
-          {/* {memoDetail.selectedId ? (
-            <MemoDetail memoId={memoDetail.selectedId} onBack={memoDetail.exitDetail} />
-          ) : (
-            <MemoList onSelectMemo={memoDetail.enterDetail} />
-          )} */}
+          <MemoTab />
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook} asChild>

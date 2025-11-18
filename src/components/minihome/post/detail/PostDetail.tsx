@@ -99,77 +99,85 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
   const isOwner = myHomepageId === post.homepage_id;
 
   return (
-    <div className="scrollbar flex h-full min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto py-3.5">
-      <Button onClick={onBack} className="self-start">
-        <ArrowLeft size={14} /> 목록으로
-      </Button>
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="scrollbar flex min-h-0 flex-col gap-2.5 overflow-auto px-4 py-3.5">
+        <Button onClick={onBack} className="self-start">
+          <ArrowLeft size={14} /> 목록으로
+        </Button>
 
-      <div>
-        <div className="border-b">
-          <h2 className="text-sm">{post.title}</h2>
-          <div className="mt-1 flex justify-between text-xs text-gray-500">
-            <span>{dayjs(post.created_at).format("YYYY.MM.DD HH:mm")}</span>
-            <span className="flex items-center gap-1">
-              <MessageSquare width={12} /> {comments.length}
-            </span>
+        <div>
+          <div className="border-b">
+            <h2 className="text-sm">{post.title}</h2>
+            <div className="mt-1 flex justify-between text-xs opacity-60">
+              <span>{dayjs(post.created_at).format("YYYY.MM.DD HH:mm")}</span>
+              <span className="flex items-center gap-1">
+                <MessageSquare width={12} /> {comments.length}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="min-h-[100px] whitespace-pre-wrap">{String(post.content || "")}</div>
-
-      <div className="flex justify-between">
-        <Button
-          size="md"
-          className={`flex items-center gap-1 ${isLiked ? "text-accent" : ""}`}
-          onClick={handleToggleLike}
-          disabled={isLikeLoading}
-        >
-          <Heart width={14} fill={isLiked ? "currentColor" : "none"} />
-          좋아요 {likeCount}
-        </Button>
-
-        {isOwner && (
-          <div className="flex gap-2">
-            <Button
-              size="md"
-              className="flex items-center gap-1"
-              onClick={() =>
-                onEdit({
-                  id: post.id,
-                  title: post.title ?? "",
-                  content:
-                    typeof post.content === "string" ? post.content : JSON.stringify(post.content),
-                })
-              }
-            >
-              <Pencil width={14} /> 수정
-            </Button>
-            <Button size="md" className="flex items-center gap-1" onClick={handleDeletePost}>
-              <Trash2 width={14} /> 삭제
-            </Button>
+        <div className="flex">
+          <div className="min-h-[120px] flex-1 whitespace-pre-wrap">
+            {String(post.content || "")}
           </div>
-        )}
-      </div>
+        </div>
 
-      <CommentList comments={comments} />
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleCommentSubmit(commentText);
-          setCommentText("");
-        }}
-      >
-        <Input
-          placeholder="댓글을 입력하세요"
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-        />
-        <Button type="submit" size="md" className="w-20">
-          <Send width={14} />
-        </Button>
-      </form>
+        <div className="flex justify-between">
+          <Button
+            size="md"
+            className={`flex items-center gap-1 ${isLiked ? "text-accent" : ""}`}
+            onClick={handleToggleLike}
+            disabled={isLikeLoading}
+          >
+            <Heart width={14} fill={isLiked ? "currentColor" : "none"} />
+            좋아요 {likeCount}
+          </Button>
+
+          {isOwner && (
+            <div className="flex gap-2">
+              <Button
+                size="md"
+                className="flex items-center gap-1"
+                onClick={() =>
+                  onEdit({
+                    id: post.id,
+                    title: post.title ?? "",
+                    content:
+                      typeof post.content === "string"
+                        ? post.content
+                        : JSON.stringify(post.content),
+                  })
+                }
+              >
+                <Pencil width={14} /> 수정
+              </Button>
+              <Button size="md" className="flex items-center gap-1" onClick={handleDeletePost}>
+                <Trash2 width={14} /> 삭제
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <CommentList comments={comments} />
+        <form
+          className="flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCommentSubmit(commentText);
+            setCommentText("");
+          }}
+        >
+          <Input
+            placeholder="댓글을 입력하세요"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          />
+          <Button type="submit" size="md" className="w-20">
+            <Send width={14} />
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }

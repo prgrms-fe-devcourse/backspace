@@ -53,19 +53,21 @@ export default function PostList({ onPostClick }: PostListProps) {
   }
 
   return (
-    <div className="bevel-pressed scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-white p-2.5">
-      {posts.length > 0 ? (
-        posts.map((post) => (
-          <PostItem
-            key={post.id}
-            post={post}
-            authorName={authorName || "주인장"}
-            onPostClick={onPostClick}
-          />
-        ))
-      ) : (
-        <div className="py-4 text-center text-gray-500">작성된 게시글이 없습니다.</div>
-      )}
+    <div className="bevel-pressed flex min-h-0 flex-1 flex-col overflow-hidden bg-white py-2.5">
+      <div className="scrollbar flex min-h-0 flex-col gap-2 overflow-y-auto px-4">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <PostItem
+              key={post.id}
+              post={post}
+              authorName={authorName || "주인장"}
+              onPostClick={onPostClick}
+            />
+          ))
+        ) : (
+          <div className="py-4 text-center opacity-60">작성된 게시글이 없습니다.</div>
+        )}
+      </div>
     </div>
   );
 }
