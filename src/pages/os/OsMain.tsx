@@ -83,6 +83,7 @@ export default function OsMain() {
               icon={app.icon}
               isActive={isActive}
               onPointerDown={() => setActiveWindow(windowState.id)}
+              windowId={windowState.id}
             >
               <Component windowId={windowState.id} ownerId={windowState.ownerId} />
             </Window>
