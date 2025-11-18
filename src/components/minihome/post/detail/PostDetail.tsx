@@ -6,14 +6,23 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import type { CommentWithProfile, Post } from "@/types/post.types";
-import supabase from "@/utils/supabase";
 
+import { deletePost } from "./api/deletePost";
+import { fetchPostDetail } from "./api/fetchPostDetail";
+import { submitComment } from "./api/submitComment";
+import { addLike, removeLike } from "./api/toggleLike";
 import CommentList from "./CommentList";
+
+interface MinihomePost {
+  id: string;
+  title: string;
+  content: string;
+}
 
 interface PostDetailProps {
   postId: string;
   onBack: () => void;
-  onEdit: (post: any) => void;
+  onEdit: (post: MinihomePost) => void;
 }
 export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) {
   const [post, setPost] = useState<Post | null>(null);
@@ -28,87 +37,37 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
   const { id: authUserId, homepageId: myHomepageId } = useAuthUser();
 
   useEffect(() => {
-    async function fetchPostDetails() {
+    async function load() {
       setIsLoading(true);
-
-      const [postRes, commentsRes, likesRes, myLikeRes] = await Promise.all([
-        supabase.from("homepage_posts").select("*").eq("id", postId).single(),
-
-        supabase
-          .from("homepage_post_comments")
-          .select(`*, profiles ( nickname, avatar_url )`)
-          .eq("post_id", postId)
-          .order("created_at", { ascending: true }),
-
-        supabase.from("homepage_post_likes").select("id").eq("post_id", postId),
-
+      const { postRes, commentsRes, likesRes, myLikeRes } = await fetchPostDetail(
+        postId,
         authUserId
-          ? supabase
-              .from("homepage_post_likes")
-              .select("id")
-              .eq("post_id", postId)
-              .eq("user_id", authUserId)
-              .maybeSingle()
-          : Promise.resolve({ data: null, error: null }),
-      ]);
+      );
 
-      if (postRes.error) console.error("게시물 로딩 실패:", postRes.error);
-      else setPost(postRes.data);
-
-      if (commentsRes.error) console.error("댓글 로딩 실패:", commentsRes.error);
-      else setComments(commentsRes.data as CommentWithProfile[]);
-
-      if (likesRes.error) {
-        console.error("좋아요 로딩 실패:", likesRes.error);
-      } else {
-        setLikeCount(likesRes.data ? likesRes.data.length : 0);
-      }
-
-      if (myLikeRes.data) {
-        setIsLiked(true);
-      } else {
-        setIsLiked(false);
-      }
+      if (!postRes.error) setPost(postRes.data);
+      if (!commentsRes.error) setComments(commentsRes.data);
+      if (!likesRes.error) setLikeCount(likesRes.data?.length ?? 0);
+      setIsLiked(!!myLikeRes.data);
 
       setIsLoading(false);
     }
-    fetchPostDetails();
+    load();
   }, [postId, authUserId]);
 
-  const handleCommentSubmit = async (content: string) => {
+  const handleCommentSubmit = async (text: string) => {
     if (!authUserId || !post) return;
 
-    const newComment = {
-      post_id: post.id,
-      author_id: authUserId,
-      content,
-    };
-
-    const { data: addedComment, error } = await supabase
-      .from("homepage_post_comments")
-      .insert(newComment)
-      .select(`*, profiles ( nickname, avatar_url )`)
-      .single();
-
-    if (error) {
-      console.error("댓글 등록 실패:", error);
-      // TODO: Toast "댓글 등록 실패"
-    } else if (addedComment) {
-      setComments((prev) => [...prev, addedComment as CommentWithProfile]);
+    const { data, error } = await submitComment(post.id, authUserId, text);
+    if (!error && data) {
+      setComments((prev) => [...prev, data]);
     }
   };
 
   const handleDeletePost = async () => {
     if (!post) return;
 
-    const { error } = await supabase.from("homepage_posts").delete().eq("id", post.id);
-
-    if (error) {
-      console.error("게시글 삭제 실패:", error);
-      // TODO: Toast "삭제 실패"
-    } else {
-      onBack();
-    }
+    const { error } = await deletePost(post.id);
+    if (!error) onBack();
   };
 
   const handleToggleLike = async () => {
@@ -116,33 +75,17 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
     setIsLikeLoading(true);
 
-    const prevIsLiked = isLiked;
-    const prevCount = likeCount;
+    const prev = isLiked;
+    setIsLiked(!prev);
+    setLikeCount(prev ? likeCount - 1 : likeCount + 1);
 
-    setIsLiked(!prevIsLiked);
-    setLikeCount(prevIsLiked ? prevCount - 1 : prevCount + 1);
-
-    let error;
-
-    if (prevIsLiked) {
-      const { error: deleteError } = await supabase
-        .from("homepage_post_likes")
-        .delete()
-        .eq("post_id", postId)
-        .eq("user_id", authUserId);
-      error = deleteError;
-    } else {
-      const { error: insertError } = await supabase
-        .from("homepage_post_likes")
-        .insert({ post_id: postId, user_id: authUserId });
-      error = insertError;
-    }
+    const { error } = prev
+      ? await removeLike(postId, authUserId)
+      : await addLike(postId, authUserId);
 
     if (error) {
-      console.error("좋아요 실패:", error);
-      setIsLiked(prevIsLiked);
-      setLikeCount(prevCount);
-      // TODO: Toast "좋아요 실패"
+      setIsLiked(prev);
+      setLikeCount(prev ? likeCount : likeCount + (prev ? 1 : -1));
     }
 
     setIsLikeLoading(false);
@@ -186,7 +129,18 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
         {isOwner && (
           <div className="flex gap-2">
-            <Button size="md" className="flex items-center gap-1" onClick={() => onEdit(post)}>
+            <Button
+              size="md"
+              className="flex items-center gap-1"
+              onClick={() =>
+                onEdit({
+                  id: post.id,
+                  title: post.title ?? "",
+                  content:
+                    typeof post.content === "string" ? post.content : JSON.stringify(post.content),
+                })
+              }
+            >
               <Pencil width={14} /> 수정
             </Button>
             <Button size="md" className="flex items-center gap-1" onClick={handleDeletePost}>
