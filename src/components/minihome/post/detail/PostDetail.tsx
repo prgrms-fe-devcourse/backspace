@@ -7,6 +7,7 @@ import Input from "@/components/common/Input/Input";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import type { CommentWithProfile, Post } from "@/types/post.types";
 
+import { deleteComment } from "./api/deleteComment";
 import { deletePost } from "./api/deletePost";
 import { fetchPostDetail } from "./api/fetchPostDetail";
 import { submitComment } from "./api/submitComment";
@@ -70,6 +71,13 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
 
     const { error } = await deletePost(post.id);
     if (!error) onBack();
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    const { error } = await deleteComment(commentId);
+    if (!error) {
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    }
   };
 
   const handleToggleLike = async () => {
@@ -157,7 +165,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
           )}
         </div>
 
-        <CommentList comments={comments} />
+        <CommentList comments={comments} onDeleteComment={handleDeleteComment} />
         <form
           className="flex gap-2"
           onSubmit={(e) => {

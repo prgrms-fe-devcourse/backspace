@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { User } from "lucide-react";
+import { Trash, User } from "lucide-react";
 
 import type { CommentWithProfile } from "@/types/post.types";
 
@@ -10,9 +10,10 @@ dayjs.locale("ko");
 
 interface CommentItemProps {
   comment: CommentWithProfile;
+  onDelete: () => Promise<void>;
 }
 
-export default function CommentItem({ comment }: CommentItemProps) {
+export default function CommentItem({ comment, onDelete }: CommentItemProps) {
   const authorName = comment.profiles?.nickname || "익명";
   const avatarUrl = comment.profiles?.avatar_url;
 
@@ -29,9 +30,16 @@ export default function CommentItem({ comment }: CommentItemProps) {
       </div>
 
       <div className="flex flex-1 flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <span className="text-xs">{authorName}</span>
-          <span className="text-[10px] opacity-60">{dayjs(comment.created_at).fromNow()}</span>
+        <div className="flex justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs">{authorName}</span>
+            <span className="text-[10px] opacity-60">{dayjs(comment.created_at).fromNow()}</span>
+          </div>
+          <Trash
+            width={18}
+            className="cursor-pointer opacity-60 hover:opacity-100"
+            onClick={onDelete}
+          />
         </div>
         <p className="text-xs whitespace-pre-wrap">{String(comment.content)}</p>
       </div>
