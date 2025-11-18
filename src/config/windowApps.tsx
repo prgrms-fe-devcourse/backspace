@@ -16,23 +16,23 @@ export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
   home: {
     ...WINDOW_INFO.home,
     icon: Home,
-    component: (props: WindowComponentProps) => <MiniHome {...props} tab={MINIHOME_TABS.home} />,
+    component: (props: WindowComponentProps) => <MiniHome tab={MINIHOME_TABS.home} {...props} />,
   },
   gallery: {
     ...WINDOW_INFO.gallery,
     icon: Gallery,
-    component: (props: WindowComponentProps) => <MiniHome {...props} tab={MINIHOME_TABS.gallery} />,
+    component: (props: WindowComponentProps) => <MiniHome tab={MINIHOME_TABS.gallery} {...props} />,
   },
   memo: {
     ...WINDOW_INFO.memo,
     icon: Memo,
-    component: (props: WindowComponentProps) => <MiniHome {...props} tab={MINIHOME_TABS.memo} />,
+    component: (props: WindowComponentProps) => <MiniHome tab={MINIHOME_TABS.memo} {...props} />,
   },
   guestbook: {
     ...WINDOW_INFO.guestbook,
     icon: Guestbook,
     component: (props: WindowComponentProps) => (
-      <MiniHome {...props} tab={MINIHOME_TABS.guestbook} />
+      <MiniHome tab={MINIHOME_TABS.guestbook} {...props} />
     ),
   },
   friends: {
@@ -43,7 +43,7 @@ export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
   friendHome: {
     ...WINDOW_INFO.friendHome,
     icon: UserHome,
-    component: (props: WindowComponentProps) => <MiniHome {...props} tab={MINIHOME_TABS.home} />,
+    component: (props: WindowComponentProps) => <MiniHome tab={MINIHOME_TABS.home} {...props} />,
   },
   settings: {
     ...WINDOW_INFO.settings,

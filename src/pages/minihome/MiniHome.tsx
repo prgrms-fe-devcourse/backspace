@@ -6,9 +6,12 @@ import GuestBook from "@/components/minihome/guestbook/GuestBook";
 import MemoTab from "@/components/minihome/post/MemoTab";
 import RoundedTab from "@/components/os/Tab/RoundedTab";
 import HomePage from "@/components/Page/HomePage";
+import { useWindowStore } from "@/stores/useWindowStore";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
+import type { WindowAppId } from "@/types/window.types";
 
 interface MiniHomeProps {
+  windowId: WindowAppId;
   ownerId?: string;
   tab?: MiniHomeTabs;
 }
@@ -22,7 +25,8 @@ function useDetailState<TabId>() {
   return { selectedId, enterDetail, exitDetail };
 }
 
-export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHomeProps) {
+export default function MiniHome({ windowId, ownerId, tab = MINIHOME_TABS.home }: MiniHomeProps) {
+  const updateWindowTitle = useWindowStore((state) => state.updateWindowTitle);
   const [activeTab, setActiveTab] = useState<MiniHomeTabs>(tab);
 
   const galleryDetail = useDetailState<string>();
@@ -31,6 +35,7 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
   useEffect(() => {
     galleryDetail.exitDetail();
     memoDetail.exitDetail();
+    updateWindowTitle(windowId, activeTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
