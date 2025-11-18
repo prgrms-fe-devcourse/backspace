@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import Button from "@/components/common/Button/Button";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 import { getGalleryImagesByHomepage, getHomepageIdByOwner } from "./api/gallery";
 import GalleryDetailPanel from "./GalleryDetailPanel";
+import GalleryList from "./GalleryList";
 import GalleryUploadPanel from "./GalleryUploadPanel";
 import type { GalleryImage } from "./types/gallery.types";
 
@@ -28,6 +28,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
     ? (images.find((image) => image.id === selectedImageId) ?? null)
     : null;
 
+  // 갤러리 데이터를 ownerId 변경마다 다시 가져온다.
   useEffect(() => {
     if (!ownerId) {
       setImages([]);
@@ -47,6 +48,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
         }
       };
 
+      // 중간 단계에서 실패했을 때 공통으로 실행되는 처리
       const failWithMessage = (message: string) => {
         if (isMounted) {
           setImages([]);
@@ -91,6 +93,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
     };
   }, [ownerId]);
 
+  // 다른 ownerId로 이동하거나 탭을 다시 열었을 때 상세/업로드 상태 초기화
   useEffect(() => {
     setView("list");
     setSelectedImageId(null);
@@ -111,66 +114,24 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setSelectedImageId(null);
   };
 
-  const renderGrid = () => (
-    <div className="mt-2 grid grid-cols-4 gap-1">
-      {images.map((image) => (
-        <button
-          key={image.id}
-          type="button"
-          className="bevel-default aspect-square w-full cursor-pointer overflow-hidden p-1 transition hover:opacity-90"
-          onClick={() => handleSelectImage(image.id)}
-        >
-          <div className="h-full w-full">
-            <img
-              src={image.image_url ?? ""}
-              alt={image.caption ?? "갤러리 이미지"}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </button>
-      ))}
-    </div>
-  );
-
-  const renderStatusText = (text: string, textClassName = "text-muted") => (
-    <p className={`${textClassName} mt-8 text-center text-sm`}>{text}</p>
-  );
-
-  const renderListBody = () => {
-    if (!ownerId) {
-      return renderStatusText("홈페이지 정보를 찾을 수 없습니다.");
-    }
-    if (isLoading) {
-      return renderStatusText("사진을 불러오는 중입니다...");
-    }
-    if (error) {
-      return renderStatusText(error, "text-red-500");
-    }
-    if (images.length === 0) {
-      return renderStatusText("등록된 사진이 없습니다.");
-    }
-
-    return renderGrid();
-  };
-
-  const renderListView = () => (
-    <div className="bevel-pressed h-full w-full overflow-hidden p-1">
-      <div className="scrollbar bg-text-invert h-full w-full overflow-y-auto px-4 pt-4 pb-4">
-        <div className="flex items-center justify-between">
-          <h1>사진첩</h1>
-          {canManageGallery && (
-            <Button composition="textOnly" onClick={handleRequestUpload}>
-              업로드
-            </Button>
-          )}
-        </div>
-
-        {renderListBody()}
-      </div>
-    </div>
-  );
-
   const renderContent = () => {
+    if (view === "list") {
+      return (
+        <GalleryList
+          images={images}
+          isMine={canManageGallery}
+          onRequestUpload={handleRequestUpload}
+          onSelectImage={handleSelectImage}
+          showStatus={{
+            ownerMissing: !ownerId,
+            isLoading,
+            error,
+            isEmpty: images.length === 0,
+          }}
+        />
+      );
+    }
+
     if (view === "detail" && selectedImage) {
       return <GalleryDetailPanel image={selectedImage} onBack={handleBackToList} />;
     }
@@ -179,7 +140,8 @@ export default function Gallery({ ownerId }: GalleryProps) {
       return <GalleryUploadPanel onCancel={handleBackToList} />;
     }
 
-    return renderListView();
+    // 3가지 뷰 상태 모두 해당되지 않는다면 null 반환
+    return null;
   };
 
   return (
