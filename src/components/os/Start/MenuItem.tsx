@@ -1,9 +1,8 @@
-import type { FunctionComponent } from "react";
+import type { ComponentPropsWithoutRef, FunctionComponent } from "react";
 
-interface MenuItemProps {
+interface MenuItemProps extends ComponentPropsWithoutRef<"button"> {
   Icon: FunctionComponent<React.SVGProps<SVGSVGElement>>;
   caption: string;
-  onClick: () => void;
 }
 
 export default function MenuItem({ Icon, caption, ...props }: MenuItemProps) {
