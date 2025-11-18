@@ -54,36 +54,47 @@ export default function Gallery({ ownerId }: GalleryProps) {
       setIsLoading(true);
       setError(null);
 
-      try {
-        const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
-
-        if (homepageError) throw homepageError;
-        if (!homepage) {
-          if (isMounted) {
-            setImages([]);
-          }
-          return;
-        }
-
-        const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
-
-        if (galleryError) throw galleryError;
-
-        if (isMounted) {
-          setImages(data ?? []);
-        }
-      } catch (fetchError) {
-        if (isMounted) {
-          setImages([]);
-          setError(
-            fetchError instanceof Error ? fetchError.message : "갤러리를 불러오지 못했습니다."
-          );
-        }
-      } finally {
+      const stopLoading = () => {
         if (isMounted) {
           setIsLoading(false);
         }
+      };
+
+      const failWithMessage = (message: string) => {
+        if (isMounted) {
+          setImages([]);
+          setError(message);
+        }
+        stopLoading();
+      };
+
+      const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
+
+      if (homepageError) {
+        failWithMessage(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
+        return;
       }
+
+      if (!homepage) {
+        if (isMounted) {
+          setImages([]);
+        }
+        stopLoading();
+        return;
+      }
+
+      const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
+
+      if (galleryError) {
+        failWithMessage(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
+        return;
+      }
+
+      if (isMounted) {
+        setImages(data ?? []);
+      }
+
+      stopLoading();
     };
 
     fetchGalleryImages();
