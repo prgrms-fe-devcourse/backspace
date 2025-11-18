@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import type { User } from "@supabase/supabase-js";
 import dayjs from "dayjs";
 import { MessageCircle, UserRound, Star } from "lucide-react";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
@@ -12,8 +9,6 @@ import type { MiniHomeTabs } from "@/types/minihome.types";
 import supabase from "@/utils/supabase";
 
 import Button from "../common/Button/Button";
-
-type Visibility = Database["public"]["Enums"]["visibility"];
 
 type HomepageGalleryRow = Database["public"]["Tables"]["homepage_gallery_images"]["Row"];
 type HomepagePostRow = Database["public"]["Tables"]["homepage_posts"]["Row"];
@@ -38,15 +33,12 @@ export default function HomePage({
   ownerId: string | undefined;
   setActiveTab: Dispatch<SetStateAction<MiniHomeTabs>>;
 }) {
-  const [user, setUser] = useState<User | null>(useAuthStore((state) => state.user));
+  const user = useAuthStore((state) => state.user);
   const isMine = ownerId === user?.id;
 
   const [nickname, setNickname] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
-
-  const [homepageId, setHomepageId] = useState<string | null>("");
-  const [visibility, setVisibility] = useState<Visibility | null>(null);
 
   const [friendRequested, setFriendRequested] = useState<boolean>(false);
   const [toggleAnimating, setToggleAnimating] = useState(false);
@@ -62,12 +54,8 @@ export default function HomePage({
           console.error("존재하지 않는 user 입니다.");
           return;
         }
-        console.log("fetchHomePage()");
-        console.log("user", user.id);
-        console.log("ownerId", ownerId);
         if (!ownerId) {
           console.error("존재하지 않는 ownerId 입니다.");
-          setHomepageId(null);
           return; // 홈페이지 렌더링 불가
         }
 
@@ -78,11 +66,8 @@ export default function HomePage({
           .single();
 
         if (homepageError) {
-          console.log("homepage Error!!");
           throw homepageError;
         }
-
-        setHomepageId(homepage.id);
 
         // 홈페이지의 프로필 정보 가져오기 - 닉네임, 아바타 url, 자기소개
         const { data: profile, error: profileError } = await supabase
@@ -122,9 +107,6 @@ export default function HomePage({
         }
 
         if (imageRows) {
-          console.log("imageRows down 성공!");
-          console.log("imageRows length", imageRows.length);
-
           const mappedImages: GalleryImage[] = imageRows.map((row) => ({
             id: row.id,
             url: row.image_url,
@@ -177,8 +159,6 @@ export default function HomePage({
         }
       } catch (e) {
         console.error("홈 페이지 데이터 로드 중 오류", e);
-      } finally {
-        console.log("finally");
       }
     };
 
