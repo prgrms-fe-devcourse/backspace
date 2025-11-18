@@ -40,7 +40,10 @@ export default function PostWrite({ onClose, onCompleteEdit, editingPost }: Post
     e.preventDefault();
 
     if (!title || !content) return;
-    if (!homepageId) return;
+    if (!homepageId) {
+      setIsSubmitting(false);
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -83,10 +86,7 @@ export default function PostWrite({ onClose, onCompleteEdit, editingPost }: Post
 
     if (savedPostId) {
       onCompleteEdit(savedPostId);
-      return;
     }
-
-    onClose();
   };
 
   return (

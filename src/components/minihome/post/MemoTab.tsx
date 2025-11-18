@@ -24,6 +24,7 @@ export default function MemoTab() {
 
   const handleBackToList = () => {
     setSelectedPostId(null);
+    setEditingPost(null);
     setViewMode("list");
   };
 

@@ -4,7 +4,7 @@ import CommentItem from "./CommentItem";
 
 export default function CommentList({ comments }: { comments: CommentWithProfile[] }) {
   return (
-    <div className="bevel-pressed mt-2 flex flex-1 flex-col gap-1.5 bg-white p-3.5">
+    <div className="bevel-pressed bg-text-invert mt-2 flex flex-1 flex-col gap-1.5 p-3.5">
       <p>댓글 {comments.length}개</p>
       {comments.length > 0 ? (
         comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)

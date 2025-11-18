@@ -78,7 +78,7 @@ export default function SignInForm() {
     <form onSubmit={handleSubmit} className="flex w-full flex-col items-center gap-2">
       <div className="flex w-full flex-col gap-1">
         <label htmlFor="email" className="px-1 select-none">
-          이메일:
+          Email:
         </label>
 
         <Input
@@ -99,7 +99,7 @@ export default function SignInForm() {
 
       <div className="flex w-full flex-col gap-1">
         <label htmlFor="password" className="px-1 select-none">
-          패스워드:
+          Password:
         </label>
 
         <Input
@@ -128,7 +128,7 @@ export default function SignInForm() {
         className="w-full"
         disabled={isSubmitting || isSuccess}
       >
-        {isSubmitting ? "로그인중..." : "로그인"}
+        {isSubmitting ? "Logging in…" : "Login"}
       </Button>
     </form>
   );
