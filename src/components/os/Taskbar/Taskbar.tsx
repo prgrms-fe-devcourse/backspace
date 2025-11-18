@@ -1,11 +1,11 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
+import { StartMenu } from "@/components/os/Start/StartMenu";
 import { WINDOW_APPS } from "@/config/window";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { WindowAppId } from "@/types/window.types";
 
-import TaskbarStart from "./TaskbarStart";
 import TaskbarSystemTray from "./TaskbarSystemTray";
 import TaskbarTab from "./TaskbarTab";
 import { taskbar } from "./variants";
@@ -63,7 +63,7 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
 
   return (
     <nav className={twMerge(taskbar, className)} {...rest}>
-      {showStart && <TaskbarStart />}
+      {showStart && <StartMenu />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
         {Object.values(windows).map((window) => {
           if (!window) return null;
