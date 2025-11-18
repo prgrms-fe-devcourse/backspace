@@ -10,7 +10,7 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, authorName, onPostClick }: PostItemProps) {
-  const contentSnippet = String(post.content || "").substring(0, 100);
+  const contentSnippet = String(post.content || "");
 
   const likeCount = post.homepage_post_likes[0]?.count || 0;
   const commentCount = post.homepage_post_comments[0]?.count || 0;
@@ -34,16 +34,13 @@ export default function PostItem({ post, authorName, onPostClick }: PostItemProp
         <h3>{post.title}</h3>
         <span className="text-[10px] opacity-60">{authorName}</span>
       </div>
-      <p className="opacity-70">{contentSnippet}...</p>
+      <p className="truncate opacity-70">{contentSnippet}</p>
       <div className="flex items-center justify-between">
         <span className="text-[10px] opacity-70">
           {dayjs(post.created_at).format("YYYY.MM.DD")}
         </span>
 
         <div className="flex h-4 gap-2.5">
-          {/* <span className="flex">
-            <Eye width={10} /> 0
-          </span> */}
           <span className="text-accent flex items-center gap-1">
             <Heart width={10} /> {likeCount}
           </span>

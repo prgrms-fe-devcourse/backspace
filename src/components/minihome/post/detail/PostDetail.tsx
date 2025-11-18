@@ -57,6 +57,8 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
   const handleCommentSubmit = async (text: string) => {
     if (!authUserId || !post) return;
 
+    if (!text.trim()) return;
+
     const { data, error } = await submitComment(post.id, authUserId, text);
     if (!error && data) {
       setComments((prev) => [...prev, data]);
