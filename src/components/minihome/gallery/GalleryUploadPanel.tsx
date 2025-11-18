@@ -16,6 +16,7 @@ export default function GalleryUploadPanel({
   onUpload,
   errorMessage,
 }: GalleryUploadPanelProps) {
+  // TextArea와 연결될 고유 id 생성
   const descriptionId = useId();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
@@ -25,6 +26,7 @@ export default function GalleryUploadPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Blob URL을 사용한 미리보기는 컴포넌트 언마운트 시 해제해 메모리 누수를 방지
   useEffect(
     () => () => {
       if (previewUrl) {

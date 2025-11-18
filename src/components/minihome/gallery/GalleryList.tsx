@@ -36,9 +36,7 @@ export default function GalleryList({
     if (showStatus.error) {
       return <p className="mt-8 text-center text-sm text-red-500">{showStatus.error}</p>;
     }
-    if (showStatus.isEmpty) {
-      return <p className="text-muted mt-8 text-center text-sm">등록된 사진이 없습니다.</p>;
-    }
+
     return null;
   };
 

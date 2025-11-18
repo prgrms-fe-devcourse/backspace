@@ -1,7 +1,5 @@
 import supabase from "@/utils/supabase";
 
-import type { GalleryImage } from "../types/gallery.types";
-
 const FILE_BUCKET = "files";
 
 // Storage에 저장할 때 겹치지 않도록 홈피 ID + UUID 기반 경로를 생성
@@ -32,18 +30,7 @@ export const getGalleryImagesByHomepage = async (homepageId: string) => {
     .eq("homepage_id", homepageId)
     .order("created_at", { ascending: false });
 
-  const parsedData: GalleryImage[] =
-    data?.map((image) => ({
-      id: image.id,
-      caption: image.caption,
-      created_at: image.created_at,
-      image_url: image.image_url,
-      author_id: image.author_id,
-      homepage_id: image.homepage_id,
-      visibility: image.visibility,
-    })) ?? [];
-
-  return { data: parsedData, error };
+  return { data: data ?? [], error };
 };
 
 interface UploadGalleryImageParams {
@@ -89,15 +76,5 @@ export const uploadGalleryImage = async ({
     return { data: null, error };
   }
 
-  const parsed: GalleryImage = {
-    id: data.id,
-    caption: data.caption,
-    created_at: data.created_at,
-    image_url: data.image_url,
-    author_id: data.author_id,
-    homepage_id: data.homepage_id,
-    visibility: data.visibility,
-  };
-
-  return { data: parsed, error: null };
+  return { data: data ?? [], error: null };
 };
