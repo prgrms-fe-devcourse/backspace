@@ -5,12 +5,14 @@ import Button from "@/components/common/Button/Button";
 interface GalleryUploadFileSelectorProps {
   fileName: string | null;
   fileSize: string | null;
+  previewUrl: string | null;
   onFileChange: (file: File | undefined) => void;
 }
 
 export default function GalleryUploadFileSelector({
   fileName,
   fileSize,
+  previewUrl,
   onFileChange,
 }: GalleryUploadFileSelectorProps) {
   const inputId = useId();
@@ -29,7 +31,15 @@ export default function GalleryUploadFileSelector({
     <div className="space-y-3">
       {/* 이미지 프리뷰 카드 */}
       <div className="bevel-pressed bg-text-invert text-muted flex flex-col items-center justify-center gap-2 p-4">
-        <div className="bevel-default flex h-24 w-24 items-center justify-center overflow-hidden p-1" />
+        <div className="bevel-default flex h-24 w-24 items-center justify-center overflow-hidden p-1">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt={fileName ?? "미리보기"}
+              className="h-full w-full object-cover"
+            />
+          ) : null}
+        </div>
         <div className="text-center">
           <p>{fileName ?? "선택된 파일이 없습니다."}</p>
           <p>{fileSize ?? "최대 50MB 업로드 가능"}</p>
