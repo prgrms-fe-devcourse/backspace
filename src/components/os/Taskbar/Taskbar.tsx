@@ -62,7 +62,7 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
   };
 
   return (
-    <nav className={twMerge(taskbar, className)} {...rest}>
+    <nav className={twMerge(taskbar, "z-50", className)} {...rest}>
       {showStart && <StartMenu />}
       <ul className="flex flex-1 items-center gap-1 overflow-hidden">
         {Object.values(windows).map((window) => {

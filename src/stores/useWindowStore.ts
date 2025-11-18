@@ -5,13 +5,20 @@ import { immer } from "zustand/middleware/immer";
 import { WINDOW_INFO } from "@/config/windowInfo";
 import type { WindowAppId, WindowCategory, WindowInstance } from "@/types/window.types";
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 interface WindowStore {
   windows: Partial<Record<WindowAppId, WindowInstance>>;
   activeWindowId: WindowAppId | null;
+  categoryPositions: Partial<Record<WindowCategory, Position>>;
   openWindow: (id: WindowAppId, ownerId?: string) => void;
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
   updateWindowTitle: (id: WindowAppId, title: string) => void;
+  updateWindowPosition: (id: WindowAppId, position: Position) => void;
 }
 
 const clearWindowsByCategory = (
@@ -23,7 +30,9 @@ const clearWindowsByCategory = (
     .map((window) => window.id);
 
   idsToDelete.forEach((id) => {
-    if (id) delete windows[id];
+    if (id) {
+      delete windows[id];
+    }
   });
 };
 
@@ -32,6 +41,8 @@ export const useWindowStore = create<WindowStore>()(
     immer((set) => ({
       windows: {},
       activeWindowId: null,
+      windowPositions: {},
+      categoryPositions: {},
 
       openWindow: (id, ownerId) =>
         set((state) => {
@@ -74,6 +85,15 @@ export const useWindowStore = create<WindowStore>()(
         set((state) => {
           if (state.windows[id]) {
             state.windows[id].caption = title;
+          }
+        }),
+
+      updateWindowPosition: (id, position) =>
+        set((state) => {
+          const instance = state.windows[id];
+
+          if (instance) {
+            state.categoryPositions[instance.category] = position;
           }
         }),
     })),
