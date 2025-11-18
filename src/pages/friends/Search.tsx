@@ -4,7 +4,7 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
-import type { Profile } from "@/types/profile";
+import type { Profile } from "@/types/profile.types";
 
 import { searchFriends } from "./api/searchFriends";
 
