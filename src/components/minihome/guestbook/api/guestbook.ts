@@ -81,3 +81,56 @@ export const insertReply = async (
 
   return { data, error };
 };
+
+export const insertEntry = async (
+  userId: string,
+  ownerId: string,
+  content: string
+): Promise<{ data: GuestbookWithComments | null; error: PostgrestError | null }> => {
+  const { data: homepageData, error: homepageError } = await supabase
+    .from("homepages")
+    .select("id")
+    .eq("owner_id", ownerId)
+    .single();
+
+  if (homepageError || !homepageData) {
+    return { data: null, error: homepageError };
+  }
+
+  const { data, error } = await supabase
+    .from("guestbook_posts")
+    .insert({
+      author_id: userId,
+      homepage_id: homepageData.id,
+      content,
+    })
+    .select(
+      `
+      id,
+      created_at,
+      content,
+
+      homepage:homepages!inner (
+        owner_id
+      ),
+
+      author:profiles!guestbook_posts_author_id_fkey (
+        auth_id,
+        nickname
+      ),
+
+      comments:guestbook_comments!guestbook_comments_post_id_fkey (
+        id,
+        created_at,
+        content,
+
+        commenter:profiles!guestbook_comments_author_id_fkey (
+          nickname
+        )
+      )
+    `
+    )
+    .single();
+
+  return { data, error };
+};

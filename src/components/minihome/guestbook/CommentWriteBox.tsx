@@ -19,7 +19,14 @@ export default function CommentWriteBox({ entryId, onSubmit }: CommentWriteBoxPr
         className="min-w-0 flex-1"
         aria-label="답글 내용"
       />
-      <Button onClick={() => onSubmit(entryId, content)} size="md" className="self-center">
+      <Button
+        onClick={() => {
+          onSubmit(entryId, content);
+          setContent("");
+        }}
+        size="md"
+        className="self-center"
+      >
         작성
       </Button>
     </div>
