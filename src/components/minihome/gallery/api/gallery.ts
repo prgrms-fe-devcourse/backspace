@@ -209,22 +209,6 @@ export const deleteGalleryImage = async (imageId: string, imageUrl?: string | nu
     }
   }
 
-  const { error: commentError } = await supabase
-    .from("homepage_gallery_image_comments")
-    .delete()
-    .eq("post_id", imageId);
-  if (commentError) {
-    return commentError;
-  }
-
-  const { error: likeError } = await supabase
-    .from("homepage_gallery_image_likes")
-    .delete()
-    .eq("image_id", imageId);
-  if (likeError) {
-    return likeError;
-  }
-
   const { error } = await supabase.from("homepage_gallery_images").delete().eq("id", imageId);
   return error;
 };
