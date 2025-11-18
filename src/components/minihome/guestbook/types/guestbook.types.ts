@@ -15,6 +15,7 @@ export interface GuestbookWithComments {
   } | null;
 
   author: {
+    auth_id: ProfileRow["auth_id"];
     nickname: ProfileRow["nickname"] | null;
   } | null;
 

@@ -33,7 +33,7 @@ export default function Window({
               "md:h-[500px] md:w-[600px]",
               // TODO: 드래그 시 변경
               "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2",
-              isActive ? "z-999" : "z-10",
+              isActive ? "z-40" : "z-10",
               className
             )}
           >

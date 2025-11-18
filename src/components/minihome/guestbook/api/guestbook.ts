@@ -1,6 +1,12 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+
 import supabase from "@/utils/supabase";
 
-export async function fetchGuestbookWithComments(ownerId: string) {
+import type { GuestbookWithComments } from "../types/guestbook.types";
+
+export const getGuestBookWithComment = async (
+  ownerId: string
+): Promise<{ data: GuestbookWithComments[]; error: unknown }> => {
   const { data, error } = await supabase
     .from("guestbook_posts")
     .select(
@@ -14,10 +20,11 @@ export async function fetchGuestbookWithComments(ownerId: string) {
       ),
 
       author:profiles!guestbook_posts_author_id_fkey (
+        auth_id,
         nickname
       ),
 
-      comments:guestbook_comments (
+      comments:guestbook_comments!guestbook_comments_post_id_fkey (
         id,
         created_at,
         content,
@@ -31,7 +38,24 @@ export async function fetchGuestbookWithComments(ownerId: string) {
     .eq("homepage.owner_id", ownerId)
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  return {
+    data: data ?? [],
+    error,
+  };
+};
 
-  return data;
-}
+export const deleteGuestBookEntry = async (id: string): Promise<PostgrestError | null> => {
+  const { error } = await supabase.from("guestbook_posts").delete().eq("id", id);
+
+  if (error) return error;
+
+  return null;
+};
+
+export const deleteGuestBookReply = async (id: string): Promise<PostgrestError | null> => {
+  const { error } = await supabase.from("guestbook_comments").delete().eq("id", id);
+
+  if (error) return error;
+
+  return null;
+};

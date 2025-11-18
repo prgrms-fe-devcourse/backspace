@@ -111,18 +111,18 @@ export interface Database {
             referencedColumns: ["auth_id"];
           },
           {
+            foreignKeyName: "guestbook_comments_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "guestbook_posts";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "guestbook_replies_author_id_fkey";
             columns: ["author_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["auth_id"];
-          },
-          {
-            foreignKeyName: "guestbook_replies_post_id_fkey";
-            columns: ["post_id"];
-            isOneToOne: false;
-            referencedRelation: "guestbook_posts";
-            referencedColumns: ["id"];
           },
         ];
       };
@@ -245,30 +245,40 @@ export interface Database {
       };
       homepage_gallery_images: {
         Row: {
+          author_id: string;
+          caption: string | null;
           created_at: string;
           homepage_id: string;
           id: string;
           image_url: string | null;
-          like_count: number;
           visibility: Database["public"]["Enums"]["visibility"] | null;
         };
         Insert: {
+          author_id: string;
+          caption?: string | null;
           created_at?: string;
           homepage_id: string;
           id?: string;
           image_url?: string | null;
-          like_count?: number;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Update: {
+          author_id?: string;
+          caption?: string | null;
           created_at?: string;
           homepage_id?: string;
           id?: string;
           image_url?: string | null;
-          like_count?: number;
           visibility?: Database["public"]["Enums"]["visibility"] | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "homepage_gallery_images_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["auth_id"];
+          },
           {
             foreignKeyName: "homepage_gallery_images_homepage_id_fkey";
             columns: ["homepage_id"];
@@ -321,21 +331,18 @@ export interface Database {
         Row: {
           created_at: string;
           id: string;
-          like_count: number;
           post_id: string;
           user_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
-          like_count?: number;
-          post_id?: string;
-          user_id?: string;
+          post_id: string;
+          user_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          like_count?: number;
           post_id?: string;
           user_id?: string;
         };
