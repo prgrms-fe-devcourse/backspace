@@ -3,11 +3,12 @@
 import type { User } from "@supabase/supabase-js";
 import dayjs from "dayjs";
 import { MessageCircle, UserRound, Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Database } from "@/types/database.types";
+import type { MiniHomeTabs } from "@/types/minihome.types";
 import supabase from "@/utils/supabase";
 
 import Button from "../common/Button/Button";
@@ -30,7 +31,13 @@ interface GalleryPost {
   commentCount: number;
 }
 
-export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
+export default function HomePage({
+  ownerId,
+  setActiveTab,
+}: {
+  ownerId: string | undefined;
+  setActiveTab: Dispatch<SetStateAction<MiniHomeTabs>>;
+}) {
   const [user, setUser] = useState<User | null>(useAuthStore((state) => state.user));
   const isMine = ownerId === user?.id;
 
@@ -271,7 +278,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         <div className="bevel-pressed bg-white p-4 text-[#2D2640]">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm text-[#3d3462]">사진첩</p>
-            <Button type="button" size="md">
+            <Button type="button" size="md" onClick={() => setActiveTab("Gallery")}>
               더보기
             </Button>
           </div>
@@ -308,7 +315,7 @@ export default function HomePage({ ownerId }: { ownerId: string | undefined }) {
         <div className="bevel-pressed flex flex-col bg-white p-4 text-[#2D2640]">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm text-[#3d3462]">최근 게시물</p>
-            <Button type="button" size="md">
+            <Button type="button" size="md" onClick={() => setActiveTab("Memo")}>
               더보기
             </Button>
           </div>
