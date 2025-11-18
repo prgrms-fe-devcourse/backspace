@@ -20,27 +20,26 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
   const isMine = ownerId !== undefined && ownerId === user?.id;
   const [data, setData] = useState<GuestbookWithComments[]>([]);
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   // TODO: 이후 에러 핸들링 및 폴백 구현
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!ownerId) return;
 
     const fetchGuestbookData = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       const { data: fetchData, error: fetchError } = await getGuestBookWithComment(ownerId);
 
       // TODO: 에러 핸들링
       if (fetchError) {
         console.error("error");
-        setError(true);
+        // setError(true);
         return;
       }
 
       setData(fetchData);
-      setIsLoading(false);
+      // setIsLoading(false);
     };
 
     fetchGuestbookData();
@@ -52,7 +51,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     // TODO: 에러 핸들링 추가
     if (fetchError) {
       console.error(fetchError);
-      setError(true);
+      // setError(true);
       return;
     }
 
@@ -65,7 +64,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     // TODO: 에러 핸들링 추가
     if (fetchError) {
       console.error(fetchError);
-      setError(true);
+      // setError(true);
       return;
     }
 
@@ -90,7 +89,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     // TODO: 에러 핸들링
     if (fetchError || !fetchData) {
       console.error(fetchError);
-      setError(true);
+      // setError(true);
       return;
     }
 
@@ -115,7 +114,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     // TODO: 에러 핸들링
     if (fetchError || !fetchData) {
       console.error(fetchError);
-      setError(true);
+      // setError(true);
       return;
     }
 

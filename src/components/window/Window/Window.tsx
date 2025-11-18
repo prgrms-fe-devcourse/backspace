@@ -22,6 +22,8 @@ export default function Window({
   isActive,
   className,
 }: WindowProps) {
+  // const { onMouseDown } = useDraggable();
+
   return (
     <Dialog.Root defaultOpen open={open} modal={false}>
       <Dialog.Portal container={ref.current}>
@@ -39,7 +41,13 @@ export default function Window({
           >
             <Dialog.Title className="sr-only">{title}</Dialog.Title>
             <Dialog.Description className="sr-only">{description}</Dialog.Description>
-            <TitleBar icon={icon} title={title} buttons={buttons} onClose={onClose} />
+            <TitleBar
+              icon={icon}
+              title={title}
+              buttons={buttons}
+              onClose={onClose}
+              // onMouseDown={(event) => onMouseDown(event)}
+            />
             {children}
           </section>
         </Dialog.Content>

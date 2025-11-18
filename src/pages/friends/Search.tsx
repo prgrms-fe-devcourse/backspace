@@ -14,10 +14,10 @@ export default function Search() {
   const [hasSearched, setHasSearched] = useState(false);
   const openWindow = useWindowStore((state) => state.openWindow);
   const userId = useAuthStore((state) => state.user?.id);
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+
   // TODO: 이후 에러 핸들링 및 폴백 구현
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async () => {
     if (!keyword.trim()) return;
@@ -27,15 +27,15 @@ export default function Search() {
     이후 에러 핸들링 구현 시, return error 후 if error로 구현
     */
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const data = await searchFriends(keyword, userId);
       setResults(data);
       setHasSearched(true);
     } catch (err) {
       console.error(err);
-      setError(true);
+      // setError(true);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
