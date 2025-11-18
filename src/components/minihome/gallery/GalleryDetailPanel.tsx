@@ -71,7 +71,7 @@ export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPan
 
   return (
     // 전체 컨테이너
-    <div className="relative flex h-full w-full flex-col overflow-hidden pb-7">
+    <div className="relative flex h-full w-full flex-col overflow-hidden">
       {/* 상단 고정 뒤로가기 버튼 */}
       <Button
         size="sm"
