@@ -7,6 +7,8 @@ import Button from "@/components/common/Button/Button";
 import type { GuestBookEntryType } from "./types/guestbook.types";
 
 export interface GuestBookEntryProps extends GuestBookEntryType {
+  canDelete?: boolean;
+  onDelete?: () => void;
   children?: ReactNode;
 }
 
@@ -14,6 +16,8 @@ export default function GuestBookEntry({
   author,
   created_at,
   content,
+  canDelete,
+  onDelete,
   children,
 }: GuestBookEntryProps) {
   return (
@@ -23,9 +27,17 @@ export default function GuestBookEntry({
           <span className="text-muted dark:text-primary">{author?.nickname}</span>
           <div className="flex gap-2">
             <span className="opacity-50">{dayjs(created_at).format("YYYY.MM.DD HH:mm")}</span>
-            <Button composition="iconOnly" size="sm" className="font-bold" aria-label="방명록 삭제">
-              <X size="1em" strokeWidth={3} />
-            </Button>
+            {canDelete && (
+              <Button
+                onClick={onDelete}
+                composition="iconOnly"
+                size="sm"
+                className="font-bold"
+                aria-label="방명록 삭제"
+              >
+                <X size="1em" strokeWidth={3} />
+              </Button>
+            )}
           </div>
         </div>
         <p>{content}</p>

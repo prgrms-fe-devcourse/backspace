@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { fetchGuestbookWithComments } from "./api/guestbook";
+import {
+  deleteGuestBookEntry,
+  deleteGuestBookReply,
+  getGuestBookWithComment,
+} from "./api/guestbook";
 import CommentWriteBox from "./CommentWriteBox";
 import GuestBookEntry from "./GuestBookEntry";
 import GuestbookWriteBox from "./GuestbookWriteBox";
@@ -22,25 +26,58 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
   useEffect(() => {
     if (!ownerId) return;
 
-    /*
-    TODO: API에서 throw error를 함으로 일단 try catch로 구현
-    이후 에러 핸들링 구현 시, return error 후 if error로 구현
-    */
     const fetchGuestbookData = async () => {
-      try {
-        setIsLoading(true);
-        const fetchData = await fetchGuestbookWithComments(ownerId);
-        setData(fetchData);
-      } catch (err) {
-        console.error(err);
+      setIsLoading(true);
+      const { data: fetchData, error: fetchError } = await getGuestBookWithComment(ownerId);
+
+      // TODO: 에러 핸들링
+      if (fetchError) {
+        console.error("error");
         setError(true);
-      } finally {
-        setIsLoading(false);
+        return;
       }
+
+      setData(fetchData);
+      setIsLoading(false);
     };
 
     fetchGuestbookData();
   }, [ownerId]);
+
+  const handleEntryDelete = async (id: string) => {
+    const fetchError = await deleteGuestBookEntry(id);
+
+    // TODO: 에러 핸들링 추가
+    if (fetchError) {
+      console.error("error");
+      setError(true);
+      return;
+    }
+
+    setData((prev) => prev.filter((entry) => entry.id !== id));
+  };
+
+  const handleReplyDelete = async (entryId: string, replyId: string) => {
+    const fetchError = await deleteGuestBookReply(replyId);
+
+    // TODO: 에러 핸들링 추가
+    if (fetchError) {
+      console.error("error");
+      setError(true);
+      return;
+    }
+
+    setData((prev) =>
+      prev.map((entry) =>
+        entry.id === entryId
+          ? {
+              ...entry,
+              comments: entry.comments.filter((c) => c.id !== replyId),
+            }
+          : entry
+      )
+    );
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col p-4">
@@ -56,6 +93,8 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
                   author={entry.author}
                   created_at={entry.created_at}
                   content={entry.content}
+                  canDelete={isMine || entry.author?.auth_id === user?.id}
+                  onDelete={() => handleEntryDelete(entry.id)}
                 >
                   {entry.comments.length > 0 ? (
                     <Reply
@@ -63,6 +102,8 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
                       commenter={entry.comments[0].commenter}
                       created_at={entry.comments[0].created_at}
                       content={entry.comments[0].content}
+                      canDelete={isMine}
+                      onDelete={() => handleReplyDelete(entry.id, entry.comments[0].id)}
                     />
                   ) : (
                     isMine && <CommentWriteBox />

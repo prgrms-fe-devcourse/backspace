@@ -48,7 +48,7 @@ export default function OsMain() {
           aria-label="바로가기"
         >
           {Object.values(WINDOW_APPS).map(({ id, icon, caption, category, isOnDesktop }) =>
-            !isOnDesktop ? null : (
+            isOnDesktop ? (
               <Shortcut
                 key={id}
                 Icon={icon}
@@ -59,7 +59,7 @@ export default function OsMain() {
                 onBlur={handleShortcutBlur}
                 onDoubleClick={() => handleShortcutDoubleClick(id, category)}
               />
-            )
+            ) : null
           )}
         </div>
 
