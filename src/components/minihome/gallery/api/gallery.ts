@@ -123,3 +123,42 @@ export const getGalleryImageComments = async (
 
   return { data: (data as GalleryComment[] | null) ?? [], error };
 };
+
+interface AddGalleryImageCommentParams {
+  imageId: string;
+  authorId: string;
+  content: string;
+}
+
+export const addGalleryImageComment = async ({
+  imageId,
+  authorId,
+  content,
+}: AddGalleryImageCommentParams): Promise<{
+  data: GalleryComment | null;
+  error: PostgrestError | null;
+}> => {
+  const { data, error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .insert({
+      post_id: imageId,
+      author_id: authorId,
+      content,
+    })
+    .select(
+      `
+      id,
+      created_at,
+      content,
+      author_id,
+      author:profiles!homepage_gallery_image_relies_author_id_fkey (
+        auth_id,
+        nickname,
+        avatar_url
+      )
+    `
+    )
+    .single();
+
+  return { data: (data as GalleryComment | null) ?? null, error };
+};
