@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { ChevronLeft, Heart } from "lucide-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -5,8 +6,10 @@ import { twMerge } from "tailwind-merge";
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 
+import type { GalleryImage } from "./types/gallery.types";
+
 interface GalleryDetailPanelProps {
-  imageId: number;
+  image: GalleryImage;
   onBack: () => void;
 }
 
@@ -41,13 +44,6 @@ const MOCK_COMMENTS = [
   },
 ];
 
-const MOCK_DESCRIPTIONS = [
-  "친구들이랑 제주도 다녀왔어요~",
-  "전시회에서 찍은 감성 사진이에요.",
-  "퇴근길 하늘이 예뻐서 한 컷!",
-  "주말마다 산책하는 우리 동네 산책로.",
-];
-
 const ImagePlaceholder = () => (
   <div className="bg-surface flex h-full w-full items-center justify-center">
     <svg className="text-muted h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,10 +58,8 @@ const ImagePlaceholder = () => (
   </div>
 );
 
-export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPanelProps) {
+export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanelProps) {
   const [photoLiked, setPhotoLiked] = useState(false);
-  const description =
-    MOCK_DESCRIPTIONS[(imageId - 1) % MOCK_DESCRIPTIONS.length] ?? "설명이 없습니다.";
 
   const togglePhotoLike = () => setPhotoLiked((prev) => !prev);
 
@@ -89,13 +83,23 @@ export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPan
           <section className="flex w-full flex-col items-center gap-4">
             <div className="w-full overflow-hidden">
               <div className="aspect-square h-full w-full overflow-hidden">
-                <ImagePlaceholder />
+                {image.image_url ? (
+                  <img
+                    src={image.image_url}
+                    alt={image.caption ?? "갤러리 이미지"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <ImagePlaceholder />
+                )}
               </div>
             </div>
 
             <div className="border-primary/30 mt-3 w-full border-t pt-3 text-left">
-              <p>{description}</p>
-              <span className="text-muted">2024.11.10 14:30</span>
+              <p>{image.caption ?? "등록된 설명이 없습니다."}</p>
+              <span className="text-muted">
+                {dayjs(image.created_at).format("YYYY.MM.DD HH:mm")}
+              </span>
             </div>
 
             <div className="border-primary/20 flex w-full flex-wrap items-center justify-between pt-3">
