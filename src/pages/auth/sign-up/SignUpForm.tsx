@@ -184,7 +184,7 @@ export default function SignUpForm() {
               className="h-8 w-full"
               disabled={isSubmitting || isSuccess}
             >
-              {isSubmitting ? "가입 중..." : "확인"}
+              {isSubmitting ? "Signing up…" : "OK"}
             </Button>
             <Button
               composition="textOnly"
@@ -194,7 +194,7 @@ export default function SignUpForm() {
               onClick={handleCancel}
               disabled={isSubmitting}
             >
-              취소
+              Cancel
             </Button>
           </div>
         </>
