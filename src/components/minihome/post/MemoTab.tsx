@@ -12,7 +12,7 @@ interface MinihomePost {
 
 type ViewMode = "list" | "write" | "detail";
 
-export default function PostTab() {
+export default function MemoTab() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<MinihomePost | null>(null);
@@ -39,7 +39,7 @@ export default function PostTab() {
   };
 
   return (
-    <div className="h-full">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
       {viewMode === "list" && (
         <PostListComponent onWrite={() => setViewMode("write")} onPostClick={handlePostClick} />
       )}
