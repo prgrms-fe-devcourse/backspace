@@ -21,6 +21,7 @@ interface GalleryDetailPanelProps {
   image: GalleryImage;
   onBack: () => void;
   isMine?: boolean;
+  onDelete?: (imageId: string, imageUrl?: string | null) => Promise<void> | void;
 }
 
 // JSON 타입의 댓글 내용을 문자열로 변환
@@ -48,6 +49,7 @@ export default function GalleryDetailPanel({
   image,
   onBack,
   isMine = false,
+  onDelete,
 }: GalleryDetailPanelProps) {
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -254,14 +256,24 @@ export default function GalleryDetailPanel({
                 />
                 좋아요 {likeCount}
               </Button>
-              <div className="flex items-center gap-2">
-                <Button size="sm" composition="textOnly" className="text-primary px-3">
-                  수정
-                </Button>
-                <Button size="sm" composition="textOnly" className="text-primary px-3">
-                  삭제
-                </Button>
-              </div>
+              {isMine && onDelete && (
+                <div className="flex items-center gap-2">
+                  <Button size="sm" composition="textOnly" className="text-primary px-3">
+                    수정
+                  </Button>
+                  <Button
+                    size="sm"
+                    composition="textOnly"
+                    className="text-primary px-3"
+                    onClick={() => {
+                      onDelete(image.id, image.image_url);
+                      onBack();
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </div>
+              )}
             </div>
           </section>
 
