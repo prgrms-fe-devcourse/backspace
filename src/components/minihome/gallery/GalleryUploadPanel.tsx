@@ -8,14 +8,9 @@ import GalleryUploadFileSelector from "./GalleryUploadFileSelector";
 interface GalleryUploadPanelProps {
   onCancel: () => void;
   onUpload?: (file?: File, description?: string) => Promise<void> | void;
-  errorMessage?: string | null;
 }
 
-export default function GalleryUploadPanel({
-  onCancel,
-  onUpload,
-  errorMessage,
-}: GalleryUploadPanelProps) {
+export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUploadPanelProps) {
   // TextArea와 연결될 고유 id 생성
   const descriptionId = useId();
   const [fileName, setFileName] = useState<string | null>(null);
@@ -95,17 +90,16 @@ export default function GalleryUploadPanel({
       </section>
 
       {/* 업로드/취소 버튼 영역 */}
-      <div className="mt-auto flex justify-end gap-2">
-        {(submitError ?? errorMessage) && (
-          <p className="text-red-500">{submitError ?? errorMessage}</p>
-        )}
-
-        <Button composition="textOnly" onClick={onCancel} disabled={isSubmitting}>
-          취소
-        </Button>
-        <Button composition="textOnly" onClick={handleUpload} disabled={!file || isSubmitting}>
-          {isSubmitting ? "업로드 중..." : "업로드"}
-        </Button>
+      <div className="mt-auto flex flex-col gap-2">
+        {submitError && <p className="text-sm text-red-500">{submitError}</p>}
+        <div className="flex justify-end gap-2">
+          <Button composition="textOnly" onClick={onCancel} disabled={isSubmitting}>
+            취소
+          </Button>
+          <Button composition="textOnly" onClick={handleUpload} disabled={!file || isSubmitting}>
+            {isSubmitting ? "업로드 중..." : "업로드"}
+          </Button>
+        </div>
       </div>
     </div>
   );
