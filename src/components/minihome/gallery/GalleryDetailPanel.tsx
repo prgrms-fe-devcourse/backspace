@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { ChevronLeft, Heart } from "lucide-react";
+import { ChevronLeft, Heart, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -159,7 +159,7 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
               {!isLoadingComments &&
                 !commentsError &&
                 comments.map((comment) => {
-                  const nickname = comment.author?.nickname ?? "익명";
+                  const nickname = comment.author?.nickname ?? "알 수 없음";
                   const avatar = comment.author?.avatar_url;
                   const fallbackInitial = nickname.charAt(0);
                   const body = stringifyCommentContent(comment.content);
@@ -193,9 +193,12 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
           </section>
         </div>
       </div>
-      <div className="mt-4 flex shrink-0 items-center gap-2 px-4">
+      <div className="mt-4 flex shrink-0 items-center gap-2 px-[6px]">
         <Input placeholder="댓글을 입력하세요..." aria-label="댓글 입력" />
-        <Button composition="textOnly">등록</Button>
+        <Button size="md" composition="iconText">
+          <Send size={12} />
+          등록
+        </Button>
       </div>
     </div>
   );
