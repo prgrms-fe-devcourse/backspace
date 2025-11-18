@@ -104,6 +104,7 @@ export default function TitleBar({
           state,
           size,
         }),
+        "cursor-grab active:cursor-grabbing",
         className
       )}
       {...rest}
