@@ -6,6 +6,7 @@ import {
   deleteGuestBookEntry,
   deleteGuestBookReply,
   getGuestBookWithComment,
+  insertEntry,
   insertReply,
 } from "./api/guestbook";
 import CommentWriteBox from "./CommentWriteBox";
@@ -84,7 +85,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     if (content.trim() === "") return;
     if (!user?.id) return;
 
-    const { data: fetchData, error: fetchError } = await insertReply(user?.id, entryId, content);
+    const { data: fetchData, error: fetchError } = await insertReply(user.id, entryId, content);
 
     // TODO: 에러 핸들링
     if (fetchError || !fetchData) {
@@ -105,9 +106,25 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
     );
   };
 
+  const handleEntryWrite = async (content: string) => {
+    if (content.trim() === "") return;
+    if (!user?.id || !ownerId) return;
+
+    const { data: fetchData, error: fetchError } = await insertEntry(user.id, ownerId, content);
+
+    // TODO: 에러 핸들링
+    if (fetchError || !fetchData) {
+      console.error(fetchError);
+      setError(true);
+      return;
+    }
+
+    setData((prev) => [fetchData, ...prev]);
+  };
+
   return (
     <div className="flex h-full min-h-0 flex-col p-4">
-      {!isMine && <GuestbookWriteBox />}
+      {!isMine && <GuestbookWriteBox onSubmit={handleEntryWrite} />}
       <div className="flex min-h-0 flex-1 flex-col gap-1">
         <span className="p">전체 방명록 {data.length}</span>
         <div className="bevel-pressed bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3">
