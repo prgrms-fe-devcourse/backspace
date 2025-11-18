@@ -63,13 +63,10 @@ const ImagePlaceholder = () => (
 );
 
 export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPanelProps) {
-  const [likedComments, setLikedComments] = useState<Record<number, boolean>>({});
   const [photoLiked, setPhotoLiked] = useState(false);
   const description =
     MOCK_DESCRIPTIONS[(imageId - 1) % MOCK_DESCRIPTIONS.length] ?? "설명이 없습니다.";
-  const toggleLike = (commentId: number) => {
-    setLikedComments((prev) => ({ ...prev, [commentId]: !prev[commentId] }));
-  };
+
   const togglePhotoLike = () => setPhotoLiked((prev) => !prev);
 
   return (
@@ -129,43 +126,26 @@ export default function GalleryDetailPanel({ imageId, onBack }: GalleryDetailPan
           <section className="bevel-pressed bg-text-invert flex w-full flex-col gap-4 p-4">
             <div className="space-y-4">
               <p>댓글 4개</p>
-              {MOCK_COMMENTS.map((comment) => {
-                const isLiked = Boolean(likedComments[comment.id]);
-                return (
-                  <div key={comment.id} className="bevel-default bg-text-invert p-3">
-                    <div className="flex items-start gap-3">
-                      <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
-                        {comment.avatarUrl ? (
-                          <img src={comment.avatarUrl} alt={`${comment.nickname} avatar`} />
-                        ) : (
-                          comment.nickname.charAt(0)
-                        )}
+              {MOCK_COMMENTS.map((comment) => (
+                <div key={comment.id} className="bevel-default bg-text-invert p-3">
+                  <div className="flex items-start gap-3">
+                    <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
+                      {comment.avatarUrl ? (
+                        <img src={comment.avatarUrl} alt={`${comment.nickname} avatar`} />
+                      ) : (
+                        comment.nickname.charAt(0)
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-muted mb-1 flex items-center justify-between">
+                        <span className="text-primary font-semibold">{comment.nickname}</span>
+                        <span>{comment.timeAgo}</span>
                       </div>
-                      <div className="flex-1">
-                        <div className="text-muted mb-1 flex items-center justify-between">
-                          <span className="text-primary font-semibold">{comment.nickname}</span>
-                          <span>{comment.timeAgo}</span>
-                        </div>
-                        <p>{comment.caption}</p>
-                        <button
-                          type="button"
-                          onClick={() => toggleLike(comment.id)}
-                          className={twMerge(
-                            "text-muted mt-2 flex cursor-pointer items-center gap-1 text-xs transition-colors",
-                            isLiked && "text-accent"
-                          )}
-                        >
-                          <Heart
-                            className={twMerge("h-3.5 w-3.5", isLiked && "fill-current")}
-                            fill={isLiked ? "currentColor" : "none"}
-                          />
-                          <span>좋아요 5</span>
-                        </button>
-                      </div>
+                      <p>{comment.caption}</p>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </section>
         </div>
