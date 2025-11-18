@@ -50,7 +50,7 @@ export default function TaskbarTab({
       onClick={onClick}
       className={twMerge(
         taskbarTab,
-        "gap-gap-1 flex h-6 shrink-0 items-center overflow-hidden md:h-8",
+        "flex h-6 shrink-0 items-center gap-1 overflow-hidden md:h-8",
         className
       )}
     >

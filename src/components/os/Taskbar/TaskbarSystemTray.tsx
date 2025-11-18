@@ -59,8 +59,8 @@ export default function TaskbarSystemTray({ className, ...rest }: TaskbarSystemT
   const { toggleTheme, theme } = useTheme();
 
   return (
-    <div className={twMerge(taskbarSystemTray, "select-non1 gap-1.5 px-2", className)} {...rest}>
-      <button type="button" onClick={() => toggleTheme()}>
+    <div className={twMerge(taskbarSystemTray, "gap-1.5 px-2 select-none", className)} {...rest}>
+      <button aria-label="테마 변경" type="button" onClick={() => toggleTheme()}>
         {theme === "light" ? <SunMedium className="size-4" /> : <Moon className="size-4" />}
       </button>
       <time className="whitespace-nowrap" dateTime={isoTime}>
