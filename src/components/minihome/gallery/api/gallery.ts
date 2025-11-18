@@ -1,4 +1,8 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+
 import supabase from "@/utils/supabase";
+
+import type { GalleryComment } from "../types/gallery.types";
 
 const FILE_BUCKET = "files";
 
@@ -94,4 +98,28 @@ export const uploadGalleryImage = async ({
   }
 
   return { data, error: null };
+};
+
+export const getGalleryImageComments = async (
+  imageId: string
+): Promise<{ data: GalleryComment[]; error: PostgrestError | null }> => {
+  const { data, error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .select(
+      `
+      id,
+      created_at,
+      content,
+      author_id,
+      author:profiles!homepage_gallery_image_relies_author_id_fkey (
+        auth_id,
+        nickname,
+        avatar_url
+      )
+    `
+    )
+    .eq("post_id", imageId)
+    .order("created_at", { ascending: true });
+
+  return { data: (data as GalleryComment[] | null) ?? [], error };
 };
