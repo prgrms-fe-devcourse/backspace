@@ -73,7 +73,7 @@ export const uploadGalleryImage = async ({
     .single();
 
   if (error) {
-    return { data: null, error };
+    return { data: [], error };
   }
 
   return { data: data ?? [], error: null };

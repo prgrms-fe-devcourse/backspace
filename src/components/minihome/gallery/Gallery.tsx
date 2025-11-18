@@ -29,68 +29,69 @@ export default function Gallery({ ownerId }: GalleryProps) {
 
   const userId = useAuthStore((state) => state.user?.id);
   const canManageGallery = ownerId !== undefined && ownerId === userId;
+  const [reloadVersion, setReloadVersion] = useState(0);
 
   const selectedImage = selectedImageId
     ? (images.find((image) => image.id === selectedImageId) ?? null)
     : null;
 
-  // ownerId를 받아 해당 홈피의 갤러리 목록을 불러오는 공통 함수
-  const loadGallery = async (targetOwnerId?: string) => {
-    if (!targetOwnerId) {
-      setImages([]);
-      setListError(null);
-      setUploadError(null);
-      setHomepageId(null);
-      return;
-    }
-
-    setIsLoading(true);
-    setListError(null);
-
-    // 홈피 ID 조회
-    const { data: homepage, error: homepageError } = await getHomepageIdByOwner(targetOwnerId);
-
-    if (homepageError) {
-      setImages([]);
-      setHomepageId(null);
-      setListError(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
-      setUploadError(null);
-      setIsLoading(false);
-      return;
-    }
-
-    if (!homepage) {
-      setImages([]);
-      setHomepageId(null);
-      setListError(null);
-      setUploadError(null);
-      setIsLoading(false);
-      return;
-    }
-
-    // 실제 갤러리 이미지 목록 조회
-    const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
-
-    if (galleryError) {
-      setImages([]);
-      setHomepageId(homepage.id);
-      setListError(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
-      setUploadError(null);
-      setIsLoading(false);
-      return;
-    }
-
-    setHomepageId(homepage.id);
-    setImages(data ?? []);
-    setListError(null);
-    setUploadError(null);
-    setIsLoading(false);
-  };
-
   // ownerId나 의존한 값이 변할 때마다 목록을 조회
   useEffect(() => {
-    loadGallery(ownerId);
-  }, [ownerId]);
+    if (!ownerId) {
+      setImages([]);
+      setListError(null);
+      setUploadError(null);
+      setHomepageId(null);
+      return;
+    }
+
+    // ownerId를 받아 해당 홈피의 갤러리 목록을 불러오는 공통 함수
+    const loadGallery = async () => {
+      setIsLoading(true);
+      setListError(null);
+
+      // 홈피 ID 조회
+      const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
+
+      if (homepageError) {
+        setImages([]);
+        setHomepageId(null);
+        setListError(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
+        setUploadError(null);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!homepage) {
+        setImages([]);
+        setHomepageId(null);
+        setListError(null);
+        setUploadError(null);
+        setIsLoading(false);
+        return;
+      }
+
+      // 실제 갤러리 이미지 목록 조회
+      const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
+
+      if (galleryError) {
+        setImages([]);
+        setHomepageId(homepage.id);
+        setListError(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
+        setUploadError(null);
+        setIsLoading(false);
+        return;
+      }
+
+      setHomepageId(homepage.id);
+      setImages(data ?? []);
+      setListError(null);
+      setUploadError(null);
+      setIsLoading(false);
+    };
+
+    loadGallery();
+  }, [ownerId, reloadVersion]);
 
   // 다른 ownerId로 이동하거나 탭을 다시 열었을 때 상세/업로드 상태 초기화
   useEffect(() => {
@@ -140,7 +141,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
 
     setUploadError(null);
     setView("list");
-    await loadGallery(ownerId);
+    setReloadVersion((prev) => prev + 1);
   };
 
   const renderContent = () => {
