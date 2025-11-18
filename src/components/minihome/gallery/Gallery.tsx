@@ -21,6 +21,9 @@ interface GalleryProps {
 type GalleryView = "list" | "detail" | "upload";
 
 export default function Gallery({ ownerId }: GalleryProps) {
+  // ---------------------------------------------------------------------------
+  // 상태 & 파생 값
+  // ---------------------------------------------------------------------------
   const [view, setView] = useState<GalleryView>("list");
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +41,9 @@ export default function Gallery({ ownerId }: GalleryProps) {
     ? (images.find((image) => image.id === selectedImageId) ?? null)
     : null;
 
-  // ownerId나 의존한 값이 변할 때마다 목록을 조회
+  // ---------------------------------------------------------------------------
+  // 데이터 로딩 관련 이펙트
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!ownerId) {
       setImages([]);
@@ -88,13 +93,12 @@ export default function Gallery({ ownerId }: GalleryProps) {
     loadGallery();
   }, [ownerId, reloadVersion]);
 
-  // 다른 ownerId로 이동하거나 탭을 다시 열었을 때 상세/업로드 상태 초기화
   useEffect(() => {
     setView("list");
     setSelectedImageId(null);
+    setEditingImage(null);
   }, [ownerId]);
 
-  // 상세 보기 중 선택된 이미지가 목록에서 사라지면 자동으로 리스트 화면으로 복귀
   useEffect(() => {
     if (view === "detail" && !selectedImage) {
       setView("list");
@@ -102,20 +106,12 @@ export default function Gallery({ ownerId }: GalleryProps) {
     }
   }, [view, selectedImage]);
 
+  // ---------------------------------------------------------------------------
+  // 이벤트 핸들러: 뷰 전환
+  // ---------------------------------------------------------------------------
   const handleSelectImage = (imageId: string) => {
     setSelectedImageId(imageId);
     setView("detail");
-  };
-
-  const handleDeleteImage = async (imageId: string, imageUrl?: string | null) => {
-    const error = await deleteGalleryImage(imageId, imageUrl);
-    if (error) {
-      setListError(error.message ?? "사진을 삭제하지 못했습니다.");
-      return;
-    }
-    setView("list");
-    setSelectedImageId(null);
-    setReloadVersion((prev) => prev + 1);
   };
 
   const handleRequestUpload = () => {
@@ -127,6 +123,34 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const handleBackToList = () => {
     setView("list");
     setSelectedImageId(null);
+  };
+
+  const handleCancelUpload = () => {
+    if (editingImage) {
+      setView("detail");
+      setEditingImage(null);
+      return;
+    }
+    handleBackToList();
+  };
+
+  const handleEditImage = (image: GalleryImage) => {
+    setEditingImage(image);
+    setView("upload");
+  };
+
+  // ---------------------------------------------------------------------------
+  // 이벤트 핸들러: 데이터 조작 (삭제/업로드/수정)
+  // ---------------------------------------------------------------------------
+  const handleDeleteImage = async (imageId: string, imageUrl?: string | null) => {
+    const error = await deleteGalleryImage(imageId, imageUrl);
+    if (error) {
+      setListError(error.message ?? "사진을 삭제하지 못했습니다.");
+      return;
+    }
+    setView("list");
+    setSelectedImageId(null);
+    setReloadVersion((prev) => prev + 1);
   };
 
   const handleUploadComplete = async (file?: File, description?: string) => {
@@ -181,20 +205,9 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setReloadVersion((prev) => prev + 1);
   };
 
-  const handleCancelUpload = () => {
-    if (editingImage) {
-      setView("detail");
-      setEditingImage(null);
-      return;
-    }
-    handleBackToList();
-  };
-
-  const handleEditImage = (image: GalleryImage) => {
-    setEditingImage(image);
-    setView("upload");
-  };
-
+  // ---------------------------------------------------------------------------
+  // 렌더링 보조
+  // ---------------------------------------------------------------------------
   const renderContent = () => {
     if (view === "list") {
       return (
@@ -243,6 +256,9 @@ export default function Gallery({ ownerId }: GalleryProps) {
     return null;
   };
 
+  // ---------------------------------------------------------------------------
+  // 렌더링
+  // ---------------------------------------------------------------------------
   return (
     <div className="flex h-full w-full flex-col overflow-hidden p-7">
       <div className="h-full w-full">{renderContent()}</div>
