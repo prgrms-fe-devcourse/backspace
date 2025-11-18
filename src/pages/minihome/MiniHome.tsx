@@ -48,7 +48,7 @@ export default function MiniHome({ ownerId, tab = MINIHOME_TABS.home }: MiniHome
       </Tabs.List>
       <Tabs.Content value={MINIHOME_TABS.home}>
         <Activity>
-          <HomePage ownerId={ownerId} />
+          <HomePage ownerId={ownerId} setActiveTab={setActiveTab} />
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.gallery} className="min-h-0 flex-1">
