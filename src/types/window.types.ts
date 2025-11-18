@@ -7,7 +7,7 @@ export type WindowAppId = MiniHomeTabId | "friends" | "friendHome" | "settings";
 export type WindowCategory = "minihome" | "friends" | "friendHome" | "settings";
 
 export interface WindowComponentProps {
-  windowId?: WindowAppId;
+  windowId: WindowAppId;
   ownerId?: string;
 }
 
