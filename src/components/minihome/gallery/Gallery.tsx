@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { getGalleryImagesByHomepage, getHomepageIdByOwner } from "./api/gallery";
+import {
+  getGalleryImagesByHomepage,
+  getHomepageIdByOwner,
+  uploadGalleryImage,
+} from "./api/gallery";
 import GalleryDetailPanel from "./GalleryDetailPanel";
 import GalleryList from "./GalleryList";
 import GalleryUploadPanel from "./GalleryUploadPanel";
@@ -18,8 +22,10 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const [view, setView] = useState<GalleryView>("list");
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [listError, setListError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+  const [homepageId, setHomepageId] = useState<string | null>(null);
 
   const userId = useAuthStore((state) => state.user?.id);
   const canManageGallery = ownerId !== undefined && ownerId === userId;
@@ -29,69 +35,59 @@ export default function Gallery({ ownerId }: GalleryProps) {
     : null;
 
   // 갤러리 데이터를 ownerId 변경마다 다시 가져온다.
-  useEffect(() => {
+  const fetchGalleryImages = useCallback(async () => {
     if (!ownerId) {
       setImages([]);
-      setError(null);
+      setListError(null);
+      setUploadError(null);
+      setHomepageId(null);
       return;
     }
 
-    let isMounted = true;
+    setIsLoading(true);
+    setListError(null);
 
-    const fetchGalleryImages = async () => {
-      setIsLoading(true);
-      setError(null);
+    const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
 
-      const stopLoading = () => {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      };
+    if (homepageError) {
+      setImages([]);
+      setHomepageId(null);
+      setListError(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
+      setUploadError(null);
+      setIsLoading(false);
+      return;
+    }
 
-      // 중간 단계에서 실패했을 때 공통으로 실행되는 처리
-      const failWithMessage = (message: string) => {
-        if (isMounted) {
-          setImages([]);
-          setError(message);
-        }
-        stopLoading();
-      };
+    if (!homepage) {
+      setImages([]);
+      setHomepageId(null);
+      setListError(null);
+      setUploadError(null);
+      setIsLoading(false);
+      return;
+    }
 
-      const { data: homepage, error: homepageError } = await getHomepageIdByOwner(ownerId);
+    const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
 
-      if (homepageError) {
-        failWithMessage(homepageError.message ?? "홈페이지 정보를 불러오지 못했습니다.");
-        return;
-      }
+    if (galleryError) {
+      setImages([]);
+      setHomepageId(homepage.id);
+      setListError(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
+      setUploadError(null);
+      setIsLoading(false);
+      return;
+    }
 
-      if (!homepage) {
-        if (isMounted) {
-          setImages([]);
-        }
-        stopLoading();
-        return;
-      }
-
-      const { data, error: galleryError } = await getGalleryImagesByHomepage(homepage.id);
-
-      if (galleryError) {
-        failWithMessage(galleryError.message ?? "갤러리를 불러오지 못했습니다.");
-        return;
-      }
-
-      if (isMounted) {
-        setImages(data ?? []);
-      }
-
-      stopLoading();
-    };
-
-    fetchGalleryImages();
-
-    return () => {
-      isMounted = false;
-    };
+    setHomepageId(homepage.id);
+    setImages(data ?? []);
+    setListError(null);
+    setUploadError(null);
+    setIsLoading(false);
   }, [ownerId]);
+
+  useEffect(() => {
+    fetchGalleryImages();
+  }, [fetchGalleryImages]);
 
   // 다른 ownerId로 이동하거나 탭을 다시 열었을 때 상세/업로드 상태 초기화
   useEffect(() => {
@@ -112,6 +108,36 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const handleBackToList = () => {
     setView("list");
     setSelectedImageId(null);
+    setUploadError(null);
+  };
+
+  const handleUploadComplete = async (file?: File, description?: string) => {
+    if (!file) {
+      throw new Error("업로드할 파일을 선택해 주세요.");
+    }
+    if (!homepageId) {
+      throw new Error("홈페이지 정보를 찾을 수 없습니다.");
+    }
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
+    const { error } = await uploadGalleryImage({
+      file,
+      caption: description,
+      homepageId,
+      authorId: userId,
+    });
+
+    if (error) {
+      const message = error.message ?? "이미지를 업로드하지 못했습니다.";
+      setUploadError(message);
+      throw new Error(message);
+    }
+
+    setUploadError(null);
+    setView("list");
+    fetchGalleryImages();
   };
 
   const renderContent = () => {
@@ -125,7 +151,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
           showStatus={{
             ownerMissing: !ownerId,
             isLoading,
-            error,
+            error: listError,
             isEmpty: images.length === 0,
           }}
         />
@@ -137,7 +163,13 @@ export default function Gallery({ ownerId }: GalleryProps) {
     }
 
     if (view === "upload" && canManageGallery) {
-      return <GalleryUploadPanel onCancel={handleBackToList} />;
+      return (
+        <GalleryUploadPanel
+          onCancel={handleBackToList}
+          onUpload={handleUploadComplete}
+          errorMessage={uploadError}
+        />
+      );
     }
 
     // 3가지 뷰 상태 모두 해당되지 않는다면 null 반환

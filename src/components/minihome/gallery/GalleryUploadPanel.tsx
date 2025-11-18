@@ -7,16 +7,24 @@ import GalleryUploadFileSelector from "./GalleryUploadFileSelector";
 
 interface GalleryUploadPanelProps {
   onCancel: () => void;
-  onUpload?: (file?: File, description?: string) => void;
+  onUpload?: (file?: File, description?: string) => Promise<void> | void;
+  errorMessage?: string | null;
 }
 
-export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUploadPanelProps) {
+export default function GalleryUploadPanel({
+  onCancel,
+  onUpload,
+  errorMessage,
+}: GalleryUploadPanelProps) {
   const descriptionId = useId();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   useEffect(
     () => () => {
       if (previewUrl) {
@@ -25,15 +33,30 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
     },
     [previewUrl]
   );
-  const handleUpload = () => {
-    onUpload?.(file, description);
-    onCancel();
+
+  const handleUpload = async () => {
+    if (!file || isSubmitting) return;
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      await onUpload?.(file, description);
+    } catch (err) {
+      if (err instanceof Error) {
+        setSubmitError(err.message);
+      } else {
+        setSubmitError("업로드에 실패했습니다.");
+      }
+      return;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="flex h-full w-full flex-col gap-3">
       {/* 파일 선택 영역 */}
-      <span>파일 선택</span>
+      <span>파일 선택 </span>
+
       <GalleryUploadFileSelector
         fileName={fileName}
         fileSize={fileSize}
@@ -71,11 +94,15 @@ export default function GalleryUploadPanel({ onCancel, onUpload }: GalleryUpload
 
       {/* 업로드/취소 버튼 영역 */}
       <div className="mt-auto flex justify-end gap-2">
-        <Button composition="textOnly" onClick={onCancel}>
+        {(submitError ?? errorMessage) && (
+          <p className="text-red-500">{submitError ?? errorMessage}</p>
+        )}
+
+        <Button composition="textOnly" onClick={onCancel} disabled={isSubmitting}>
           취소
         </Button>
-        <Button composition="textOnly" onClick={handleUpload} disabled={!file}>
-          업로드
+        <Button composition="textOnly" onClick={handleUpload} disabled={!file || isSubmitting}>
+          {isSubmitting ? "업로드 중..." : "업로드"}
         </Button>
       </div>
     </div>

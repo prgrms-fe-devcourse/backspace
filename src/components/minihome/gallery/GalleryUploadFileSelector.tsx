@@ -57,7 +57,7 @@ export default function GalleryUploadFileSelector({
         </div>
         <div className="text-center">
           <p>{fileName ?? "선택된 파일이 없습니다."}</p>
-          <p>{fileSize ?? "최대 5MB 업로드 가능"}</p>
+          <p>{fileSize ?? "최대 50MB 업로드 가능"}</p>
         </div>
       </div>
 
