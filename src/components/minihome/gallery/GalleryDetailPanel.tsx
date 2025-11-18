@@ -5,8 +5,9 @@ import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
+import { useAuthStore } from "@/stores/useAuthStore";
 
-import { getGalleryImageComments } from "./api/gallery";
+import { addGalleryImageComment, getGalleryImageComments } from "./api/gallery";
 import type { GalleryComment, GalleryImage } from "./types/gallery.types";
 
 interface GalleryDetailPanelProps {
@@ -40,6 +41,11 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
   const [comments, setComments] = useState<GalleryComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
+  const [newComment, setNewComment] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const userId = useAuthStore((state) => state.user?.id);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,6 +84,39 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
 
   const togglePhotoLike = () => setPhotoLiked((prev) => !prev);
 
+  const handleSubmitComment = async () => {
+    const trimmed = newComment.trim();
+    if (!userId) {
+      setSubmitError("로그인이 필요합니다.");
+      return;
+    }
+    // 아무것도 안 적혀있으면 댓글 안 남김
+    if (!trimmed) {
+      return;
+    }
+
+    setIsSubmittingComment(true);
+    setSubmitError(null);
+
+    const { data, error } = await addGalleryImageComment({
+      imageId: image.id,
+      authorId: userId,
+      content: trimmed,
+    });
+
+    setIsSubmittingComment(false);
+
+    if (error) {
+      setSubmitError(error.message ?? "댓글을 등록하지 못했습니다.");
+      return;
+    }
+
+    if (data) {
+      setComments((prev) => [...prev, data]);
+      setNewComment("");
+    }
+  };
+
   return (
     // 전체 컨테이너
     <div className="relative flex h-full w-full flex-col overflow-hidden">
@@ -105,7 +144,7 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="text-muted flex h-full w-full items-center justify-center text-sm">
+                  <div className="text-muted flex h-full w-full items-center justify-center">
                     이미지를 찾을 수 없습니다.
                   </div>
                 )}
@@ -147,14 +186,12 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
           <section className="bevel-pressed bg-text-invert flex w-full flex-col gap-4 p-4">
             <div className="space-y-4">
               <p>댓글 {comments.length}개</p>
-              {isLoadingComments && (
-                <p className="text-muted text-sm">댓글을 불러오는 중이에요...</p>
-              )}
+              {isLoadingComments && <p className="text-muted">댓글을 불러오는 중입니다.</p>}
               {commentsError && !isLoadingComments && (
-                <p className="text-sm text-red-500">{commentsError}</p>
+                <p className="text-red-500">{commentsError}</p>
               )}
               {!isLoadingComments && !commentsError && comments.length === 0 && (
-                <p className="text-muted text-sm">첫 댓글을 남겨보세요.</p>
+                <p className="text-muted">첫 댓글을 남겨보세요.</p>
               )}
               {!isLoadingComments &&
                 !commentsError &&
@@ -180,7 +217,7 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
                         </div>
                         <div className="flex-1">
                           <div className="text-muted mb-1 flex items-center justify-between">
-                            <span className="text-primary font-semibold">{nickname}</span>
+                            <span className="text-primary">{nickname}</span>
                             <span>{dayjs(comment.created_at).format("YYYY.MM.DD HH:mm")}</span>
                           </div>
                           <p>{body || "내용이 없습니다."}</p>
@@ -193,12 +230,32 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
           </section>
         </div>
       </div>
-      <div className="mt-4 flex shrink-0 items-center gap-2 px-[6px]">
-        <Input placeholder="댓글을 입력하세요..." aria-label="댓글 입력" />
-        <Button size="md" composition="iconText">
-          <Send size={12} />
-          등록
-        </Button>
+      <div className="mt-4 flex shrink-0 flex-col gap-2 px-[6px]">
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder={userId ? "댓글을 입력하세요..." : "로그인이 필요합니다."}
+            aria-label="댓글 입력"
+            value={newComment}
+            onChange={(event) => setNewComment(event.target.value)}
+            disabled={isSubmittingComment || !userId}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                handleSubmitComment();
+              }
+            }}
+          />
+          <Button
+            size="md"
+            composition="iconText"
+            onClick={handleSubmitComment}
+            disabled={!userId || isSubmittingComment}
+          >
+            <Send size={12} />
+            등록
+          </Button>
+        </div>
+        {submitError && <p className="text-right text-red-500">{submitError}</p>}
       </div>
     </div>
   );
