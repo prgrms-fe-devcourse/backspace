@@ -22,6 +22,7 @@ interface GalleryDetailPanelProps {
   onBack: () => void;
   isMine?: boolean;
   onDelete?: (imageId: string, imageUrl?: string | null) => Promise<void> | void;
+  onEdit?: (image: GalleryImage) => void;
 }
 
 // JSON 타입의 댓글 내용을 문자열로 변환
@@ -50,6 +51,7 @@ export default function GalleryDetailPanel({
   onBack,
   isMine = false,
   onDelete,
+  onEdit,
 }: GalleryDetailPanelProps) {
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -256,22 +258,31 @@ export default function GalleryDetailPanel({
                 />
                 좋아요 {likeCount}
               </Button>
-              {isMine && onDelete && (
+              {isMine && (
                 <div className="flex items-center gap-2">
-                  <Button size="sm" composition="textOnly" className="text-primary px-3">
-                    수정
-                  </Button>
-                  <Button
-                    size="sm"
-                    composition="textOnly"
-                    className="text-primary px-3"
-                    onClick={() => {
-                      onDelete(image.id, image.image_url);
-                      onBack();
-                    }}
-                  >
-                    삭제
-                  </Button>
+                  {onEdit && (
+                    <Button
+                      size="sm"
+                      composition="textOnly"
+                      className="text-primary px-3"
+                      onClick={() => onEdit(image)}
+                    >
+                      수정
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      size="sm"
+                      composition="textOnly"
+                      className="text-primary px-3"
+                      onClick={() => {
+                        onDelete(image.id, image.image_url);
+                        onBack();
+                      }}
+                    >
+                      삭제
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
