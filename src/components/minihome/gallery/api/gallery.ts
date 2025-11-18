@@ -162,3 +162,13 @@ export const addGalleryImageComment = async ({
 
   return { data: (data as GalleryComment | null) ?? null, error };
 };
+
+export const deleteGalleryImageComment = async (
+  commentId: string
+): Promise<PostgrestError | null> => {
+  const { error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .delete()
+    .eq("id", commentId);
+  return error;
+};
