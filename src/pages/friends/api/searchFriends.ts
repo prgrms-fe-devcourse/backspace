@@ -1,7 +1,7 @@
 import supabase from "@/utils/supabase";
 
 export async function searchFriends(keyword: string, userId: string | undefined) {
-  if (!userId) return;
+  if (!userId) return [];
 
   const { data, error } = await supabase
     .from("profiles")

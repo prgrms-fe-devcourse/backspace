@@ -6,6 +6,7 @@ import {
   deleteGuestBookEntry,
   deleteGuestBookReply,
   getGuestBookWithComment,
+  insertReply,
 } from "./api/guestbook";
 import CommentWriteBox from "./CommentWriteBox";
 import GuestBookEntry from "./GuestBookEntry";
@@ -49,7 +50,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
 
     // TODO: 에러 핸들링 추가
     if (fetchError) {
-      console.error("error");
+      console.error(fetchError);
       setError(true);
       return;
     }
@@ -62,7 +63,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
 
     // TODO: 에러 핸들링 추가
     if (fetchError) {
-      console.error("error");
+      console.error(fetchError);
       setError(true);
       return;
     }
@@ -73,6 +74,31 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
           ? {
               ...entry,
               comments: entry.comments.filter((c) => c.id !== replyId),
+            }
+          : entry
+      )
+    );
+  };
+
+  const handleReplyWrite = async (entryId: string, content: string) => {
+    if (content.trim() === "") return;
+    if (!user?.id) return;
+
+    const { data: fetchData, error: fetchError } = await insertReply(user?.id, entryId, content);
+
+    // TODO: 에러 핸들링
+    if (fetchError || !fetchData) {
+      console.error(fetchError);
+      setError(true);
+      return;
+    }
+
+    setData((prev) =>
+      prev.map((entry) =>
+        entry.id === entryId
+          ? {
+              ...entry,
+              comments: fetchData,
             }
           : entry
       )
@@ -106,7 +132,7 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
                       onDelete={() => handleReplyDelete(entry.id, entry.comments[0].id)}
                     />
                   ) : (
-                    isMine && <CommentWriteBox />
+                    isMine && <CommentWriteBox entryId={entry.id} onSubmit={handleReplyWrite} />
                   )}
                 </GuestBookEntry>
               </li>
