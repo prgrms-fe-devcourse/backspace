@@ -5,15 +5,14 @@ export const button = cva(
     "inline-flex cursor-pointer items-center justify-center",
     "outline-none focus-visible:outline-none",
     "disabled:cursor-not-allowed",
-    "transition-all",
     "focus:outline-1 focus:-outline-offset-4 focus:outline-dotted",
   ],
   {
     variants: {
       size: {
-        lg: "h-9 px-5 py-2 text-sm",
-        md: "h-8 px-4 py-1.5 text-xs",
-        sm: "h-6 px-2 py-1 text-[10px]",
+        lg: "h-9 px-5 py-2",
+        md: "h-8 px-4 py-1.5",
+        sm: "h-6 px-2 py-1",
       },
       composition: {
         iconOnly: "",

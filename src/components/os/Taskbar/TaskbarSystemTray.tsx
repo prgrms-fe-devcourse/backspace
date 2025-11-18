@@ -1,6 +1,9 @@
 import dayjs from "dayjs";
+import { Moon, SunMedium } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
+
+import useTheme from "@/hooks/useTheme";
 
 import { taskbarSystemTray } from "./variants";
 
@@ -53,8 +56,13 @@ export default function TaskbarSystemTray({ className, ...rest }: TaskbarSystemT
   const formattedTime = currentTime.format("h:mm A");
   const isoTime = currentTime.toISOString();
 
+  const { toggleTheme, theme } = useTheme();
+
   return (
-    <div className={twMerge(taskbarSystemTray, className)} {...rest}>
+    <div className={twMerge(taskbarSystemTray, "select-non1 gap-1.5 px-2", className)} {...rest}>
+      <button type="button" onClick={() => toggleTheme()}>
+        {theme === "light" ? <SunMedium className="size-4" /> : <Moon className="size-4" />}
+      </button>
       <time className="whitespace-nowrap" dateTime={isoTime}>
         {formattedTime}
       </time>

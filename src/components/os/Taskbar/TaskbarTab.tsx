@@ -44,23 +44,23 @@ export default function TaskbarTab({
 }: TaskbarTabProps) {
   return (
     <Button
-      size="sm"
       composition="iconText"
       state={isFocused ? "pressed" : "neutral"}
       width="auto"
-      className={twMerge(taskbarTab, className)}
       onClick={onClick}
+      className={twMerge(
+        taskbarTab,
+        "gap-gap-1 flex h-6 shrink-0 items-center overflow-hidden md:h-8",
+        className
+      )}
     >
-      <span className="flex gap-1.5 overflow-hidden">
-        <span className="shrink-0">
-          <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+
+      {title && (
+        <span className="min-w-0 truncate px-1 @max-[44px]:hidden" title={title}>
+          {title}
         </span>
-        {title && (
-          <span className="min-w-0 flex-1 truncate @max-[44px]:hidden" title={title}>
-            {title}
-          </span>
-        )}
-      </span>
+      )}
     </Button>
   );
 }
