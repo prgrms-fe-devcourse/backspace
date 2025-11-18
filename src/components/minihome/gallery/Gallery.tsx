@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 import {
+  deleteGalleryImage,
   getGalleryImagesByHomepage,
   getHomepageIdByOwner,
   uploadGalleryImage,
@@ -23,6 +24,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
+
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const [homepageId, setHomepageId] = useState<string | null>(null);
 
@@ -103,6 +105,17 @@ export default function Gallery({ ownerId }: GalleryProps) {
     setView("detail");
   };
 
+  const handleDeleteImage = async (imageId: string, imageUrl?: string | null) => {
+    const error = await deleteGalleryImage(imageId, imageUrl);
+    if (error) {
+      setListError(error.message ?? "사진을 삭제하지 못했습니다.");
+      return;
+    }
+    setView("list");
+    setSelectedImageId(null);
+    setReloadVersion((prev) => prev + 1);
+  };
+
   const handleRequestUpload = () => {
     if (!canManageGallery) return;
     setView("upload");
@@ -164,6 +177,7 @@ export default function Gallery({ ownerId }: GalleryProps) {
           image={selectedImage}
           onBack={handleBackToList}
           isMine={canManageGallery}
+          onDelete={handleDeleteImage}
         />
       );
     }
