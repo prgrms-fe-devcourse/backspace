@@ -4,8 +4,13 @@ import { useState } from "react";
 import Button from "@/components/common/Button/Button";
 import TextArea from "@/components/common/TextArea/TextArea";
 
-export default function GuestbookWriteBox({ onSubmit }: { onSubmit: (content: string) => void }) {
+interface EntryTextAreaProps {
+  onSubmit: (content: string) => void;
+}
+
+export default function EntryTextArea({ onSubmit }: EntryTextAreaProps) {
   const [content, setContent] = useState("");
+
   return (
     <div className="bevel-pressed mb-3 flex flex-col justify-end gap-1 p-3">
       <span>방명록 남기기</span>
@@ -21,7 +26,7 @@ export default function GuestbookWriteBox({ onSubmit }: { onSubmit: (content: st
           setContent("");
         }}
       >
-        <Send size="1em" />
+        <Send className="size-4" />
         등록
       </Button>
     </div>

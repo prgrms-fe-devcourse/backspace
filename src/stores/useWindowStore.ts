@@ -3,12 +3,7 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { WINDOW_INFO } from "@/config/windowInfo";
-import type { WindowAppId, WindowCategory, WindowInstance } from "@/types/window.types";
-
-interface Position {
-  x: number;
-  y: number;
-}
+import type { Position, WindowAppId, WindowCategory, WindowInstance } from "@/types/window.types";
 
 interface WindowStore {
   windows: Partial<Record<WindowAppId, WindowInstance>>;

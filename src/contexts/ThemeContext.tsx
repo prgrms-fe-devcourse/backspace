@@ -44,8 +44,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", theme === "dark");
 
     if (hasStoredTheme) {
-      // TODO: 테마 토글 구현 후 주석 해제
-      // localStorage.setItem("theme", theme);
+      localStorage.setItem("theme", theme);
     }
   }, [theme, hasStoredTheme]);
 
@@ -60,7 +59,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    // TODO: Profiler에서 리액트 컴파일러에 의해 자동으로 useMemo가 되어 캐싱 되는 걸 확인했는데 추후 다시 확인 후 필요하다면 수정하겠습니다.
+    // ! Profiler에서 리액트 컴파일러에 의해 자동으로 useMemo가 되어 캐싱 되는 걸 확인했는데 필요하다면 수정하겠습니다.
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, toggleTheme }}>
       {children}
