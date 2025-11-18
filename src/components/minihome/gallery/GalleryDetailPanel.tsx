@@ -1,65 +1,80 @@
 import dayjs from "dayjs";
 import { ChevronLeft, Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 
-import type { GalleryImage } from "./types/gallery.types";
+import { getGalleryImageComments } from "./api/gallery";
+import type { GalleryComment, GalleryImage } from "./types/gallery.types";
 
 interface GalleryDetailPanelProps {
   image: GalleryImage;
   onBack: () => void;
 }
 
-const MOCK_COMMENTS = [
-  {
-    id: 1,
-    nickname: "일촌친구1",
-    timeAgo: "1시간 전",
-    caption: "사진 너무 이쁘다!",
-    avatarUrl: "https://picsum.photos/seed/friend1/80",
-  },
-  {
-    id: 2,
-    nickname: "일촌친구2",
-    timeAgo: "2시간 전",
-    caption: "여기 어디예요? 나도 가고싶다 ㅠㅠ",
-    avatarUrl: "https://picsum.photos/seed/friend2/80",
-  },
-  {
-    id: 3,
-    nickname: "일촌친구3",
-    timeAgo: "3시간 전",
-    caption: "날씨 좋은 날들이 최고지~",
-    avatarUrl: "https://picsum.photos/seed/friend3/80",
-  },
-  {
-    id: 4,
-    nickname: "도토리",
-    timeAgo: "4시간 전",
-    caption: "다들 고마워요! 다음에 같이 가요 ㅎㅎ",
-    avatarUrl: "https://picsum.photos/seed/dotori/80",
-  },
-];
-
-const ImagePlaceholder = () => (
-  <div className="bg-surface flex h-full w-full items-center justify-center">
-    <svg className="text-muted h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z"
-      />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11l3 3 5-5 3 3" />
-    </svg>
-  </div>
-);
+// JSON 타입의 댓글 내용을 문자열로 변환
+const stringifyCommentContent = (value: unknown): string => {
+  if (value === null || typeof value === "undefined") {
+    return "";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => stringifyCommentContent(item)).join(" ");
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return "";
+  }
+};
 
 export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanelProps) {
   const [photoLiked, setPhotoLiked] = useState(false);
+  const [comments, setComments] = useState<GalleryComment[]>([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadComments = async () => {
+      if (!image.id) {
+        setComments([]);
+        setCommentsError(null);
+        return;
+      }
+      setIsLoadingComments(true);
+      setCommentsError(null);
+
+      const { data, error } = await getGalleryImageComments(image.id);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (error) {
+        setComments([]);
+        setCommentsError(error.message ?? "댓글을 불러오지 못했습니다.");
+      } else {
+        setComments(data);
+        setCommentsError(null);
+      }
+      setIsLoadingComments(false);
+    };
+
+    loadComments();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [image.id]);
 
   const togglePhotoLike = () => setPhotoLiked((prev) => !prev);
 
@@ -90,7 +105,9 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <ImagePlaceholder />
+                  <div className="text-muted flex h-full w-full items-center justify-center text-sm">
+                    이미지를 찾을 수 없습니다.
+                  </div>
                 )}
               </div>
             </div>
@@ -129,27 +146,49 @@ export default function GalleryDetailPanel({ image, onBack }: GalleryDetailPanel
           {/* 댓글 영역 */}
           <section className="bevel-pressed bg-text-invert flex w-full flex-col gap-4 p-4">
             <div className="space-y-4">
-              <p>댓글 4개</p>
-              {MOCK_COMMENTS.map((comment) => (
-                <div key={comment.id} className="bevel-default bg-text-invert p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
-                      {comment.avatarUrl ? (
-                        <img src={comment.avatarUrl} alt={`${comment.nickname} avatar`} />
-                      ) : (
-                        comment.nickname.charAt(0)
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-muted mb-1 flex items-center justify-between">
-                        <span className="text-primary font-semibold">{comment.nickname}</span>
-                        <span>{comment.timeAgo}</span>
+              <p>댓글 {comments.length}개</p>
+              {isLoadingComments && (
+                <p className="text-muted text-sm">댓글을 불러오는 중이에요...</p>
+              )}
+              {commentsError && !isLoadingComments && (
+                <p className="text-sm text-red-500">{commentsError}</p>
+              )}
+              {!isLoadingComments && !commentsError && comments.length === 0 && (
+                <p className="text-muted text-sm">첫 댓글을 남겨보세요.</p>
+              )}
+              {!isLoadingComments &&
+                !commentsError &&
+                comments.map((comment) => {
+                  const nickname = comment.author?.nickname ?? "익명";
+                  const avatar = comment.author?.avatar_url;
+                  const fallbackInitial = nickname.charAt(0);
+                  const body = stringifyCommentContent(comment.content);
+
+                  return (
+                    <div key={comment.id} className="bevel-default bg-text-invert p-3">
+                      <div className="flex items-start gap-3">
+                        <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
+                          {avatar ? (
+                            <img
+                              src={avatar}
+                              alt={`${nickname} avatar`}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            fallbackInitial
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-muted mb-1 flex items-center justify-between">
+                            <span className="text-primary font-semibold">{nickname}</span>
+                            <span>{dayjs(comment.created_at).format("YYYY.MM.DD HH:mm")}</span>
+                          </div>
+                          <p>{body || "내용이 없습니다."}</p>
+                        </div>
                       </div>
-                      <p>{comment.caption}</p>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
             </div>
           </section>
         </div>
