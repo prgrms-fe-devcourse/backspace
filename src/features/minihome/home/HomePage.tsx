@@ -229,9 +229,9 @@ export default function HomePage({
   };
 
   return (
-    <div className="@container flex p-3">
+    <div className="@container flex h-full min-h-0 items-stretch p-3">
       {/* 왼쪽 프로필 영역 */}
-      <div className="mr-3 flex w-1/3 flex-col items-center @2xl:py-40">
+      <div className="mr-3 flex h-full w-1/3 flex-col items-center justify-center">
         {/* 프로필 이미지 */}
 
         <Avatar src={avatarUrl} className="h-32 w-32 @2xl:h-64 @2xl:w-64" />
@@ -268,7 +268,7 @@ export default function HomePage({
       </div>
 
       {/* 오른쪽 콘텐츠 */}
-      <div className="flex w-2/3 flex-col gap-3">
+      <div className="flex h-full w-2/3 flex-col gap-3">
         {/* 사진첩 */}
         <div className="bevel-pressed bg-white p-4 text-[#2D2640]">
           <div className="mb-3 flex items-center justify-between">
