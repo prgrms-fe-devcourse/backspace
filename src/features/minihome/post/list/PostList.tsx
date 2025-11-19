@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import type { PostWithCounts } from "@/types/post.types";
 import supabase from "@/utils/supabase";
 
@@ -15,8 +14,7 @@ interface PostListProps {
 export default function PostList({ onPostClick, ownerId }: PostListProps) {
   const [posts, setPosts] = useState<PostWithCounts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const { nickname: authorName } = useAuthUser();
+  const [ownerNickname, setOwnerNickname] = useState<string>("주인장");
 
   useEffect(() => {
     async function fetchPosts() {
@@ -29,7 +27,7 @@ export default function PostList({ onPostClick, ownerId }: PostListProps) {
 
       const { data: homepage, error: homepageError } = await supabase
         .from("homepages")
-        .select("id")
+        .select("id, owner:profiles!homepages_owner_id_fkey(nickname)")
         .eq("owner_id", ownerId)
         .single();
 
@@ -40,6 +38,7 @@ export default function PostList({ onPostClick, ownerId }: PostListProps) {
       }
 
       const homepageIdToFetch = homepage.id;
+      setOwnerNickname(homepage.owner?.nickname ?? "주인장");
 
       const { data, error } = await supabase
         .from("homepage_posts")
@@ -77,7 +76,7 @@ export default function PostList({ onPostClick, ownerId }: PostListProps) {
             <PostItem
               key={post.id}
               post={post}
-              authorName={authorName || "주인장"}
+              authorName={ownerNickname}
               onPostClick={onPostClick}
             />
           ))
