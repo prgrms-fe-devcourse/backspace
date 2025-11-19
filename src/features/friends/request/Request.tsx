@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
+import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 import { acceptFriendRequest, getFriendRequests, rejectFriendRequest } from "../api/friends";
@@ -52,8 +53,8 @@ export default function Request() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-1 p-4">
       <span className="pl-1">친구 신청 {requests.length}</span>
-      <div className="bevel-pressed flex min-h-0 flex-1 flex-col overflow-hidden px-[3px]">
-        <div className="bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3 pr-0">
+      <div className="flex min-h-0 flex-1">
+        <BevelScrollContainer>
           <ul className="flex flex-col gap-2">
             {requests.map((request) => (
               <li key={request.id}>
@@ -86,7 +87,7 @@ export default function Request() {
               </li>
             ))}
           </ul>
-        </div>
+        </BevelScrollContainer>
       </div>
     </div>
   );

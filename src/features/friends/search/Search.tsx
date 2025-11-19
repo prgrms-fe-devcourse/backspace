@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
+import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import Input from "@/components/Input/Input";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
@@ -68,9 +69,9 @@ export default function Search() {
       {hasSearched && (
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-1">
           <span className="pl-1">검색 결과 {results.length}</span>
-          <div className="bevel-pressed flex min-h-0 flex-1 overflow-hidden px-[3px]">
-            <div className="bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3 pr-0">
-              <ul>
+          <div className="flex min-h-0 flex-1">
+            <BevelScrollContainer>
+              <ul className="flex flex-col gap-2">
                 {results.map((Profile) => (
                   <li key={Profile.auth_id}>
                     <div className="flex items-center gap-3 p-2 pl-2 select-none">
@@ -100,7 +101,7 @@ export default function Search() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </BevelScrollContainer>
           </div>
         </div>
       )}
