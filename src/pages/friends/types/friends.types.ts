@@ -16,3 +16,10 @@ export type FriendRequestRow = Database["public"]["Tables"]["friend_requests"]["
 export type FriendRequest = FriendRequestRow & {
   requester: Profile;
 };
+
+export type FriendRow = Database["public"]["Tables"]["friends"]["Row"];
+
+export type FriendRelation = FriendRow & {
+  user1_profile: Profile | null;
+  user2_profile: Profile | null;
+};

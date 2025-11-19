@@ -1,6 +1,6 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 
-import type { FriendRequest } from "@/pages/friends/types/friends.types";
+import type { FriendRelation, FriendRequest } from "@/pages/friends/types/friends.types";
 import supabase from "@/utils/supabase";
 
 export const searchProfiles = async (keyword: string, userId: string | undefined) => {
@@ -107,6 +107,37 @@ export const rejectFriendRequest = async (requestId: string, userId: string) => 
     id: requestId,
     addressee_id: userId,
   });
+
+  if (error) throw error;
+};
+
+export const getFriends = async (
+  userId: string
+): Promise<{ data: FriendRelation[] | null; error: PostgrestError | null }> => {
+  const { data, error } = await supabase
+    .from("friends")
+    .select(
+      `
+      *,
+      user1_profile:profiles!friends_user1_id_fkey(*),
+      user2_profile:profiles!friends_user2_id_fkey(*)
+    `
+    )
+    .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+    .order("created_at", { ascending: false });
+
+  return {
+    data: (data as FriendRelation[] | null) ?? null,
+    error,
+  };
+};
+
+export const removeFriend = async (friendshipId: string) => {
+  if (!friendshipId) {
+    throw new Error("친구 정보를 찾을 수 없습니다.");
+  }
+
+  const { error } = await supabase.from("friends").delete().eq("id", friendshipId);
 
   if (error) throw error;
 };

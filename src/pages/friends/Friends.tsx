@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { useEffect, useState } from "react";
 
 import RoundedTab from "@/components/os/Tab/RoundedTab";
+import List from "@/pages/friends/list/List";
 import Request from "@/pages/friends/request/Request";
 import Search from "@/pages/friends/search/Search";
 import { FRIENDS_TABS, type FriendsTabs } from "@/pages/friends/types/friends.types";
@@ -41,7 +42,7 @@ export default function Friends({ windowId, tab = FRIENDS_TABS.search }: Friends
         <Request />
       </Tabs.Content>
       <Tabs.Content value={FRIENDS_TABS.list} asChild>
-        <Search />
+        <List />
       </Tabs.Content>
     </Tabs.Root>
   );
