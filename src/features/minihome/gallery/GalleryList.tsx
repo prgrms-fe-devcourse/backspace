@@ -1,4 +1,5 @@
 import Button from "@/components/Button/Button";
+import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 
 import type { GalleryImage } from "./types/gallery.types";
 
@@ -43,53 +44,49 @@ export default function GalleryList({
   const statusContent = renderStatus();
 
   return (
-    // 베벨 테두리 래퍼
-    <div className="bevel-pressed h-full w-full overflow-hidden p-1">
-      {/* 내부 컨텐츠 */}
-      <div className="scrollbar bg-text-invert h-full w-full overflow-y-auto px-4 pt-4 pb-4">
-        {/* 헤더 */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1>사진첩</h1>
-          <div className="flex flex-col items-end gap-1">
-            {isMine && (
-              <Button composition="textOnly" onClick={onRequestUpload}>
-                업로드
-              </Button>
-            )}
-            {statusContent && (
-              <div className="[&>p]:mt-0 [&>p]:text-right [&>p]:text-xs">{statusContent}</div>
-            )}
-          </div>
+    <BevelScrollContainer>
+      {/* 헤더 */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1>사진첩</h1>
+        <div className="flex flex-col items-end gap-1">
+          {isMine && (
+            <Button composition="textOnly" onClick={onRequestUpload}>
+              업로드
+            </Button>
+          )}
+          {statusContent && (
+            <div className="[&>p]:mt-0 [&>p]:text-right [&>p]:text-xs">{statusContent}</div>
+          )}
         </div>
-
-        {hasImages ? (
-          /* 이미지 그리드 영역 */
-          <div className="mt-2 grid grid-cols-4 gap-1">
-            {images.map((image) => (
-              <button
-                key={image.id}
-                type="button"
-                className="bevel-default aspect-square w-full cursor-pointer overflow-hidden p-1 transition hover:opacity-90"
-                onClick={() => onSelectImage(image.id)}
-              >
-                <div className="h-full w-full">
-                  {image.image_url ? (
-                    <img
-                      src={image.image_url}
-                      alt={image.caption ?? "갤러리 이미지"}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-muted flex h-full w-full items-center justify-center text-xs">
-                      이미지 호출 실패
-                    </div>
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-        ) : null}
       </div>
-    </div>
+
+      {hasImages ? (
+        /* 이미지 그리드 영역 */
+        <div className="mt-2 grid grid-cols-4 gap-1">
+          {images.map((image) => (
+            <button
+              key={image.id}
+              type="button"
+              className="bevel-default aspect-square w-full cursor-pointer overflow-hidden p-1 transition hover:opacity-90"
+              onClick={() => onSelectImage(image.id)}
+            >
+              <div className="h-full w-full">
+                {image.image_url ? (
+                  <img
+                    src={image.image_url}
+                    alt={image.caption ?? "갤러리 이미지"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="text-muted flex h-full w-full items-center justify-center text-xs">
+                    이미지 호출 실패
+                  </div>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </BevelScrollContainer>
   );
 }
