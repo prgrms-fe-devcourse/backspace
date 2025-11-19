@@ -1,8 +1,10 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 
+import type {
+  GalleryImage,
+  GalleryComment,
+} from "@/components/minihome/gallery/types/gallery.types";
 import supabase from "@/utils/supabase";
-
-import type { GalleryComment } from "../types/gallery.types";
 
 const FILE_BUCKET = "files";
 const PUBLIC_STORAGE_PREFIX = "/storage/v1/object/public/";
@@ -246,7 +248,7 @@ export const updateGalleryImage = async ({
     nextImageUrl = publicUrl;
   }
 
-  const updates: Record<string, string | null> = {};
+  const updates: Partial<Pick<GalleryImage, "caption" | "image_url">> = {};
   if (typeof caption !== "undefined") {
     updates.caption = caption ?? null;
   }
