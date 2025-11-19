@@ -229,12 +229,12 @@ export default function HomePage({
   };
 
   return (
-    <div className="flex p-3">
+    <div className="@container flex p-3">
       {/* 왼쪽 프로필 영역 */}
       <div className="mr-3 flex w-1/3 flex-col items-center">
         {/* 프로필 이미지 */}
 
-        <Avatar src={avatarUrl} />
+        <Avatar src={avatarUrl} className="h-32 w-32 @2xl:h-64 @2xl:w-64" />
 
         {/* 이름 */}
         <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>
