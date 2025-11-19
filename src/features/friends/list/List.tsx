@@ -1,6 +1,7 @@
 import { Home, UserMinus2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import Avatar from "@/components/Avatar/Avatar";
 import Button from "@/components/Button/Button";
 import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -62,12 +63,8 @@ export default function List() {
               return (
                 <li key={friend.id}>
                   <div className="flex items-center gap-3 p-2 pl-2 select-none">
-                    <div className="shrink-0">
-                      <img
-                        src={profile.avatar_url ?? ""}
-                        alt="프로필 아바타"
-                        className="h-8 w-8 rounded-full object-cover"
-                      />
+                    <div className="h-8 w-8 shrink-0">
+                      <Avatar src={profile.avatar_url} />
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col">
                       <span className="truncate text-sm font-medium">{profile.nickname}</span>
