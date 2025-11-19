@@ -51,7 +51,7 @@ export default function MiniHome({ windowId, ownerId, tab = MINIHOME_TABS.home }
           </Tabs.Trigger>
         ))}
       </Tabs.List>
-      <Tabs.Content value={MINIHOME_TABS.home}>
+      <Tabs.Content value={MINIHOME_TABS.home} className="min-h-0 flex-1">
         <Activity>
           <HomePage ownerId={ownerId} setActiveTab={setActiveTab} />
         </Activity>
