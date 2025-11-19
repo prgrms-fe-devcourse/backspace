@@ -135,13 +135,13 @@ export default function HomePage({
           setImages(mappedImages);
         }
 
-        // 게시물 정보 가져오기 (최근 3개)
+        // 게시물 정보 가져오기 (최근 6개)
         const { data: postRows, error: postError } = await supabase
           .from("homepage_posts")
           .select("id, title, created_at, visibility")
           .eq("homepage_id", homepage.id)
           .order("created_at", { ascending: false })
-          .limit(3);
+          .limit(6);
 
         if (postError) {
           throw postError;
@@ -316,10 +316,13 @@ export default function HomePage({
           </div>
 
           <ul className="flex flex-1 flex-col text-xs text-[#3d3462]">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <li
                 key={post.id}
-                className="mr-3 flex flex-1 items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]"
+                className={twMerge(
+                  "mr-3 flex flex-1 items-center justify-between border-b border-[#d7ccef] py-2 last:border-0 hover:bg-[#e9e0ff]",
+                  index >= 3 && "hidden @2xl:flex"
+                )}
               >
                 <span className="pl-3">{post.title}</span>
                 <div className="flex items-center gap-3 text-[#6b5fa0]">
