@@ -62,7 +62,15 @@ export default function Window({
   }, [isDragging, onDrag]);
 
   return (
-    <Dialog.Root defaultOpen open={open} modal={false}>
+    <Dialog.Root
+      open={open}
+      modal={false}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          onClose?.();
+        }
+      }}
+    >
       <Dialog.Portal container={ref.current}>
         <Dialog.Content onInteractOutside={(e) => e.preventDefault()} asChild>
           <section

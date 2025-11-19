@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
+import { searchProfiles } from "@/pages/friends/api/friends";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { Profile } from "@/types/profile.types";
-
-import { searchFriends } from "./api/searchFriends";
 
 export default function Search() {
   const [keyword, setKeyword] = useState("");
@@ -28,7 +27,7 @@ export default function Search() {
     */
     try {
       // setIsLoading(true);
-      const data = await searchFriends(keyword, userId);
+      const data = await searchProfiles(keyword, userId);
       setResults(data);
       setHasSearched(true);
     } catch (err) {
@@ -49,7 +48,7 @@ export default function Search() {
   return (
     <div className="flex h-full min-h-0 flex-col p-4">
       <div>
-        <div className="bevel-pressed bg-base-1 flex h-full flex-col p-4">
+        <div className="flex h-full flex-col">
           <div className="flex w-full items-stretch gap-1">
             <Input
               placeholder="이름이나 이메일을 입력해주세요..."
@@ -67,39 +66,40 @@ export default function Search() {
       </div>
       {hasSearched && (
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-1">
-          <span className="p">검색 결과 {results.length}</span>
-          <div className="bevel-pressed bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3">
-            <ul>
-              {results.map((user) => (
-                <li key={user.auth_id}>
-                  <div className="flex items-center gap-3 p-2 pl-2 select-none">
-                    <div className="shrink-0">
-                      <img
-                        // TODO: 디폴트 아바타 설정
-                        src={user.avatar_url!}
-                        alt="프로필 아바타"
-                        className="h-8 w-8 rounded-full object-cover"
-                      />
+          <span className="pl-1">검색 결과 {results.length}</span>
+          <div className="bevel-pressed flex min-h-0 flex-1 overflow-hidden px-[3px]">
+            <div className="bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3 pr-0">
+              <ul>
+                {results.map((Profile) => (
+                  <li key={Profile.auth_id}>
+                    <div className="flex items-center gap-3 p-2 pl-2 select-none">
+                      <div className="shrink-0">
+                        <img
+                          // TODO: 디폴트 아바타 설정
+                          src={Profile.avatar_url!}
+                          alt="프로필 아바타"
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate text-sm font-medium">{Profile.nickname}</span>
+                        <span className="text-text-subtle truncate text-xs">{Profile.email}</span>
+                      </div>
+                      <div className="shrink-0">
+                        <Button
+                          size="md"
+                          onClick={() => {
+                            openWindow("friendHome", Profile.auth_id);
+                          }}
+                        >
+                          방문
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-sm font-medium">{user.nickname}</span>
-                      <span className="text-text-subtle truncate text-xs">{user.email}</span>
-                    </div>
-
-                    <div className="shrink-0">
-                      <Button
-                        size="md"
-                        onClick={() => {
-                          openWindow("friendHome", user.auth_id);
-                        }}
-                      >
-                        방문
-                      </Button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       )}

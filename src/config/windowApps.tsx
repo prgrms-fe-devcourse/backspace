@@ -38,7 +38,7 @@ export const WINDOW_APPS: Record<WindowAppId, WindowApp> = {
   friends: {
     ...WINDOW_INFO.friends,
     icon: Users,
-    component: () => <Friends />,
+    component: (props: WindowComponentProps) => <Friends {...props} />,
   },
   friendHome: {
     ...WINDOW_INFO.friendHome,
