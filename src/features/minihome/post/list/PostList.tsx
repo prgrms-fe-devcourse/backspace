@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import type { PostWithCounts } from "@/types/post.types";
 import supabase from "@/utils/supabase";
@@ -69,8 +70,8 @@ export default function PostList({ onPostClick, ownerId }: PostListProps) {
   }
 
   return (
-    <div className="bevel-pressed bg-text-invert flex min-h-0 flex-1 flex-col overflow-hidden py-2.5">
-      <div className="scrollbar flex min-h-0 flex-col gap-2 overflow-y-auto pl-4">
+    <BevelScrollContainer>
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {posts.length > 0 ? (
           posts.map((post) => (
             <PostItem
@@ -84,6 +85,6 @@ export default function PostList({ onPostClick, ownerId }: PostListProps) {
           <div className="py-4 text-center opacity-60">작성된 게시글이 없습니다.</div>
         )}
       </div>
-    </div>
+    </BevelScrollContainer>
   );
 }
