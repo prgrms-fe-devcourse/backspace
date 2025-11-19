@@ -41,8 +41,8 @@ export default function OsMain() {
   };
 
   return (
-    <main ref={ref} className="bg-base-2 flex h-screen flex-col">
-      <div className="flex-1 p-4">
+    <main className="bg-base-2 flex h-dvh max-h-dvh flex-col overflow-hidden">
+      <section ref={ref} className="relative flex-1 overflow-hidden p-4" aria-label="데스크톱">
         <div
           className="grid h-full w-full auto-cols-max grid-flow-row auto-rows-max gap-6 md:gap-8"
           aria-label="바로가기"
@@ -89,7 +89,7 @@ export default function OsMain() {
             </Window>
           );
         })}
-      </div>
+      </section>
       <Taskbar />
     </main>
   );
