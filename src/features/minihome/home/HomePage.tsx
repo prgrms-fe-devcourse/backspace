@@ -50,6 +50,7 @@ export default function HomePage({
   const [posts, setPosts] = useState<GalleryPost[]>([]);
 
   useEffect(() => {
+    setPosts([]);
     const fetchHomePage = async () => {
       try {
         if (!user) {
