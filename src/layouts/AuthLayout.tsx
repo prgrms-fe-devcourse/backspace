@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import { twMerge } from "tailwind-merge";
 
 import Logo from "@/assets/logo/logo.svg?react";
-import TitleBar from "@/components/window/TitleBar/TitleBar";
+import TitleBar from "@/os/TitleBar/TitleBar";
 
 export default function AuthLayout() {
   return (

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { WINDOW_INFO } from "@/config/windowInfo";
+import { WINDOW_INFO } from "@/os/config/windowInfo";
 import type { Position, WindowAppId, WindowCategory, WindowInstance } from "@/types/window.types";
 
 interface WindowStore {
