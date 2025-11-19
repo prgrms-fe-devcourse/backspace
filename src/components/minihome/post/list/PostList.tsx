@@ -8,45 +8,61 @@ import PostItem from "./PostItem";
 
 interface PostListProps {
   onPostClick: (postId: string) => void;
+  ownerId: string | undefined;
 }
 
-export default function PostList({ onPostClick }: PostListProps) {
+export default function PostList({ onPostClick, ownerId }: PostListProps) {
   const [posts, setPosts] = useState<PostWithCounts[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { homepageId, nickname: authorName } = useAuthUser();
+  const { nickname: authorName } = useAuthUser();
 
   useEffect(() => {
     async function fetchPosts() {
       setIsLoading(true);
 
-      if (!homepageId) {
+      if (!ownerId) {
         setIsLoading(false);
         return;
       }
+
+      const { data: homepage, error: homepageError } = await supabase
+        .from("homepages")
+        .select("id")
+        .eq("owner_id", ownerId)
+        .single();
+
+      if (homepageError || !homepage) {
+        console.error("해당 유저 홈피를 찾을 수 없음:", homepageError);
+        setIsLoading(false);
+        return;
+      }
+
+      const homepageIdToFetch = homepage.id;
 
       const { data, error } = await supabase
         .from("homepage_posts")
         .select(
           `
-          *,
-          homepage_post_comments ( count ),
-          homepage_post_likes ( count )
-        `
+        *,
+        homepage_post_comments ( count ),
+        homepage_post_likes ( count )
+      `
         )
-        .eq("homepage_id", homepageId)
+        .eq("homepage_id", homepageIdToFetch)
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("게시물 목록 로딩 실패:", error);
+        console.error("게시물 로딩 실패:", error);
       } else if (data) {
         setPosts(data as PostWithCounts[]);
       }
+
       setIsLoading(false);
     }
 
     fetchPosts();
-  }, [homepageId]);
+  }, [ownerId]);
 
   if (isLoading) {
     return <div className="p-4 text-center">게시물을 불러오는 중...</div>;

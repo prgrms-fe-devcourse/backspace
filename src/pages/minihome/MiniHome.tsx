@@ -64,7 +64,7 @@ export default function MiniHome({ windowId, ownerId, tab = MINIHOME_TABS.home }
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.memo} className="min-h-0 flex-1">
         <Activity>
-          <MemoTab />
+          <MemoTab ownerId={ownerId} />
         </Activity>
       </Tabs.Content>
       <Tabs.Content value={MINIHOME_TABS.guestbook} asChild>

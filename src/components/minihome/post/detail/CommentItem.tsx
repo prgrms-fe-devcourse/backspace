@@ -3,6 +3,7 @@ import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Trash, User } from "lucide-react";
 
+import { useAuthUser } from "@/hooks/useAuthUser";
 import type { CommentWithProfile } from "@/types/post.types";
 
 dayjs.extend(relativeTime);
@@ -11,11 +12,14 @@ dayjs.locale("ko");
 interface CommentItemProps {
   comment: CommentWithProfile;
   onDelete: () => Promise<void>;
+  isMyHome: boolean;
 }
 
-export default function CommentItem({ comment, onDelete }: CommentItemProps) {
+export default function CommentItem({ comment, onDelete, isMyHome }: CommentItemProps) {
   const authorName = comment.profiles?.nickname || "익명";
   const avatarUrl = comment.profiles?.avatar_url;
+
+  const { id } = useAuthUser();
 
   return (
     <div className="flex gap-2 border-b border-gray-100 p-2 last:border-none">
@@ -35,11 +39,13 @@ export default function CommentItem({ comment, onDelete }: CommentItemProps) {
             <span className="text-xs">{authorName}</span>
             <span className="text-[10px] opacity-60">{dayjs(comment.created_at).fromNow()}</span>
           </div>
-          <Trash
-            width={18}
-            className="cursor-pointer opacity-60 hover:opacity-100"
-            onClick={onDelete}
-          />
+          {(isMyHome || comment.author_id === id) && (
+            <Trash
+              width={18}
+              className="cursor-pointer opacity-60 hover:opacity-100"
+              onClick={onDelete}
+            />
+          )}
         </div>
         <p className="text-xs whitespace-pre-wrap">{String(comment.content)}</p>
       </div>
