@@ -24,8 +24,9 @@ interface PostDetailProps {
   postId: string;
   onBack: () => void;
   onEdit: (post: MinihomePost) => void;
+  isMyHome: boolean;
 }
-export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) {
+export default function PostDetail({ postId, onBack, onEdit, isMyHome }: PostDetailProps) {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentWithProfile[]>([]);
   const [likeCount, setLikeCount] = useState(0);
@@ -35,7 +36,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeLoading, setIsLikeLoading] = useState(false);
 
-  const { id: authUserId, homepageId: myHomepageId } = useAuthUser();
+  const { id: authUserId } = useAuthUser();
 
   useEffect(() => {
     async function load() {
@@ -105,8 +106,6 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
   if (isLoading) return <div className="p-4 text-center">로딩 중...</div>;
   if (!post) return <div className="p-4 text-center">게시글을 찾을 수 없습니다.</div>;
 
-  const isOwner = myHomepageId === post.homepage_id;
-
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="scrollbar flex min-h-0 flex-col gap-2.5 overflow-auto py-3.5 pr-1 pl-4">
@@ -143,7 +142,7 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
             좋아요 {likeCount}
           </Button>
 
-          {isOwner && (
+          {isMyHome && (
             <div className="flex gap-2">
               <Button
                 size="md"
@@ -165,7 +164,11 @@ export default function PostDetail({ postId, onBack, onEdit }: PostDetailProps) 
           )}
         </div>
 
-        <CommentList comments={comments} onDeleteComment={handleDeleteComment} />
+        <CommentList
+          comments={comments}
+          onDeleteComment={handleDeleteComment}
+          isMyHome={isMyHome}
+        />
         <form
           className="flex gap-2"
           onSubmit={(e) => {

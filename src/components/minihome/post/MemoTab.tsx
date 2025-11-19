@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useAuthUser } from "@/hooks/useAuthUser";
+
 import PostDetail from "./detail/PostDetail";
 import PostListComponent from "./list/PostListComponent";
 import PostWrite from "./write/PostWrite";
@@ -12,7 +14,10 @@ interface MinihomePost {
 
 type ViewMode = "list" | "write" | "detail";
 
-export default function MemoTab() {
+export default function MemoTab({ ownerId }: { ownerId: string | undefined }) {
+  const { id } = useAuthUser();
+  const isMyHome = ownerId === id;
+
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<MinihomePost | null>(null);
@@ -42,10 +47,15 @@ export default function MemoTab() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       {viewMode === "list" && (
-        <PostListComponent onWrite={() => setViewMode("write")} onPostClick={handlePostClick} />
+        <PostListComponent
+          onWrite={() => setViewMode("write")}
+          onPostClick={handlePostClick}
+          isMyHome={isMyHome}
+          ownerId={ownerId}
+        />
       )}
 
-      {viewMode === "write" && (
+      {viewMode === "write" && isMyHome && (
         <PostWrite
           onClose={handleBackToList}
           editingPost={editingPost}
@@ -54,7 +64,12 @@ export default function MemoTab() {
       )}
 
       {viewMode === "detail" && selectedPostId && (
-        <PostDetail postId={selectedPostId} onBack={handleBackToList} onEdit={handleEditPost} />
+        <PostDetail
+          postId={selectedPostId}
+          onBack={handleBackToList}
+          onEdit={handleEditPost}
+          isMyHome={isMyHome}
+        />
       )}
     </div>
   );
