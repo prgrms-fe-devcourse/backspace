@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 import {
@@ -126,34 +127,36 @@ export default function GuestBook({ ownerId }: { ownerId: string | undefined }) 
       {!isMine && <EntryTextArea onSubmit={handleEntry} />}
       <div className="flex min-h-0 flex-1 flex-col gap-1">
         <span className="p">전체 방명록 {data.length}</span>
-        <div className="bevel-pressed bg-text-invert scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3">
-          <ul className="flex flex-col gap-2">
-            {data.map((entry) => (
-              <li key={entry.id}>
-                <Entry
-                  id={entry.id}
-                  author={entry.author}
-                  created_at={entry.created_at}
-                  content={entry.content}
-                  canDelete={isMine || entry.author?.auth_id === user?.id}
-                  onDelete={() => handleEntryDelete(entry.id)}
-                >
-                  {entry.comments.length > 0 ? (
-                    <Comment
-                      id={entry.comments[0].id}
-                      commenter={entry.comments[0].commenter}
-                      created_at={entry.comments[0].created_at}
-                      content={entry.comments[0].content}
-                      canDelete={isMine}
-                      onDelete={() => handleReplyDelete(entry.id, entry.comments[0].id)}
-                    />
-                  ) : (
-                    isMine && <CommentInput entryId={entry.id} onSubmit={handleReplyWrite} />
-                  )}
-                </Entry>
-              </li>
-            ))}
-          </ul>
+        <div className="flex min-h-0 flex-1">
+          <BevelScrollContainer>
+            <ul className="flex flex-col gap-2">
+              {data.map((entry) => (
+                <li key={entry.id}>
+                  <Entry
+                    id={entry.id}
+                    author={entry.author}
+                    created_at={entry.created_at}
+                    content={entry.content}
+                    canDelete={isMine || entry.author?.auth_id === user?.id}
+                    onDelete={() => handleEntryDelete(entry.id)}
+                  >
+                    {entry.comments.length > 0 ? (
+                      <Comment
+                        id={entry.comments[0].id}
+                        commenter={entry.comments[0].commenter}
+                        created_at={entry.comments[0].created_at}
+                        content={entry.comments[0].content}
+                        canDelete={isMine}
+                        onDelete={() => handleReplyDelete(entry.id, entry.comments[0].id)}
+                      />
+                    ) : (
+                      isMine && <CommentInput entryId={entry.id} onSubmit={handleReplyWrite} />
+                    )}
+                  </Entry>
+                </li>
+              ))}
+            </ul>
+          </BevelScrollContainer>
         </div>
       </div>
     </div>
