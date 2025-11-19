@@ -43,7 +43,13 @@ export const useWindowStore = create<WindowStore>()(
           const info = WINDOW_INFO[id];
           if (!info) return;
 
-          if (state.windows[id]) {
+          const target = state.windows[id];
+
+          if (target) {
+            if (ownerId !== undefined && target.ownerId !== ownerId) {
+              target.ownerId = ownerId;
+            }
+
             state.activeWindowId = id;
             return;
           }

@@ -8,11 +8,9 @@ import RoundedTab from "@/components/os/Tab/RoundedTab";
 import HomePage from "@/components/Page/HomePage";
 import { useWindowStore } from "@/stores/useWindowStore";
 import { MINIHOME_TABS, type MiniHomeTabs } from "@/types/minihome.types";
-import type { WindowAppId } from "@/types/window.types";
+import type { WindowComponentProps } from "@/types/window.types";
 
-interface MiniHomeProps {
-  windowId: WindowAppId;
-  ownerId?: string;
+interface MiniHomeProps extends WindowComponentProps {
   tab?: MiniHomeTabs;
 }
 

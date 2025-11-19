@@ -75,7 +75,7 @@ export default function RoundedTab({ children, onClick, className, isActive, ...
       type="button"
       className={twMerge(
         "relative inline-flex cursor-pointer items-center justify-center",
-        "min-w-0 shrink px-0 py-1 text-xs",
+        "min-w-0 shrink px-0 py-1 text-xs select-none",
         className
       )}
       {...rest}
