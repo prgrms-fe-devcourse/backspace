@@ -310,9 +310,7 @@ export default function GalleryDetailPanel({
                   return (
                     <div key={comment.id} className="bevel-default bg-text-invert p-3">
                       <div className="flex items-start gap-3">
-                        <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
-                          <Avatar src={avatar} />
-                        </div>
+                        <Avatar src={avatar} className="text-primary h-10 w-10 shrink-0" />
                         <div className="flex-1">
                           <div className="text-muted mb-1 flex items-center justify-between">
                             <span className="text-primary">{nickname}</span>
