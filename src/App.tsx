@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router";
 
-import AuthInitializer from "@/components/auth/AuthListener";
+import AuthInitializer from "@/hooks/AuthListener";
 import AuthLayout from "@/layouts/AuthLayout";
 import SignInPage from "@/pages/auth/sign-in/SignInPage";
 import SignUpPage from "@/pages/auth/sign-up/SignUpPage";

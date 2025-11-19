@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 
-import Shortcut from "@/components/os/Shortcut/Shortcut";
-import Taskbar from "@/components/os/Taskbar/Taskbar";
-import Window from "@/components/window/Window/Window";
-import { WINDOW_APPS } from "@/config/windowApps";
+import { WINDOW_APPS } from "@/os/config/windowApps";
+import Shortcut from "@/os/Shortcut/Shortcut";
+import Taskbar from "@/os/Taskbar/Taskbar";
+import Window from "@/os/Window/Window";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { WindowAppId, WindowCategory } from "@/types/window.types";

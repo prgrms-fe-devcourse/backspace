@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { z } from "zod";
 
-import Button from "@/components/common/Button/Button";
-import Input from "@/components/common/Input/Input";
+import Button from "@/components/Button/Button";
+import Input from "@/components/Input/Input";
 import supabase from "@/utils/supabase";
 
 const SignInSchema = z.object({

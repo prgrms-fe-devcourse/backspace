@@ -1,0 +1,328 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+
+import supabase from "@/utils/supabase";
+
+import type { GalleryComment, GalleryImage } from "../types/gallery.types";
+
+const FILE_BUCKET = "files";
+const PUBLIC_STORAGE_PREFIX = "/storage/v1/object/public/";
+
+// Storage 에러를 PostgrestError 로 변환
+const asPostgrestError = (message: string): PostgrestError => ({
+  message,
+  details: "",
+  hint: "",
+  code: "storage_error",
+  name: "storage_error",
+});
+
+// Storage에 저장할 때 겹치지 않도록 홈피 ID + UUID 기반 경로를 생성
+const createUniqueFilePath = (homepageId: string, fileName: string) => {
+  const allowedExtensions = ["png", "jpg", "jpeg", "gif", "webp"];
+  let extension = "";
+  const lastDot = fileName.lastIndexOf(".");
+  if (lastDot !== -1 && lastDot < fileName.length - 1) {
+    extension = fileName.slice(lastDot + 1).toLowerCase();
+  }
+  if (!allowedExtensions.includes(extension)) {
+    extension = "png";
+  }
+  const unique =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  return `gallery/${homepageId}/${unique}.${extension}`;
+};
+
+export const getHomepageIdByOwner = async (ownerId: string) => {
+  const { data, error } = await supabase
+    .from("homepages")
+    .select("id")
+    .eq("owner_id", ownerId)
+    .maybeSingle();
+
+  return { data, error };
+};
+
+export const getGalleryImagesByHomepage = async (homepageId: string) => {
+  const { data, error } = await supabase
+    .from("homepage_gallery_images")
+    .select("id, caption, created_at, image_url, author_id, homepage_id, visibility")
+    .eq("homepage_id", homepageId)
+    .order("created_at", { ascending: false });
+
+  return { data: data ?? [], error };
+};
+
+interface UploadGalleryImageParams {
+  file: File;
+  homepageId: string;
+  authorId: string;
+  caption?: string;
+}
+
+export const uploadGalleryImage = async ({
+  file,
+  homepageId,
+  authorId,
+  caption,
+}: UploadGalleryImageParams) => {
+  const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return {
+      data: null,
+      error: new Error("JPEG, PNG, GIF, WebP 파일만 업로드 가능합니다."),
+    };
+  }
+
+  const filePath = createUniqueFilePath(homepageId, file.name);
+
+  const { error: uploadError } = await supabase.storage.from(FILE_BUCKET).upload(filePath, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+
+  if (uploadError) {
+    return { data: null, error: uploadError };
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(FILE_BUCKET).getPublicUrl(filePath);
+
+  const { data, error } = await supabase
+    .from("homepage_gallery_images")
+    .insert({
+      homepage_id: homepageId,
+      author_id: authorId,
+      caption: caption ?? null,
+      image_url: publicUrl,
+    })
+    .select("id, caption, created_at, image_url, author_id, homepage_id, visibility")
+    .single();
+
+  if (error) {
+    await supabase.storage.from(FILE_BUCKET).remove([filePath]);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+export const getGalleryImageComments = async (
+  imageId: string
+): Promise<{ data: GalleryComment[]; error: PostgrestError | null }> => {
+  const { data, error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .select(
+      `
+      id,
+      created_at,
+      content,
+      author_id,
+      author:profiles!homepage_gallery_image_relies_author_id_fkey (
+        auth_id,
+        nickname,
+        avatar_url
+      )
+    `
+    )
+    .eq("post_id", imageId)
+    .order("created_at", { ascending: true });
+
+  return { data: (data as GalleryComment[] | null) ?? [], error };
+};
+
+interface AddGalleryImageCommentParams {
+  imageId: string;
+  authorId: string;
+  content: string;
+}
+
+export const addGalleryImageComment = async ({
+  imageId,
+  authorId,
+  content,
+}: AddGalleryImageCommentParams): Promise<{
+  data: GalleryComment | null;
+  error: PostgrestError | null;
+}> => {
+  const { data, error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .insert({
+      post_id: imageId,
+      author_id: authorId,
+      content,
+    })
+    .select(
+      `
+      id,
+      created_at,
+      content,
+      author_id,
+      author:profiles!homepage_gallery_image_relies_author_id_fkey (
+        auth_id,
+        nickname,
+        avatar_url
+      )
+    `
+    )
+    .single();
+
+  return { data: (data as GalleryComment | null) ?? null, error };
+};
+
+const extractStoragePath = (publicUrl: string | null | undefined) => {
+  if (!publicUrl) {
+    return null;
+  }
+  try {
+    const url = new URL(publicUrl);
+    const prefixIndex = url.pathname.indexOf(PUBLIC_STORAGE_PREFIX);
+    if (prefixIndex === -1) {
+      return null;
+    }
+    return url.pathname.slice(prefixIndex + PUBLIC_STORAGE_PREFIX.length);
+  } catch {
+    return null;
+  }
+};
+
+export const deleteGalleryImageComment = async (
+  commentId: string
+): Promise<PostgrestError | null> => {
+  const { error } = await supabase
+    .from("homepage_gallery_image_comments")
+    .delete()
+    .eq("id", commentId);
+  return error;
+};
+
+export const deleteGalleryImage = async (imageId: string, imageUrl?: string | null) => {
+  const storagePath = extractStoragePath(imageUrl ?? null);
+
+  if (storagePath) {
+    const { error: storageError } = await supabase.storage.from(FILE_BUCKET).remove([storagePath]);
+    if (storageError) {
+      return asPostgrestError(storageError.message);
+    }
+  }
+
+  const { error } = await supabase.from("homepage_gallery_images").delete().eq("id", imageId);
+  return error;
+};
+
+interface UpdateGalleryImageParams {
+  imageId: string;
+  homepageId: string;
+  caption?: string;
+  file?: File;
+  previousImageUrl?: string | null;
+}
+
+export const updateGalleryImage = async ({
+  imageId,
+  homepageId,
+  caption,
+  file,
+  previousImageUrl,
+}: UpdateGalleryImageParams): Promise<{ error: PostgrestError | null }> => {
+  let uploadedPath: string | null = null;
+  let nextImageUrl = previousImageUrl ?? null;
+
+  if (file) {
+    const filePath = createUniqueFilePath(homepageId, file.name);
+    const { error: uploadError } = await supabase.storage
+      .from(FILE_BUCKET)
+      .upload(filePath, file, { cacheControl: "3600", upsert: false });
+    if (uploadError) {
+      return { error: asPostgrestError(uploadError.message) };
+    }
+    uploadedPath = filePath;
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(FILE_BUCKET).getPublicUrl(filePath);
+    nextImageUrl = publicUrl;
+  }
+
+  const updates: Partial<Pick<GalleryImage, "caption" | "image_url">> = {};
+  if (typeof caption !== "undefined") {
+    updates.caption = caption ?? null;
+  }
+  if (file) {
+    updates.image_url = nextImageUrl;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { error: null };
+  }
+
+  const { error } = await supabase
+    .from("homepage_gallery_images")
+    .update(updates)
+    .eq("id", imageId);
+  if (error) {
+    if (uploadedPath) {
+      await supabase.storage.from(FILE_BUCKET).remove([uploadedPath]);
+    }
+    return { error };
+  }
+
+  if (file && previousImageUrl) {
+    const previousPath = extractStoragePath(previousImageUrl);
+    if (previousPath) {
+      await supabase.storage.from(FILE_BUCKET).remove([previousPath]);
+    }
+  }
+
+  return { error: null };
+};
+
+export const getGalleryImageLikeSummary = async (
+  imageId: string,
+  userId?: string
+): Promise<{ count: number; liked: boolean; error: PostgrestError | null }> => {
+  const { count, error } = await supabase
+    .from("homepage_gallery_image_likes")
+    .select("*", { count: "exact", head: true })
+    .eq("image_id", imageId);
+
+  if (error) {
+    return { count: 0, liked: false, error };
+  }
+
+  let liked = false;
+  if (userId) {
+    const { data, error: likedError } = await supabase
+      .from("homepage_gallery_image_likes")
+      .select("id")
+      .eq("image_id", imageId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (likedError && likedError.code !== "PGRST116") {
+      return { count: count ?? 0, liked: false, error: likedError };
+    }
+    liked = Boolean(data);
+  }
+
+  return { count: count ?? 0, liked, error: null };
+};
+
+export const likeGalleryImage = async (imageId: string, userId: string) => {
+  const { error } = await supabase.from("homepage_gallery_image_likes").insert({
+    image_id: imageId,
+    user_id: userId,
+  });
+  return error;
+};
+
+export const unlikeGalleryImage = async (imageId: string, userId: string) => {
+  const { error } = await supabase
+    .from("homepage_gallery_image_likes")
+    .delete()
+    .eq("image_id", imageId)
+    .eq("user_id", userId);
+  return error;
+};
