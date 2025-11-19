@@ -24,16 +24,12 @@ export default function Shortcut({
       {...props}
     >
       <Icon
-        className={twMerge(
-          "text-text-default",
-          "size-9 md:size-10",
-          isSelected && "bg-secondary/80"
-        )}
+        className={twMerge("text-muted", "size-9 md:size-10", isSelected && "bg-secondary/80")}
         aria-hidden="true"
       />
       <span
         className={twMerge(
-          "text-text-default text-xs select-none md:text-sm",
+          "text-muted text-xs select-none md:text-sm",
           isSelected && "bg-secondary/80 focus-dotted",
           isFocused && "focus-dotted"
         )}

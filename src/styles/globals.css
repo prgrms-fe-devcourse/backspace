@@ -55,6 +55,7 @@ body {
 body {
   font-size: 11px;
   overscroll-behavior: none;
+  word-break: keep-all;
 }
 
 @media (min-width: 768px) {

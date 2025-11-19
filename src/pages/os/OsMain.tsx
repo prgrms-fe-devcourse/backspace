@@ -12,6 +12,7 @@ export default function OsMain() {
   const ref = useRef<HTMLElement | null>(null);
   const [selectedShortcutId, setSelectedShortcutId] = useState<string | null>(null);
   const [focusedShortcutId, setFocusedShortcutId] = useState<string | null>(null);
+
   const windows = useWindowStore((state) => state.windows);
   const openWindow = useWindowStore((state) => state.openWindow);
   const closeWindow = useWindowStore((state) => state.closeWindow);
@@ -41,8 +42,12 @@ export default function OsMain() {
   };
 
   return (
-    <main className="bg-base-2 flex h-dvh max-h-dvh flex-col overflow-hidden">
-      <section ref={ref} className="relative flex-1 overflow-hidden p-4" aria-label="데스크톱">
+    <main className="flex h-dvh max-h-dvh flex-col overflow-hidden bg-[#e9e0fb]">
+      <section
+        ref={ref}
+        className="relative flex-1 overflow-hidden bg-[url(@/assets/wallpapers/wallpaper.jpg)] bg-size-[40%] bg-center bg-no-repeat p-4"
+        aria-label="데스크톱"
+      >
         <div
           className="grid h-full w-full auto-cols-max grid-flow-row auto-rows-max gap-6 md:gap-8"
           aria-label="바로가기"
