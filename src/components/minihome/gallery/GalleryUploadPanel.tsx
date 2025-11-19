@@ -129,10 +129,7 @@ export default function GalleryUploadPanel({
             onClick={handleUpload}
             disabled={(requiresFile && !file) || isSubmitting}
           >
-            {(() => {
-              const baseLabel = submitLabel ?? (allowEmptyFile ? "수정" : "업로드");
-              return isSubmitting ? `${baseLabel} 중...` : baseLabel;
-            })()}
+            {(() => submitLabel ?? "업로드")()}
           </Button>
         </div>
       </div>

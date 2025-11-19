@@ -275,8 +275,8 @@ export default function GalleryDetailPanel({
                       size="sm"
                       composition="textOnly"
                       className="text-primary px-3"
-                      onClick={() => {
-                        onDelete(image.id, image.image_url);
+                      onClick={async () => {
+                        await onDelete(image.id, image.image_url);
                         onBack();
                       }}
                     >
