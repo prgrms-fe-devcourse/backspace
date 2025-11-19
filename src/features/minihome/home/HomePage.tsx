@@ -268,7 +268,7 @@ export default function HomePage({
       </div>
 
       {/* 오른쪽 콘텐츠 */}
-      <div className="flex h-full w-2/3 flex-col gap-3">
+      <div className="scrollbar flex h-full min-h-0 w-2/3 flex-col gap-3 overflow-y-auto pr-2">
         {/* 사진첩 */}
         <div className="bevel-pressed bg-white p-4 text-[#2D2640]">
           <div className="mb-3 flex items-center justify-between">
