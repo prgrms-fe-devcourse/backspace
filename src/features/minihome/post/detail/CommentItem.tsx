@@ -24,9 +24,7 @@ export default function CommentItem({ comment, onDelete, isMyHome }: CommentItem
 
   return (
     <div className="flex gap-2 border-b border-gray-100 p-2 last:border-none">
-      <div className="h-7 w-7 shrink-0 overflow-hidden bg-gray-200">
-        <Avatar src={avatarUrl} />
-      </div>
+      <Avatar src={avatarUrl} className="h-7 w-7 shrink-0" />
 
       <div className="flex flex-1 flex-col gap-1">
         <div className="flex justify-between">
