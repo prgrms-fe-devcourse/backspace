@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import Avatar from "@/components/Avatar/Avatar";
 import Button from "@/components/Button/Button";
 import BevelScrollContainer from "@/components/Container/BevelScrollContainer";
 import Input from "@/components/Input/Input";
@@ -75,13 +76,8 @@ export default function Search() {
                 {results.map((Profile) => (
                   <li key={Profile.auth_id}>
                     <div className="flex items-center gap-3 p-2 pl-2 select-none">
-                      <div className="shrink-0">
-                        <img
-                          // TODO: 디폴트 아바타 설정
-                          src={Profile.avatar_url!}
-                          alt="프로필 아바타"
-                          className="h-8 w-8 rounded-full object-cover"
-                        />
+                      <div className="h-8 w-8 shrink-0">
+                        <Avatar src={Profile.avatar_url} />
                       </div>
                       <div className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate text-sm font-medium">{Profile.nickname}</span>

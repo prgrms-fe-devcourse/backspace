@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
-import { MessageCircle, UserRound, Star } from "lucide-react";
+import { MessageCircle, Star } from "lucide-react";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { twMerge } from "tailwind-merge";
 
+import Avatar from "@/components/Avatar/Avatar";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Database } from "@/types/database.types";
 import type { MiniHomeTabs } from "@/types/minihome.types";
@@ -205,21 +206,12 @@ export default function HomePage({
   };
 
   return (
-    <div className="flex w-[592px] p-3">
+    <div className="flex p-3">
       {/* 왼쪽 프로필 영역 */}
       <div className="mr-3 flex w-1/3 flex-col items-center">
         {/* 프로필 이미지 */}
-        <div className="relative">
-          {avatarUrl ? (
-            <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[#B2AAEB]">
-              <img className="h-full w-full object-cover" src={avatarUrl} alt="" />
-            </div>
-          ) : (
-            <div className="bevel-default flex h-32 w-32 items-center justify-center rounded-full">
-              <UserRound size={48} color="#B2AAEB" />
-            </div>
-          )}
-        </div>
+
+        <Avatar src={avatarUrl} />
 
         {/* 이름 */}
         <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>

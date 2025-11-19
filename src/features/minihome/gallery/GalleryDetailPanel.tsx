@@ -3,6 +3,7 @@ import { ChevronLeft, Heart, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
+import Avatar from "@/components/Avatar/Avatar";
 import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -304,22 +305,13 @@ export default function GalleryDetailPanel({
                 comments.map((comment) => {
                   const nickname = comment.author?.nickname ?? "알 수 없음";
                   const avatar = comment.author?.avatar_url;
-                  const fallbackInitial = nickname.charAt(0);
                   const body = stringifyCommentContent(comment.content);
 
                   return (
                     <div key={comment.id} className="bevel-default bg-text-invert p-3">
                       <div className="flex items-start gap-3">
                         <div className="bevel-default bg-surface text-primary flex h-10 w-10 items-center justify-center overflow-hidden">
-                          {avatar ? (
-                            <img
-                              src={avatar}
-                              alt={`${nickname} avatar`}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            fallbackInitial
-                          )}
+                          <Avatar src={avatar} />
                         </div>
                         <div className="flex-1">
                           <div className="text-muted mb-1 flex items-center justify-between">

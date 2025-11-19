@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Trash, User } from "lucide-react";
+import { Trash } from "lucide-react";
 
+import Avatar from "@/components/Avatar/Avatar";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import type { CommentWithProfile } from "@/types/post.types";
 
@@ -24,13 +25,7 @@ export default function CommentItem({ comment, onDelete, isMyHome }: CommentItem
   return (
     <div className="flex gap-2 border-b border-gray-100 p-2 last:border-none">
       <div className="h-7 w-7 shrink-0 overflow-hidden bg-gray-200">
-        {avatarUrl ? (
-          <img src={avatarUrl} alt={authorName} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-gray-500">
-            <User size={16} />
-          </div>
-        )}
+        <Avatar src={avatarUrl} />
       </div>
 
       <div className="flex flex-1 flex-col gap-1">
