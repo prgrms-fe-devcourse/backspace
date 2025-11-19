@@ -231,7 +231,7 @@ export default function HomePage({
   return (
     <div className="@container flex h-full min-h-0 items-stretch p-3">
       {/* 왼쪽 프로필 영역 */}
-      <div className="mr-3 flex h-full w-1/3 flex-col items-center justify-center">
+      <div className="mr-3 flex h-full w-1/3 flex-col items-center @2xl:justify-center">
         {/* 프로필 이미지 */}
 
         <Avatar src={avatarUrl} className="h-32 w-32 @2xl:h-64 @2xl:w-64" />
@@ -240,7 +240,7 @@ export default function HomePage({
         <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>
 
         {/* 소개글 */}
-        <div className="bevel-pressed relative mt-4 flex h-2/3 w-full justify-center overflow-y-auto bg-white p-3 text-center text-xs leading-relaxed text-[#2D2640] @2xl:max-h-20">
+        <div className="bevel-pressed relative mt-4 flex h-2/3 w-full justify-center overflow-y-auto bg-white p-3 text-center text-xs leading-relaxed text-[#2D2640] @2xl:h-20">
           <p>{bio}</p>
         </div>
 
