@@ -8,7 +8,7 @@ export default function BevelScrollContainer({
   return (
     <div className="bevel-pressed h-full w-full overflow-hidden p-1">
       <div
-        className={twMerge("scrollbar bg-text-invert h-full w-full overflow-y-auto p-4", className)}
+        className={twMerge("scrollbar bg-text-invert h-full w-full overflow-y-auto p-3", className)}
       >
         {children}
       </div>
