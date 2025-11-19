@@ -76,9 +76,11 @@ export default function PostDetail({ postId, onBack, onEdit, isMyHome }: PostDet
 
   const handleDeleteComment = async (commentId: string) => {
     const { error } = await deleteComment(commentId);
-    if (!error) {
-      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    if (error) {
+      console.error("댓글 삭제 실패:", error);
+      return;
     }
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
   const handleToggleLike = async () => {
