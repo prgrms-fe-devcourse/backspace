@@ -52,13 +52,20 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
   const windows = useWindowStore((state) => state.windows);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
   const setActiveWindow = useWindowStore((state) => state.setActiveWindow);
+  const minimizedWindows = useWindowStore((state) => state.minimizedWindows);
+  const restoreWindow = useWindowStore((state) => state.restoreWindow);
 
   const showStart = config === "default" || config === "noSystemTray";
   const showSystemTray = config === "default" || config === "noStartButton";
 
   const handleTabClick = (id: WindowAppId) => {
-    // Taskbar 탭 클릭 시 해당 window로 focus
-    setActiveWindow(id);
+    const isMinimized = !!minimizedWindows[id];
+
+    if (isMinimized) {
+      restoreWindow(id);
+    } else {
+      setActiveWindow(id);
+    }
   };
 
   return (
@@ -71,12 +78,14 @@ export default function Taskbar({ className, config = "default", ...rest }: Task
           const app = WINDOW_APPS[window.id];
           if (!app) return null;
 
+          const isMinimized = !!minimizedWindows[window.id];
+
           return (
             <li key={window.id} className="@container flex max-w-43 min-w-0 flex-1">
               <TaskbarTab
                 icon={app.icon}
                 title={window.caption ?? app.caption}
-                isFocused={window.id === activeWindowId}
+                isFocused={window.id === activeWindowId && !isMinimized}
                 onClick={() => handleTabClick(window.id)}
               />
             </li>

@@ -7,6 +7,7 @@ import { WINDOW_INFO } from "@/os/config/windowInfo";
 import { useWindowStore } from "@/stores/useWindowStore";
 import type { Position, WindowAppId } from "@/types/window.types";
 
+import { windowVariants } from "./variants";
 import type { TitleBarProps } from "../TitleBar/TitleBar";
 import TitleBar from "../TitleBar/TitleBar";
 
@@ -32,13 +33,46 @@ export default function Window({
   className,
 }: WindowProps) {
   const { category } = WINDOW_INFO[windowId];
+
   const categoryPositions = useWindowStore((state) => state.categoryPositions);
   const updateWindowPosition = useWindowStore((state) => state.updateWindowPosition);
+
+  const minimizedWindows = useWindowStore((state) => state.minimizedWindows);
+  const maximizedWindows = useWindowStore((state) => state.maximizedWindows);
+  const restorePositions = useWindowStore((state) => state.restorePositions);
+  const minimizeWindow = useWindowStore((state) => state.minimizeWindow);
+  const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
+  const restoreWindow = useWindowStore((state) => state.restoreWindow);
+
+  const isMinimized = !!minimizedWindows[windowId];
+  const isMaximized = !!maximizedWindows[windowId];
 
   const savedPosition = categoryPositions[category];
   const [position, setPosition] = useState<Position | null>(savedPosition ?? null);
 
   const { onMouseDown, onDrag, isDragging } = useDraggable();
+
+  const handleMaximize = () => {
+    if (isMaximized) {
+      restoreWindow(windowId);
+
+      const savedRestorePosition = restorePositions[windowId];
+
+      if (savedRestorePosition) setPosition(savedRestorePosition);
+    } else {
+      maximizeWindow(windowId, position);
+      setPosition(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!isMinimized && !isMaximized && position === null) {
+      const savedRestorePosition = restorePositions[windowId];
+      if (savedRestorePosition) {
+        setPosition(savedRestorePosition);
+      }
+    }
+  }, [isMinimized, isMaximized, position, restorePositions, windowId]);
 
   useEffect(() => {
     if (!isDragging && position && category) {
@@ -47,7 +81,7 @@ export default function Window({
   }, [isDragging, position, category, updateWindowPosition]);
 
   useEffect(() => {
-    if (!isDragging) return;
+    if (!isDragging || isMaximized) return;
 
     let frameId: number;
 
@@ -61,7 +95,7 @@ export default function Window({
 
     frameId = requestAnimationFrame(update);
     return () => cancelAnimationFrame(frameId);
-  }, [isDragging, onDrag]);
+  }, [isDragging, onDrag, isMaximized]);
 
   return (
     <Dialog.Root
@@ -78,19 +112,17 @@ export default function Window({
           <section
             onPointerDown={onPointerDown}
             className={twMerge(
-              "bevel-default absolute inset-0 inline-flex h-full w-full flex-1 flex-col p-[3px] focus:outline-none",
-              // TODO: 가변 사이즈 변경
-              "md:h-[500px] md:w-[600px]",
-              !position &&
-                "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2",
-              isActive ? "z-40" : "z-10",
+              windowVariants({
+                minimized: isMinimized,
+                maximized: isMaximized,
+                active: isActive,
+                center: !position,
+              }),
               className
             )}
             style={
-              position
-                ? {
-                    transform: `translate(${position.x}px, ${position.y}px)`,
-                  }
+              !isMaximized && position
+                ? { transform: `translate(${position.x}px, ${position.y}px)` }
                 : undefined
             }
           >
@@ -101,7 +133,10 @@ export default function Window({
               title={title}
               buttons={buttons}
               onClose={onClose}
-              onMouseDown={onMouseDown}
+              onMouseDown={isMaximized ? undefined : onMouseDown}
+              onMinimize={() => minimizeWindow(windowId)}
+              onMaximize={handleMaximize}
+              isMaximized={isMaximized}
             />
             {children}
           </section>
