@@ -42,6 +42,7 @@ export default function HomePage({
   const [bio, setBio] = useState<string | null>(null);
 
   const [friendRequested, setFriendRequested] = useState<boolean>(false);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
   const [toggleAnimating, setToggleAnimating] = useState(false);
 
   const [images, setImages] = useState<GalleryImage[]>([]);
@@ -84,15 +85,32 @@ export default function HomePage({
         setBio(profile.bio);
 
         // 친구 신청 여부 정보 가져오기
-        const { count: friendRequestCount, error: friendRequestError } = await supabase
-          .from("friend_requests")
-          .select("*", { count: "exact", head: true })
-          .eq("requester_id", user.id)
-          .eq("addressee_id", ownerId);
-        if (friendRequestError) {
-          console.error("친구 신청 정보 불러오기 실패:", friendRequestError);
+        const { data: friendship, error: friendshipError } = await supabase
+          .from("friends")
+          .select("id")
+          .or(
+            `and(user1_id.eq.${user.id},user2_id.eq.${ownerId}),and(user1_id.eq.${ownerId},user2_id.eq.${user.id})`
+          )
+          .maybeSingle();
+        if (friendshipError) {
+          console.error("친구 관계 정보 불러오기 실패:", friendshipError);
+        }
+        const alreadyFriend = Boolean(friendship);
+        setIsFriend(alreadyFriend);
+
+        if (!alreadyFriend) {
+          const { count: friendRequestCount, error: friendRequestError } = await supabase
+            .from("friend_requests")
+            .select("*", { count: "exact", head: true })
+            .eq("requester_id", user.id)
+            .eq("addressee_id", ownerId);
+          if (friendRequestError) {
+            console.error("친구 신청 정보 불러오기 실패:", friendRequestError);
+          } else {
+            setFriendRequested(friendRequestCount === 1);
+          }
         } else {
-          setFriendRequested(friendRequestCount === 1);
+          setFriendRequested(false);
         }
 
         // 사진첩 정보 가져오기 (최근 8개)
@@ -176,6 +194,10 @@ export default function HomePage({
       console.error("친구신청 상대가 존재하지 않습니다.");
       return;
     }
+    if (isFriend) {
+      console.error("이미 친구 관계입니다.");
+      return;
+    }
 
     setToggleAnimating(true);
 
@@ -222,7 +244,7 @@ export default function HomePage({
         </div>
 
         {/* 친구 신청 버튼 */}
-        {!isMine && (
+        {!isMine && !isFriend && (
           <Button
             type="button"
             className="mt-3 h-16 w-full py-2 text-sm text-[#3f3570] hover:bg-[#e9e0ff]"
