@@ -9,11 +9,18 @@ interface WindowStore {
   windows: Partial<Record<WindowAppId, WindowInstance>>;
   activeWindowId: WindowAppId | null;
   categoryPositions: Partial<Record<WindowCategory, Position>>;
+  minimizedWindows: Partial<Record<WindowAppId, boolean>>;
+  maximizedWindows: Partial<Record<WindowAppId, boolean>>;
+  restorePositions: Partial<Record<WindowAppId, Position>>;
+
   openWindow: (id: WindowAppId, ownerId?: string) => void;
   closeWindow: (id: WindowAppId) => void;
   setActiveWindow: (id: WindowAppId) => void;
   updateWindowTitle: (id: WindowAppId, title: string) => void;
   updateWindowPosition: (category: WindowCategory, position: Position) => void;
+  minimizeWindow: (id: WindowAppId) => void;
+  maximizeWindow: (id: WindowAppId, currentPosition: Position | null) => void;
+  restoreWindow: (id: WindowAppId) => void;
 }
 
 const clearWindowsByCategory = (
@@ -37,6 +44,9 @@ export const useWindowStore = create<WindowStore>()(
       windows: {},
       activeWindowId: null,
       categoryPositions: {},
+      minimizedWindows: {},
+      maximizedWindows: {},
+      restorePositions: {},
 
       openWindow: (id, ownerId) =>
         set((state) => {
@@ -68,6 +78,9 @@ export const useWindowStore = create<WindowStore>()(
       closeWindow: (id) =>
         set((state) => {
           delete state.windows[id];
+          delete state.minimizedWindows[id];
+          delete state.maximizedWindows[id];
+          delete state.restorePositions[id];
 
           if (state.activeWindowId === id) {
             state.activeWindowId = null;
@@ -91,6 +104,34 @@ export const useWindowStore = create<WindowStore>()(
       updateWindowPosition: (category, position) =>
         set((state) => {
           state.categoryPositions[category] = position;
+        }),
+
+      minimizeWindow: (id) =>
+        set((state) => {
+          state.minimizedWindows[id] = true;
+          delete state.maximizedWindows[id];
+
+          if (state.activeWindowId === id) {
+            state.activeWindowId = null;
+          }
+        }),
+
+      maximizeWindow: (id, currentPosition) =>
+        set((state) => {
+          if (currentPosition) {
+            state.restorePositions[id] = currentPosition;
+          }
+
+          state.maximizedWindows[id] = true;
+          delete state.minimizedWindows[id];
+          state.activeWindowId = id;
+        }),
+
+      restoreWindow: (id) =>
+        set((state) => {
+          delete state.minimizedWindows[id];
+          delete state.maximizedWindows[id];
+          state.activeWindowId = id;
         }),
     })),
     { name: "WindowStore" }

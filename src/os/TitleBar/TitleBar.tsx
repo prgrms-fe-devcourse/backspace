@@ -21,10 +21,13 @@ const sizeConfig = {
 } as const;
 
 export interface TitleBarProps extends React.ComponentPropsWithoutRef<"div">, TitleBarVariantProps {
-  icon?: FunctionComponent<SVGProps<SVGSVGElement>>; // FunctionComponent → ComponentType
-  title?: string; // text → title (prop 이름 통일)
+  icon?: FunctionComponent<SVGProps<SVGSVGElement>>;
+  title?: string;
   buttons?: "all" | "closeOnly" | null;
   onClose?: () => void;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
+  isMaximized?: boolean;
 }
 
 /**
@@ -92,10 +95,32 @@ export default function TitleBar({
   title,
   buttons = null,
   onClose,
+  onMinimize,
+  onMaximize,
+  isMaximized,
   className,
   ...rest
 }: TitleBarProps) {
   const { iconClassName, buttonSizeClass, iconSizeClass } = sizeConfig[size ?? "small"];
+
+  const handleButtonMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  };
+
+  const handleMinimize = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onMinimize?.();
+  };
+
+  const handleMaximize = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onMaximize?.();
+  };
+
+  const handleClose = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onClose?.();
+  };
 
   return (
     <header
@@ -126,6 +151,8 @@ export default function TitleBar({
                 composition="iconOnly"
                 className={buttonSizeClass}
                 aria-label="Minimize window"
+                onClick={handleMinimize}
+                onMouseDown={handleButtonMouseDown}
               >
                 <Minus className={iconClassName} strokeWidth={2} />
               </Button>
@@ -133,7 +160,9 @@ export default function TitleBar({
               <Button
                 composition="iconOnly"
                 className={buttonSizeClass}
-                aria-label="Maximize window"
+                aria-label={isMaximized ? "복원" : "최대화"}
+                onClick={handleMaximize}
+                onMouseDown={handleButtonMouseDown}
               >
                 <AppWindow className={iconClassName} strokeWidth={2} />
               </Button>
@@ -141,7 +170,8 @@ export default function TitleBar({
           )}
 
           <Button
-            onClick={onClose}
+            onClick={handleClose}
+            onMouseDown={handleButtonMouseDown}
             composition="iconOnly"
             className={buttonSizeClass}
             aria-label="Close window"
