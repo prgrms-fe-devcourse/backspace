@@ -11,7 +11,7 @@ export default function Avatar({ src, alt = "사용자 아바타", className, ..
   return (
     <div
       className={twMerge(
-        "flex aspect-square h-max min-w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-50",
+        "flex aspect-square h-max items-center justify-center overflow-hidden rounded-full bg-gray-50",
         className
       )}
     >
