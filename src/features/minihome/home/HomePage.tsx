@@ -234,7 +234,10 @@ export default function HomePage({
       <div className="mr-3 flex h-full w-1/3 flex-col items-center @2xl:justify-center">
         {/* 프로필 이미지 */}
 
-        <Avatar src={avatarUrl} className="h-32 w-32 @2xl:h-64 @2xl:w-64" />
+        <Avatar
+          src={avatarUrl}
+          className="h-32 w-32 min-w-[128px] shrink-0 @2xl:h-64 @2xl:w-64 @2xl:min-w-[256px]"
+        />
 
         {/* 이름 */}
         <p className="mt-4 text-lg text-[#342b4e]">{nickname}</p>
