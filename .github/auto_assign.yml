@@ -1,10 +1,10 @@
 addAssignees: author
-addReviewers: true
+# addReviewers: true
 
-reviewers:
-  - RumPumpumpum
-  - sageherb
-  - stupilman
-  - suyeon1104
+# reviewers:
+#   - RumPumpumpum
+#   - sageherb
+#   - stupilman
+#   - suyeon1104
 
 numberOfReviewers: 0
